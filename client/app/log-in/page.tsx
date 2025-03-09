@@ -14,7 +14,7 @@ export default function Login() {
 			<input type="text" className="border-(liver) border-2 mb-8 p-2"></input>
 			<label className="self-start">Password</label>
 			<input type="password" className="border-(liver) border-2 mb-8 p-2"></input>
-			<Link href="/"><input className="rounded-xl bg-(--liver) m-auto p-1 pl-2 pr-2 text-(--seashell) hover:bg-(--sage) hover:text-(--liver)" type="submit" value="Log In"></input></Link>
+			<Link href="/"><input className="button m-auto text-(--liver)" type="submit" value="Log In"></input></Link>
 		</form>
 	  </div>
 	</>
