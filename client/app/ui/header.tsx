@@ -1,6 +1,6 @@
 import { FireIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-
+import "@/app/globals.css";
 
 export default function Header() {
 	return <div className="flex bg-(--liver) border-b-2 border-neutral-800 w-full h-18 text-(--seashell) font-display">
@@ -12,6 +12,6 @@ export default function Header() {
 			/>
 			<h1 className="text-4xl font-bold">Pyro</h1>
 		</Link>
-		<nav className="w-1/3 flex justify-end items-center p-5 gap-2"><Link href="/log-in">Log In</Link><Link href="/register">Register</Link></nav>
+		<nav className="w-1/3 flex justify-end items-center p-5 gap-2"><Link href="/log-in" className="button text-(--liver)">Log In</Link><Link href="/register" className="button text-(--liver)">Register</Link></nav>
   	</div>
 }
