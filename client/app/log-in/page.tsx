@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Login() {
   return (
 	<>
-	  <Header />
+	  <Header type={1} />
 	  <div className="mt-10 ml-30 mr-30 text-center flex flex-col">
 		<h1 className="text-3xl font-display pb-2 font-bold">Log In</h1>
 		<h2 className="text-l font-display">Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign Up</Link></h2>
