@@ -19,6 +19,7 @@
 body {
   background-color: var(--seashell);
   color: var(--liver);
+  font-family: var(--font-normal);
 }
 /* Button Styling */
 .button {
@@ -30,8 +31,8 @@ body {
 }
 /* Button Hover Animation */
 .button:hover {
-  animation: forwards;
-  animation: button_expand 100ms linear 0s 1 normal both;
+  background: antiquewhite;
+  /*animation: button_expand 0ms linear 0s 1 normal both;*/
 }
 @keyframes button_expand {
   0% {}
