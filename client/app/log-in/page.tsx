@@ -1,4 +1,3 @@
-import Header from "@/app/ui/header";
 import Link from "next/link";
 
 export default function Login() {
@@ -9,10 +8,10 @@ export default function Login() {
 		<h2 className="text-l font-display">Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign Up</Link></h2>
 	  	{/* TODO: Add URL to submit to (action) */}
 		<form method="post" className="flex flex-col m-auto mt-8 font-normal">
-			<label className="self-start">Username</label>
-			<input type="text" className="border-(liver) border-2 mb-8 p-2"></input>
-			<label className="self-start">Password</label>
-			<input type="password" className="border-(liver) border-2 mb-8 p-2"></input>
+		<label htmlFor="username" className="self-start">Username</label>
+				<input id="username" type="text" className="border-(liver) border-2 mb-8 p-2"></input>
+				<label htmlFor="password" className="self-start">Password</label>
+				<input id="password" type="password" className="border-(liver) border-2 mb-8 p-2"></input>
 			<Link href="/"><input className="button m-auto text-(--liver)" type="submit" value="Log In"></input></Link>
 		</form>
 	  </div>
