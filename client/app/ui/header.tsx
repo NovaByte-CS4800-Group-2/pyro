@@ -1,14 +1,19 @@
+"use client"
+
 import { FireIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import "@/app/globals.css";
+import { usePathname } from "next/navigation";
 
-export default function Header({ type = 0 }) {
+export default function Header() {
+	const pathname = usePathname();
 	let html = <></>;
-	if (type == 0) {
-		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Link href="/log-in" className="button text-(--liver)">Log In</Link><Link href="/register" className="button text-(--liver)">Register</Link></nav>;
-	}
-	else if (type == 1) {
+	/* Changes the nav buttons depending on the current url. */
+	if (pathname.includes("register") || pathname.includes("log-in")) {
 		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Link href="/" className="button text-(--liver)">Back</Link></nav>;
+	}
+	else {
+		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Link href="/log-in" className="button text-(--liver)">Log In</Link><Link href="/register" className="button text-(--liver)">Register</Link></nav>;
 	}
 	return (
 		<div className="flex bg-(--moss-green) border-b-2 border-(--liver) w-full h-18 font-display">
