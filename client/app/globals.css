@@ -7,6 +7,7 @@
 	--cocoa-brown: #DA6930;
   --liver: #574545;
 	--sage: #BABD8D;
+  --moss-green: #9D9F7A;
   --auburn: #AA3739;
   --seashell: #FCF4F0;
 }
@@ -23,7 +24,8 @@ body {
 }
 /* Button Styling */
 .button {
-  background: var(--seashell);
+  font-family: var(--font-display);
+  background: var(--sage);
   border-radius: 10px;
   padding: 2px;
   padding-left: 5px;
@@ -31,7 +33,7 @@ body {
 }
 /* Button Hover Animation */
 .button:hover {
-  background: antiquewhite;
+  background: var(--moss-green);
   /*animation: button_expand 0ms linear 0s 1 normal both;*/
 }
 @keyframes button_expand {
