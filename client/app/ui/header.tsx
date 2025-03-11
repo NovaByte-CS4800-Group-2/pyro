@@ -4,16 +4,17 @@ import { FireIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import "@/app/globals.css";
 import { usePathname } from "next/navigation";
+import Button from "./button";
 
 export default function Header() {
 	const pathname = usePathname();
 	let html = <></>;
 	/* Changes the nav buttons depending on the current url. */
 	if (pathname.includes("register") || pathname.includes("log-in")) {
-		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Link href="/" className="button text-(--liver)">Back</Link></nav>;
+		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Button label="Back"></Button></nav>;
 	}
 	else {
-		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Link href="/log-in" className="button text-(--liver)">Log In</Link><Link href="/register" className="button text-(--liver)">Register</Link></nav>;
+		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Button link="/log-in" label="Log In"></Button><Button link="/register" label="Register"></Button></nav>;
 	}
 	return (
 		<div className="flex bg-(--liver) border-b-2 border-(--liver) w-full h-18 font-display">

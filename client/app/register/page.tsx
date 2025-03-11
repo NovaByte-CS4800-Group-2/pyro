@@ -27,6 +27,7 @@ export default function Register() {
 				<input id="password" type="password" className="border-(liver) border-2 mb-6 p-2"></input>
 				<label htmlFor="confirm-password" className="self-start">Confirm Password</label>
 				<input id="confirm-password" type="password" className="border-(liver) border-2 mb-8 p-2"></input>
+				{/* TODO: Switch to use button component. */}
 				<Link href="/"><input className="button m-auto text-(--liver)" type="submit" value="Sign Up"></input></Link>
 			</Form>
 		  </div>
