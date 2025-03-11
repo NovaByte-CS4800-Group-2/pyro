@@ -3,6 +3,8 @@
 
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
+import {hash} from './sha256.js'
+
 dotenv.config()
 
 const pool = mysql.createPool({
@@ -14,6 +16,7 @@ const pool = mysql.createPool({
 
 export async function createProfile (username, name, email, zipCode, password, businessAccount){
     try{
+        password = hash(password)
         await pool.query("INSERT into users (username, name, email, password, zip_code, business_account) VALUES (?, ?, ?, ?, ?, ?)",
                           [username, name, email, password, zipCode, businessAccount])
     }
@@ -43,5 +46,5 @@ export async function getProfile(username){
     }
 }
 
-createProfile("newProfile", "user", "user@gmail.com", 93020, "1234", 1)
+createProfile("tester1", "Test1", "tes1t@gmail.com", 93020, "test1", 1)
 // console.log(await getProfile("jess"))
