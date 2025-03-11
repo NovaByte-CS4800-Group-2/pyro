@@ -57,10 +57,52 @@ async function getPassword(username){
     
 }
 
+// make functions to update each and then use them here
+// this way, we can use them all in this one
+// !!! there willl probably be an error if you try to run this but im working on it!
+async function createProfile (username, name, email, zipCode, password, businessAccount){
+    try{
+        await pool.query("INSERT into users username, name, email, password, zip_code, business_account ?, ?, ?, ?, ?, ?")
+    }
+    catch (error){
+        console.log(error)
+    }
+}
+
+async function getProfile(username){
+    try{
+        const [rows] = await pool.query("SELECT * from users where username = ?", [username])
+        return rows
+        console.log(rows)
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+function validatePassword(password){
+    const minLength = 8; 
+    const returnString = []; 
+    
+    if (password.length < 8) { // check for minimum length of password 
+        returnString.push("Password must contain at least 8 characters.")
+    } 
+    if (!/[A-Z]/.test(password)){ // check for capital letters 
+        returnString.push("Password must contain at least one capital letter.")
+    }
+    if (!/\d/.test(password)){ // check for digits
+        returnString.push("Passowrd must contain at least one digit.")
+    }
+    if (! /[@.#$!%^&*.?]/.test(password)) { // check for symbols
+        returnString.push("Password must contain at least one symbol.")
+    }
+    return returnString // if the string is empty, the password is valid 
+}
 
 console.log("The username for this password is:", await getUsername("password"))
 console.log("Checking if the username 'beepBepp' exists..,", await checkUsername("beepBepp"))
 console.log("Getting the password for pintoBean:", await getPassword("pintoBean"))
 console.log("Checking if pintoBean's password is 'password'", await checkCredentials("password", "pintoBean"))
+console.log(validatePassword("Hell3$dsss")) // empty list means the password is valid 
 
 await pool.end() // close the connection once information has been gathered
