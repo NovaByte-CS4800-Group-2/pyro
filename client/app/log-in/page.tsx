@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {loginUser} from "@/app/server_functions/functions"
 import Form from "next/form";
+import Button from "../ui/button";
 
 export default function Login() {
   return (
@@ -14,7 +15,8 @@ export default function Login() {
 				<input id="username" type="text" className="border-(liver) border-2 mb-8 p-2"></input>
 				<label htmlFor="password" className="self-start">Password</label>
 				<input id="password" type="password" className="border-(liver) border-2 mb-8 p-2"></input>
-			<Link href="/"><input className="button m-auto text-(--liver)" type="submit" value="Log In"></input></Link>
+			{/* TODO: Switch to use Button component. */}
+			<Link href="/"><input className="button m-auto text-(--liver) hover:bg-(--moss-green)" type="submit" value="Log In"></input></Link>
 		</Form>
 	  </div>
 	</>
