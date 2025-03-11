@@ -11,7 +11,7 @@ export async function registerUser(formData) {
 	const confirmPassword = formData.get("confirm-password");
 	console.log(formData);
 	if (name & email & username & zipcode & password & confirmPassword) {
-		createProfile(0, username, name, email, zipcode, password, false);
+		createProfile(username, name, email, zipcode, password, false);
 	}
 
 	redirect('/');
