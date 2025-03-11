@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Form from "next/form";
-import {registerUser} from "@/app/server_functions/functions"
+import { registerUser } from "@/app/server_functions/functions"
 
 
 export default function Register() {
@@ -27,7 +27,7 @@ export default function Register() {
 				<label htmlFor="confirm-password" className="self-start">Confirm Password</label>
 				<input id="confirm-password" name="confirm-password" type="password" className="border-(liver) border-2 mb-8 p-2"></input>
 				{/* TODO: Switch to use button component. */}
-				<Link href="/"><input className="button m-auto text-(--liver)" type="submit" value="Sign Up"></input></Link>
+				<button className="button m-auto text-(--liver)" type="submit">Sign Up</button>
 			</Form>
 		  </div>
 		</>
