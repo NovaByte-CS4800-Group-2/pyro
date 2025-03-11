@@ -5,10 +5,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const pool = mysql.createPool({
-    host: "localhost", 
-    user: "root", 
-    password: "Server123",
-    database: "notes_app"
+  host: process.env.MYSQL_HOST,
+  user:  process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
 }).promise()
 
 /* Checks whether a username and password combination matches the database values. */
@@ -76,11 +76,11 @@ function validatePassword(password){
     return returnString // if the string is empty, the password is valid 
 }
 
-console.log("The username for this password is:", await getUsername("password"))
-console.log("Checking if the username 'beepBepp' exists..,", await checkUsername("beepBepp"))
-console.log("Checking if the username 'beepHadya' exists..,", await checkUsername("beepHadya"))
-console.log("Getting the password for pintoBean:", await getPassword("pintoBean"))
-console.log("Checking if pintoBean's password is 'password'", await checkCredentials("password", "pintoBean"))
-console.log(validatePassword("Hell3$dsss")) // empty list means the password is valid 
+//console.log("The username for this password is:", await getUsername("password"))
+//console.log("Checking if the username 'beepBepp' exists..,", await checkUsername("beepBepp"))
+//console.log("Checking if the username 'beepHadya' exists..,", await checkUsername("beepHadya"))
+//console.log("Getting the password for pintoBean:", await getPassword("pintoBean"))
+//console.log("Checking if pintoBean's password is 'password'", await checkCredentials("password", "pintoBean"))
+console.log(validatePassword("hello")) // empty list means the password is valid 
 
 await pool.end() // close the connection once information has been gathered

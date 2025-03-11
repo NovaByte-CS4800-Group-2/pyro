@@ -8,11 +8,12 @@ import {hash} from './sha256.js'
 dotenv.config()
 
 const pool = mysql.createPool({
-    host: "localhost", 
-    user: "root", 
-    password: "",
-    database: "notes_app"
-}).promise() // allows to use promise API version of MYSQL instead of having to use coolback version
+  host: process.env.MYSQL_HOST,
+  user:  process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
+}).promise()
+ // allows to use promise API version of MYSQL instead of having to use coolback version
 
 export async function createProfile (username, name, email, zipCode, password, businessAccount){
     try{
