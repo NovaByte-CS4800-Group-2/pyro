@@ -1,16 +1,21 @@
 import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
-import { EmblaCarousel } from "./page";
+
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        <Header />
-        <main>{children}</main>
-        <EmblaCarousel/>
-        <Footer />
+      <header className="fixed top-0 left-0 w-full shadow-md z-50">
+          <Header />
+        </header>
+        <main className="flex-grow mt-16 mb-16 overflow-auto">
+          {children}
+        </main>
+        <footer className="fixed bottom-0 left-0 w-full shadow-md z-50">
+          <Footer />
+        </footer>
       </body>
     </html>
   );
