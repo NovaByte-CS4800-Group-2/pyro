@@ -10,7 +10,7 @@ export async function registerUser(formData) {
 	const password = formData.get("password");
 	const confirmPassword = formData.get("confirm-password");
 	if (name & email & username & zipcode & password & confirmPassword) {
-		createProfile(0, username, name, email, zipcode, password, false);
+		createProfile(username, name, email, zipcode, password, false);
 	}
 }
 
