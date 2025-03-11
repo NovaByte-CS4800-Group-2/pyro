@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
+import { EmblaCarousel } from "./page";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
@@ -8,6 +9,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="flex flex-col min-h-screen">
         <Header />
         <main>{children}</main>
+        <EmblaCarousel/>
         <Footer />
       </body>
     </html>
