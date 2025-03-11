@@ -31,5 +31,4 @@ export async function createNote(title, content)
   return getNote(id)
 }
 
-
 getNotes(); 
