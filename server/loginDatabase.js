@@ -7,7 +7,7 @@ dotenv.config()
 const pool = mysql.createPool({
     host: "localhost", 
     user: "root", 
-    password: "@Animast123",
+    password: "Server123",
     database: "notes_app"
 }).promise()
 
