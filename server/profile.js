@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 export async function createProfile (username, name, email, zipCode, password, businessAccount){
     try{
         await pool.query("INSERT into users (username, name, email, password, zip_code, business_account) VALUES (?, ?, ?, ?, ?, ?)",
-                          [username, name, email, zipCode, password, businessAccount])
+                          [username, name, email, password, zipCode, businessAccount])
     }
     catch (error){
         console.log(error)
@@ -43,5 +43,5 @@ export async function getProfile(username){
     }
 }
 
-createProfile("newUser", "user@gmail.com", 92102, "saiid", 0)
+createProfile("newProfile", "user", "user@gmail.com", 93020, "1234", 1)
 // console.log(await getProfile("jess"))
