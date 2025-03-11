@@ -7,7 +7,7 @@ dotenv.config()
 const pool = mysql.createPool({
     host: "localhost", 
     user: "root", 
-    password: "",
+    password: "@Animast123",
     database: "notes_app"
 }).promise()
 
@@ -26,7 +26,7 @@ async function checkCredentials(inputPass, userName){
 /* Checks if an input username exists in the database. */
 async function checkUsername (inputUsername){
     const [rows] = await pool.query("SELECT * from passTest where userName = ?", [inputUsername])
-    for (let i = 0; i < rows.length; i++){
+    for (let i = 0; i < rows.length; i++){  // is the loop necessary since we do not accept duplicate usernames?
         if (rows[i].userName == inputUsername){
             return true
         }
@@ -78,6 +78,7 @@ function validatePassword(password){
 
 console.log("The username for this password is:", await getUsername("password"))
 console.log("Checking if the username 'beepBepp' exists..,", await checkUsername("beepBepp"))
+console.log("Checking if the username 'beepHadya' exists..,", await checkUsername("beepHadya"))
 console.log("Getting the password for pintoBean:", await getPassword("pintoBean"))
 console.log("Checking if pintoBean's password is 'password'", await checkCredentials("password", "pintoBean"))
 console.log(validatePassword("Hell3$dsss")) // empty list means the password is valid 
