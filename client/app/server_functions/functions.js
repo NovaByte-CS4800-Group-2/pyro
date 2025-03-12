@@ -1,5 +1,6 @@
 "use server"
-import {createProfile} from "../../../server/profile";
+import {checkCredentials, checkUsername} from "@/../server/loginDatabase"
+import {createProfile} from "@/../server/profile";
 import { redirect } from "next/navigation";
 
 export async function registerUser(formData) {
@@ -15,6 +16,13 @@ export async function registerUser(formData) {
 	redirect('/');
 }
 
-export async function loginUser() {
-	
+export async function loginUser(formData) {
+	const username = formData.get("username");
+	const password = formData.get("password");
+
+	if (await checkCredentials(password, username)) {
+		redirect('/dashboard');
+	} else {
+		console.log(":(");
+	}
 }

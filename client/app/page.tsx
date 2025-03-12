@@ -1,9 +1,8 @@
 'use client'
 
-import Header from "@/app/ui/header";
 import { EmblaCarousel } from "./ui/carousel";
 
-export default function Home() {
+export default function Landing() {
   return (
     <>
       <div>
@@ -12,4 +11,3 @@ export default function Home() {
     </>
   );
 }
-
