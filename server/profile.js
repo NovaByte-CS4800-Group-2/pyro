@@ -47,5 +47,5 @@ export async function getProfile(username){
     }
 }
 
-createProfile("tester1", "Test1", "tes1t@gmail.com", 93020, "test1", 1)
+// createProfile("tester1", "Test1", "tes1t@gmail.com", 93020, "test1", 1)
 // console.log(await getProfile("jess"))
