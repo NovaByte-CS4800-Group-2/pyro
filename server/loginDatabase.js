@@ -5,11 +5,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST,
-  user:  process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE
-}).promise()
+    host: "localhost",
+    user:  "root",
+    password: "Server123",
+    database: "notes_app"
+  }).promise()
 
 /* Checks whether a username and password combination matches the database values. */
 async function checkCredentials(inputPass, userName){
@@ -25,7 +25,7 @@ async function checkCredentials(inputPass, userName){
 
 /* Checks if an input username exists in the database. */
 async function checkUsername (inputUsername){
-    const [rows] = await pool.query("SELECT * from passTest where userName = ?", [inputUsername])
+    const [rows] = await pool.query("SELECT * from users where userName = ?", [inputUsername])
     for (let i = 0; i < rows.length; i++){  // is the loop necessary since we do not accept duplicate usernames?
         if (rows[i].userName == inputUsername){
             return true
@@ -37,7 +37,7 @@ async function checkUsername (inputUsername){
 async function getUsername(password){
     try{
         const hashedPassword = hash(password)
-        const [rows] = await pool.query("SELECT * from passTest where password = ?", [hashedPassword])
+        const [rows] = await pool.query("SELECT * from users where password = ?", [hashedPassword])
         return rows[0].userName
         // !!! in order to actually get the results of this without "promise pending", use await before CALLING the function 
         // ex: console.log(await getUsername("password"))
@@ -49,7 +49,7 @@ async function getUsername(password){
 /* Finds a user's password from the database given their username. */
 async function getPassword(username){
     try {
-        const [rows] = await pool.query("SELECT * from passTest where userName = ? LIMIT 1", [username])
+        const [rows] = await pool.query("SELECT * from users where userName = ? LIMIT 1", [username])
         return rows[0].password
     } catch (error){
         return null // if user does not exist, there won't be a password to find 
@@ -76,7 +76,7 @@ function validatePassword(password){
     return returnString // if the string is empty, the password is valid 
 }
 
-//console.log("The username for this password is:", await getUsername("password"))
+console.log("The username for this password is:", await getUsername("password"))
 //console.log("Checking if the username 'beepBepp' exists..,", await checkUsername("beepBepp"))
 //console.log("Checking if the username 'beepHadya' exists..,", await checkUsername("beepHadya"))
 //console.log("Getting the password for pintoBean:", await getPassword("pintoBean"))
