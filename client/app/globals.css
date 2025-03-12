@@ -6,6 +6,7 @@
   /* Declare variables for brand colors. */
 	--cocoa-brown: #DA6930;
   --liver: #574545;
+  --dark-brown: #342c2c;
 	--sage: #BABD8D;
   --moss-green: #9D9F7A;
   --auburn: #AA3739;
@@ -25,7 +26,8 @@ body {
 /* Button Styling */
 .button {
   font-family: var(--font-display);
-  background: var(--sage);
+  background: var(--dark-brown);
+  color: var(--seashell);
   border-radius: 10px;
   padding: 2px;
   padding-left: 5px;
