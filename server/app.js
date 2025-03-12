@@ -22,8 +22,8 @@ app.get('/profiles/:userName', async (req, res) => {  // gets individual profile
 })
 
 app.post('/profiles', async (req, res) => {
-  const {userID, username, name, email, zipCode, password, businessAccount} = req.body
-  const profile = await createProfile(userID, username, name, email, zipCode, password, businessAccount)
+  const {username, name, email, zipCode, password, businessAccount} = req.body
+  const profile = await createProfile(username, name, email, zipCode, password, businessAccount)
   res.status(201).send(profile)
 })
 
