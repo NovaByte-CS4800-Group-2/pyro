@@ -5,17 +5,17 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user:  "root",
-    password: "Server123",
-    database: "notes_app"
-  }).promise()
+  host: process.env.MYSQL_HOST,
+  user:  process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
+}).promise()
 
 /* Checks whether a username and password combination matches the database values. */
-async function checkCredentials(inputPass, userName){
+export async function checkCredentials(inputPass, userName){
 
     const hashedString = hash(inputPass);
-    if (await getPassword(userName) == (hashedString)) {
+    if (await getPassword(userName) === hashedString) {
         return true; 
     }
     else {
@@ -24,7 +24,7 @@ async function checkCredentials(inputPass, userName){
 }
 
 /* Checks if an input username exists in the database. */
-async function checkUsername (inputUsername){
+export async function checkUsername (inputUsername){
     const [rows] = await pool.query("SELECT * from users where userName = ?", [inputUsername])
     for (let i = 0; i < rows.length; i++){  // is the loop necessary since we do not accept duplicate usernames?
         if (rows[i].userName == inputUsername){
@@ -34,7 +34,7 @@ async function checkUsername (inputUsername){
     return false
 }
 /* Finds a user's username from the database given their password. */
-async function getUsername(password){
+export async function getUsername(password){
     try{
         const hashedPassword = hash(password)
         const [rows] = await pool.query("SELECT * from users where password = ?", [hashedPassword])
@@ -47,7 +47,7 @@ async function getUsername(password){
 }
 
 /* Finds a user's password from the database given their username. */
-async function getPassword(username){
+export async function getPassword(username){
     try {
         const [rows] = await pool.query("SELECT * from users where userName = ? LIMIT 1", [username])
         return rows[0].password
@@ -61,7 +61,7 @@ function validatePassword(password){
     const minLength = 8; 
     const returnString = []; 
     
-    if (password.length < 8) { // check for minimum length of password 
+    if (password.length < minLength) { // check for minimum length of password 
         returnString.push("Password must contain at least 8 characters.")
     } 
     if (!/[A-Z]/.test(password)){ // check for capital letters 
@@ -83,4 +83,4 @@ console.log("The username for this password is:", await getUsername("password"))
 //console.log("Checking if pintoBean's password is 'password'", await checkCredentials("password", "pintoBean"))
 console.log(validatePassword("hello")) // empty list means the password is valid 
 
-await pool.end() // close the connection once information has been gathered
+//await pool.end() // close the connection once information has been gathered
