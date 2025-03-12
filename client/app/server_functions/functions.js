@@ -4,16 +4,17 @@ import {createProfile} from "@/../server/profile";
 import { redirect } from "next/navigation";
 
 export async function registerUser(formData) {
-	const name = formData.get("name");
-	const email = formData.get("email");
-	const username = formData.get("username");
-	const zipcode = formData.get("zipcode");
-	const password = formData.get("password");
-	const confirmPassword = formData.get("confirm-password");
+	const name = formData.name;
+	const email = formData.email;
+	const username = formData.username;
+	const zipcode = formData.zipcode;
+	const password = formData.password;
+	const confirmPassword = formData.confirmPassword;
 	console.log(formData);
 	createProfile(username, name, email, zipcode, password, false);
 
-	redirect('/');
+
+	redirect('/dashboard');
 }
 
 export async function loginUser(formData) {
