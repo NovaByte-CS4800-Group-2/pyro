@@ -2,6 +2,7 @@ import Link from "next/link";
 import {loginUser} from "@/app/server_functions/functions"
 import Form from "next/form";
 import Button from "../ui/button";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   return (
@@ -15,7 +16,7 @@ export default function Login() {
 				<label htmlFor="password" className="self-start">Password</label>
 				<input id="password" name="password" type="password" className="border-(liver) border-2 mb-8 p-2"></input>
 			{/* TODO: Switch to use Button component. */}
-			<button className="button m-auto text-(--liver) hover:bg-(--moss-green)" type="submit">Log In</button>
+			<button className="button m-auto text-(--liver) hover:bg-(--moss-green)" type="submit" onClick={() => signIn(undefined, { callbackUrl: "/dashboard"})}>Log In</button>
 		</Form>
 	  </div>
 	</>
