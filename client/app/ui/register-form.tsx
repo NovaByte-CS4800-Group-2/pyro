@@ -18,7 +18,7 @@ export default function RegisterForm() {
 		handleSubmit,
 		watch,
 		formState: { errors },
-	} = useForm<Inputs>();
+	} = useForm<Inputs>({ mode: "onChange" });
 	const onSubmit: SubmitHandler<Inputs> = registerUser;
 
 	watch("name");
