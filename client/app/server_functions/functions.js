@@ -17,9 +17,7 @@ export async function registerUser(formData) {
 	redirect('/dashboard');
 }
 
-export async function loginUser(formData) {
-	const username = formData.get("username");
-	const password = formData.get("password");
+export async function loginUser(password, username) {
 
 	if (await checkCredentials(password, username)) {
 		redirect('/dashboard');

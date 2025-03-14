@@ -10,10 +10,10 @@ export default function Header() {
 	const pathname = usePathname();
 	let html = <></>;
 	/* Changes the nav buttons depending on the current url. */
-	if (pathname.includes("dashboard")) {
+	if (pathname?.includes("dashboard")) {
 		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"></nav>;	
 	}
-	else if (pathname.includes("register") || pathname.includes("log-in")) {
+	else if (pathname?.includes("register") || pathname?.includes("log-in")) {
 		html = <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold"><Button label="Back"></Button></nav>;
 	}
 	else {
