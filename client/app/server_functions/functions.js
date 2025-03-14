@@ -2,6 +2,7 @@
 import {checkCredentials, checkUsername, validatePassword} from "@/../server/loginDatabase"
 import {createProfile} from "@/../server/profile";
 
+
 export async function registerUser(username, name, email, zipCode, password, businessAccount) {
 	createProfile(username, name, email, zipCode, password, businessAccount);
 	return true;
