@@ -36,18 +36,6 @@ body {
 /* Button Hover Animation */
 .button:hover {
   background: var(--moss-green);
-  /*animation: button_expand 0ms linear 0s 1 normal both;*/
-}
-@keyframes button_expand {
-  0% {}
-  100% 
-  {
-    background-color: antiquewhite;
-    padding: 4px;
-    padding-left: 7px;
-    padding-right: 7px;
-    font-size: large;
-  }
 }
 
 .embla__viewport {
