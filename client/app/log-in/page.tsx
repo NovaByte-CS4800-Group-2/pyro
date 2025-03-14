@@ -18,7 +18,7 @@ export default function Login() {
 	const pathName = usePathname();
 
 	useEffect(() => {
-		if (!pathName?.includes("register")) {
+		if (!pathName?.includes("log-in")) {
 			isMounted.current = 0;
 		}
 		else if (isMounted.current > 1) {
