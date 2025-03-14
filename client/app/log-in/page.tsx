@@ -1,8 +1,10 @@
+"use client";
 import Link from "next/link";
 import {loginUser} from "@/app/server_functions/functions"
 import Form from "next/form";
 import Button from "../ui/button";
 import { signIn } from "next-auth/react";
+
 
 export default function Login() {
   return (
