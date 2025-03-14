@@ -1,27 +1,26 @@
 "use server"
-import {checkCredentials, checkUsername} from "@/../server/loginDatabase"
+import {checkCredentials, checkUsername, validatePassword} from "@/../server/loginDatabase"
 import {createProfile} from "@/../server/profile";
-import { redirect } from "next/navigation";
 
-export async function registerUser(formData) {
-	const name = formData.name;
-	const email = formData.email;
-	const username = formData.username;
-	const zipcode = formData.zipcode;
-	const password = formData.password;
-	const confirmPassword = formData.confirmPassword;
-	console.log(formData);
-	createProfile(username, name, email, zipcode, password, false);
-
-
-	redirect('/dashboard');
+export async function registerUser(username, name, email, zipCode, password, businessAccount) {
+	createProfile(username, name, email, zipCode, password, businessAccount);
+	return true;
 }
 
 export async function loginUser(password, username) {
 
 	if (await checkCredentials(password, username)) {
-		redirect('/dashboard');
+		return true;
 	} else {
 		console.log(":(");
+		return false;
 	}
+}
+
+export async function checkPassword(password) {
+	return validatePassword(password);
+}
+
+export async function checkValidUsername(username) {
+	return ! await checkUsername(username);
 }

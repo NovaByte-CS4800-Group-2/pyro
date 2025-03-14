@@ -57,7 +57,7 @@ export async function getPassword(username){
     
 }
 
-function validatePassword(password){
+export async function validatePassword(password){
     const minLength = 8; 
     const returnString = []; 
     
@@ -68,7 +68,7 @@ function validatePassword(password){
         returnString.push("Password must contain at least one capital letter.")
     }
     if (!/\d/.test(password)){ // check for digits
-        returnString.push("Passowrd must contain at least one digit.")
+        returnString.push("Password must contain at least one digit.")
     }
     if (! /[@.#$!%^&*.?]/.test(password)) { // check for symbols
         returnString.push("Password must contain at least one symbol.")
