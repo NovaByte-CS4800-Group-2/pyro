@@ -18,13 +18,13 @@ export default function Login() {
 	const pathName = usePathname();
 
 	useEffect(() => {
-		if (isMounted.current > 1) {
-			validateForm();
-		}
-		if (pathName?.includes("log-in")) {;
-			isMounted.current ++;
-		} else {
+		if (!pathName?.includes("register")) {
 			isMounted.current = 0;
+		}
+		else if (isMounted.current > 1) {
+			validateForm();
+		} else {
+			isMounted.current ++;
 		}
 	}, [username, password]);
 
@@ -67,7 +67,7 @@ export default function Login() {
 				</div>
 				<div className="flex flex-col pb-8">
 					<label htmlFor="password" className="self-start">Password</label>
-					<input id="password" name="password" type="text" onChange={(e) => setPassword(e.target.value)} style={{border: !errors.password ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="password" name="password" type="password" onChange={(e) => setPassword(e.target.value)} style={{border: !errors.password ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
 					{errors.password && <p className="text-sm text-red-500 self-end pr-1">{errors.password}</p>}
 				</div>
 				{/* TODO: Switch to use Button component. */}
