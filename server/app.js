@@ -109,3 +109,15 @@ const port = 8080;
 app.listen(port, () => {
   console.log('Server is running on port ' + port)
 })
+
+/*
+different status code meanings!
+
+200 --> OK
+201 --> Created
+400 --> Bad request
+401 --> Unauthorized
+404 --> Not found
+500 --> Internal server error
+
+*/
