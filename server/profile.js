@@ -3,7 +3,7 @@
 
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
-import {hash} from './sha256.js'
+import {hash} from './functions/sha256.js'
 
 dotenv.config()
 

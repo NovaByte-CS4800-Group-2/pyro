@@ -1,5 +1,5 @@
 import mysql from 'mysql2'
-import {hash} from './sha256.js'
+import {hash} from './functions/sha256.js'
 
 import dotenv from 'dotenv' 
 dotenv.config()
