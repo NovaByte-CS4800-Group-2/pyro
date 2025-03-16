@@ -34,23 +34,46 @@ export default function Login() {
 			password: "",
 			form: "",
 		};
-
 		if (!username) {
 			errors.username = "Username is required.";
 		}
 		if (!password) {
 			errors.password = "Password is required.";
 		}
-
 		setErrors(errors);
 		setIsFormValid(!errors.username && !errors.password);
 	}
 
-	const handleSubmit = async () => {
-		if (isFormValid && await loginUser(password, username)) {
+	const handleSubmit = async (formData: any) => {
+		/*if (isFormValid && await loginUser(password, username)) {
 			redirect("/dashboard")
 		} else {
 			setErrors({username: "", password: "", form: "The given username or password is incorrect. Please try again."});
+		}*/
+		try {
+			const response = await fetch('http://localhost:8080/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				redirect("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 401) {
+					setErrors({username: "", password: "", form: "The given username or password is incorrect. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	}
 
