@@ -28,6 +28,10 @@ app.use(cors({
 
 //-----------------------------------------------LOOK AT THESE!!!!-----------------------------------------------
 
+
+
+//-----------------------------------------------LOG IN-----------------------------------------------
+
 app.post('/login', async (req, res) => {  // does authentication
   const {username, password} = req.body;
 
@@ -53,7 +57,44 @@ app.get('/login/status', async (req, res) => {  // gets authentication status
 
 })
 
-//-----------------------------------------------END OF LOG IN-----------------------------------------------
+//-----------------------------------------------LOG OUT-----------------------------------------------
+
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+      if (err) {
+          return res.status(500).json({ message: "Failed to log out" });
+      }
+      res.clearCookie('connect.sid'); // clear the session cookie
+      res.json({ message: "Logged out successfully" });
+  });
+});
+
+//-----------------------------------------------REGISTER-----------------------------------------------
+
+app.post('/register', async (req, res) => {
+  const {username, name, email, zipCode, password, businessAccount} = req.body
+  await createProfile(username, name, email, zipCode, password, businessAccount)
+
+  // if (!newUser) return res.status(400).json({ message: "Registration failed" });
+
+  const newUser = await getProfile(username); // getting the profile
+  if (!newUser) return res.status(404).json({ error: "User not found" });
+
+  req.session.user = newUser; // automatically log in the user
+  res.status(201).json({ message: "Registration successful", user: req.session.user });
+})
+
+app.get('/register/status', async (req, res) => {  // gets authentication status
+  req.sessionStore.get(req.sessionID, (err, session) => {  // to see how everything is stored in memory
+    console.log(session);
+  })
+  return req.session.user ? res.status(200).send(req.session.user) 
+                          : res.status(401).send({ error: "Invalid credentials" })
+
+})
+
+//-----------------------------------------------END-----------------------------------------------
+
 
 app.get('/profiles', async (req, res) => {  // gets all profiles
   console.log(req.cookies);  // grab cookies from req object and display in to the console
@@ -92,12 +133,6 @@ app.get('/', (req, res) => {  // base URL
 
   res.cookie('hello', 'world', {maxAge: 60000 * 60 * 2, signed: true}) // set cookie when user vists this end point
   res.status(201).send({msg: "hello!"})
-})
-
-app.post('/profiles', async (req, res) => {
-  const {username, name, email, zipCode, password, businessAccount} = req.body
-  const profile = await createProfile(username, name, email, zipCode, password, businessAccount)
-  res.status(201).send(profile)
 })
 
 app.use((err, req, res, next) => {
