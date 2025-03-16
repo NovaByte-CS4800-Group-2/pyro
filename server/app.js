@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser' // parsing the cookies
 import session from 'express-session' // for handeling sessions
 
 import {createProfile, getProfile, getProfiles} from './profile.js'
+import {checkCredentials} from './loginDatabase.js'
 
 const app = express()
 
@@ -25,7 +26,34 @@ app.use(cors({
   credentials: true  // Allow sending cookies across origins
 }))
 
-// TESTING WITH THUNDER CLIENT BTW!!
+//-----------------------------------------------LOOK AT THESE!!!!-----------------------------------------------
+
+app.post('/login', async (req, res) => {  // does authentication
+  const {username, password} = req.body;
+
+  if (!username || !password) return res.status(400).json({ error: "Missing username or password" });
+
+  const isValid = await checkCredentials(password, username);  // checking if username and password match
+  if(!isValid) return res.status(401).json({ error: "Invalid credentials" });  // no existing profile
+
+  const user = await getProfile(username); // getting the profile
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  req.session.user = user;  // store user in session if found
+  return res.status(200).json(user);
+   
+})
+
+app.get('/login/status', async (req, res) => {  // gets authentication status
+  req.sessionStore.get(req.sessionID, (err, session) => {  // to see how everything is stored in memory
+    console.log(session);
+  })
+  return req.session.user ? res.status(200).send(req.session.user) 
+                          : res.status(401).send({ error: "Invalid credentials" })
+
+})
+
+//-----------------------------------------------END OF LOG IN-----------------------------------------------
 
 app.get('/profiles', async (req, res) => {  // gets all profiles
   console.log(req.cookies);  // grab cookies from req object and display in to the console
@@ -56,12 +84,6 @@ app.get('/profiles/:userName', async (req, res) => {  // gets individual profile
   res.send(profile)
 })
 
-app.post('/profiles', async (req, res) => {
-  const {username, name, email, zipCode, password, businessAccount} = req.body
-  const profile = await createProfile(username, name, email, zipCode, password, businessAccount)
-  res.status(201).send(profile)
-})
-
 app.get('/', (req, res) => {  // base URL
 
   console.log(req.session);  // log session information (cookie properties)
@@ -70,6 +92,12 @@ app.get('/', (req, res) => {  // base URL
 
   res.cookie('hello', 'world', {maxAge: 60000 * 60 * 2, signed: true}) // set cookie when user vists this end point
   res.status(201).send({msg: "hello!"})
+})
+
+app.post('/profiles', async (req, res) => {
+  const {username, name, email, zipCode, password, businessAccount} = req.body
+  const profile = await createProfile(username, name, email, zipCode, password, businessAccount)
+  res.status(201).send(profile)
 })
 
 app.use((err, req, res, next) => {
