@@ -1,10 +1,16 @@
 import { Router } from "express";
-import {createProfile, getProfile} from '../functions/register_functions.js'
+import {createProfile, getProfile, checkUsernames} from '../functions/register_functions.js'
 
 const router = Router();
 
 router.post('/register', async (req, res) => {
   const {username, name, email, zipCode, password, businessAccount} = req.body
+
+  if(checkUsernames(username)) return res.status(406).send({error : "Username exists"});
+
+  const passowrd = validatePassword(password);
+
+  if(passowrd.length != 0) return res.status(406).send({error : "Invalid password"});
   await createProfile(username, name, email, zipCode, password, businessAccount)
 
   // if (!newUser) return res.status(400).json({ message: "Registration failed" });
