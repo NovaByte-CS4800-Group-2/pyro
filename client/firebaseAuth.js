@@ -1,4 +1,4 @@
-import {useState} from "react"; 
+import {useState, useEffect} from "react"; 
 import firebase from "./firebaseConfig"; 
 
 export const Signup = () => {
@@ -16,7 +16,7 @@ export const Signup = () => {
             setError(err.message) // Display errors 
         }
     }; 
-}; 
+}
 
 export const Signin = () => {
     const [email, setEmail] = useState(""); 
@@ -35,5 +35,21 @@ export const Signin = () => {
 }
 
 export const Signout = () => {
-    cpm
+    const handleSignout = async () => {
+        try {
+            await firebase.auth().signOut(); 
+            alert("User signed out successfully"); 
+        } catch (err) {
+            console.error(err); 
+        }
+    }
 }
+
+export const AuthStatus = () => {
+    const [user, setUser] = useState(null); 
+    useEffect(() => {
+        // monitor auth state 
+        const unsubscribe = firebase.auth().onAuthStateChanged(setUser); 
+        return () => unsubscribe(); 
+    }, []); 
+};
