@@ -4,8 +4,8 @@ import {createProfile, getProfile} from '../functions/register_functions.js'
 const router = Router();
 
 router.post('/register', async (req, res) => {
-  const {username, name, email, zipCode, password, businessAccount} = req.body
-  await createProfile(username, name, email, zipCode, password, businessAccount)
+  const {username, name, email, zipCode, password, accountType} = req.body;
+  await createProfile(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 
   // if (!newUser) return res.status(400).json({ message: "Registration failed" });
 
@@ -21,8 +21,7 @@ router.get('/register/status', async (req, res) => {  // gets authentication sta
     console.log(session);
   })
   return req.session.user ? res.status(200).send(req.session.user) 
-                          : res.status(401).send({ error: "Invalid credentials" })
-
+                          : res.status(401).send({ error: "Invalid credentials" });
 })
 
 export default router;
