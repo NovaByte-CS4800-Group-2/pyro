@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
-import { JSX, useEffect, useRef, useState } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, } from "next/navigation";
 import { checkPassword, checkValidUsername, registerUser } from "../server_functions/functions";
 
 
@@ -22,18 +22,17 @@ export default function Register() {
 		form: "",
 	});
 	const [isFormValid, setIsFormValid] = useState(false);
-	// 0 on first render so that validation will not run until inputs change (For some reason useEffect() runs twice on entering, this is why the comparison is > 1 rather than > 0).
-	const isMounted = useRef(0);
-	const pathName = usePathname();
+	// false on render so that validation will not run until inputs change.
+	const [isMounted, setIsMounted] = useState(false);
+
+	// Router for redirecting to the dashboard.
+	const router = useRouter();
 
 	useEffect(() => {
-		if (!pathName?.includes("register")) {
-			isMounted.current = 0;
-		}
-		else if (isMounted.current > 1) {
+		if (isMounted == true) {
 			validateForm();
 		} else {
-			isMounted.current ++;
+			setIsMounted(true);
 		}
 	}, [name,
 		email,
@@ -100,9 +99,45 @@ export default function Register() {
 		});
 	}
 
-	const handleSubmit = async () => {
-		if (isFormValid && await registerUser(username, name, email, zipCode, password, false)) {
-			redirect("/dashboard")
+	const handleSubmit = async (formData: FormData) => {
+		try {
+			const response = await fetch('http://localhost:8080/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				router.push("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 404) {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An error has occurred in creating a new user. Please try again."});
+				} else {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An unexpected error has occurred. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	}
 
