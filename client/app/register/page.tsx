@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
-import { JSX, useEffect, useRef, useState } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, } from "next/navigation";
 import { checkPassword, checkValidUsername, registerUser } from "../server_functions/functions";
 
 
@@ -22,18 +22,17 @@ export default function Register() {
 		form: "",
 	});
 	const [isFormValid, setIsFormValid] = useState(false);
-	// 0 on first render so that validation will not run until inputs change (For some reason useEffect() runs twice on entering, this is why the comparison is > 1 rather than > 0).
-	const isMounted = useRef(0);
-	const pathName = usePathname();
+	// false on render so that validation will not run until inputs change.
+	const [isMounted, setIsMounted] = useState(false);
+
+	// Router for redirecting to the dashboard.
+	const router = useRouter();
 
 	useEffect(() => {
-		if (!pathName?.includes("register")) {
-			isMounted.current = 0;
-		}
-		else if (isMounted.current > 1) {
+		if (isMounted == true) {
 			validateForm();
 		} else {
-			isMounted.current ++;
+			setIsMounted(true);
 		}
 	}, [name,
 		email,
@@ -100,9 +99,45 @@ export default function Register() {
 		});
 	}
 
-	const handleSubmit = async () => {
-		if (isFormValid && await registerUser(username, name, email, zipCode, password, false)) {
-			redirect("/dashboard")
+	const handleSubmit = async (formData: FormData) => {
+		try {
+			const response = await fetch('http://localhost:8080/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				router.push("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 404) {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An error has occurred in creating a new user. Please try again."});
+				} else {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An unexpected error has occurred. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	}
 
@@ -122,32 +157,43 @@ export default function Register() {
 			<form action={handleSubmit} className="flex flex-col w-full max-w-80 m-auto mt-8 font-normal">
 				<div className="flex flex-col pb-4">
 					<label htmlFor="name" className="self-start">Name</label>
-					<input id="name" name="name" type="text" onChange={(e) => setName(e.target.value)} style={{border: !errors.name ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="name" name="name" type="text" onChange={(e) => setName(e.target.value)} style={{border: !errors.name ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.name && <p className="text-sm text-red-500 self-end pr-1">{errors.name}</p>}
 				</div>
 				<div className="flex flex-col pb-4">
 					<label htmlFor="email" className="self-start">Email</label>
-					<input id="email" name="email" type="email" onChange={(e) => setEmail(e.target.value)} style={{border: !errors.email ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="email" name="email" type="email" onChange={(e) => setEmail(e.target.value)} style={{border: !errors.email ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.email && <p className="text-sm text-red-500 self-end pr-1">{errors.email}</p>}
 				</div>			
 				<div className="flex flex-col pb-4">
 					<label htmlFor="username" className="self-start">Username</label>
-					<input id="username" name="username" type="text" onChange={(e) => setUsername(e.target.value)} style={{border: !errors.username ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="username" name="username" type="text" onChange={(e) => setUsername(e.target.value)} style={{border: !errors.username ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.username && <p className="text-sm text-red-500 self-end pr-1">{errors.username}</p>}
 				</div>
 				<div className="flex flex-col pb-4">
 					<label htmlFor="zipCode" className="self-start">Zip Code</label>
-					<input id="zipCode" name="zipCode" type="text" inputMode="numeric" onChange={(e) => setZipCode(e.target.value)} style={{border: !errors.zipCode ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="zipCode" name="zipCode" type="text" inputMode="numeric" onChange={(e) => setZipCode(e.target.value)} style={{border: !errors.zipCode ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.zipCode && <p className="text-sm text-red-500 self-end pr-1">{errors.zipCode}</p>}
+				</div>
+				<div className="flex flex-col pb-4 gap-y-2">
+					<label className="self-start p-">Account Type</label>
+					<div className="flex pl-5 gap-x-3">
+						<input id="businessAccount" value="businessAccount" name="accountType" type="radio" className="checked:accent-(--cocoa-brown)"></input>
+						<label htmlFor="businessAccount" className="self-start">Business Account</label>				
+					</div>
+					<div className="flex pl-5 gap-x-3">
+						<input defaultChecked id="personalAccount" value="personalAccount" name="accountType" type="radio" className="checked:accent-(--cocoa-brown)"></input>
+						<label htmlFor="personalAccount" className="self-start">Personal Account</label>
+					</div>
 				</div>
 				<div className="flex flex-col pb-4">
 					<label htmlFor="password" className="self-start">Password</label>
-					<input id="password" name="password" type="password" onChange={(e) => setPassword(e.target.value)} style={{border: errors.password.length === 1 ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="password" name="password" type="password" onChange={(e) => setPassword(e.target.value)} style={{border: errors.password.length === 1 ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.password.length > 1 && <p className="text-sm text-red-500 self-end pr-1">{errors.password.join('\n')}</p>}
 				</div>
 				<div className="flex flex-col pb-4">
 					<label htmlFor="confirmPassword" className="self-start">Confirm Password</label>
-					<input id="confirmPassword" name="confirmPassword" type="password" onChange={(e) => setConfirmPassword(e.target.value)} style={{border: !errors.confirmPassword ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					<input id="confirmPassword" name="confirmPassword" type="password" onChange={(e) => setConfirmPassword(e.target.value)} style={{border: !errors.confirmPassword ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
 					{errors.confirmPassword && <p className="text-sm text-red-500 self-end pr-1">{errors.confirmPassword}</p>}
 				</div>				
 				{/* TODO: Switch to use Button component. */}

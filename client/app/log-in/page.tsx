@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { loginUser } from "../server_functions/functions";
 
 export default function Login() {
@@ -13,18 +13,17 @@ export default function Login() {
 		form: "",
 	});
 	const [isFormValid, setIsFormValid] = useState(false);
-	// 0 on first render so that validation will not run until inputs change (For some reason useEffect() runs twice on entering, this is why the comparison is > 1 rather than > 0).
-	const isMounted = useRef(0);
-	const pathName = usePathname();
+	// false on render so that validation will not run until inputs change.
+	const [isMounted, setIsMounted] = useState(false);
+	
+	// Router for redirecting to the dashboard.
+	const router = useRouter();
 
 	useEffect(() => {
-		if (!pathName?.includes("log-in")) {
-			isMounted.current = 0;
-		}
-		else if (isMounted.current > 1) {
+		if (isMounted == true) {
 			validateForm();
 		} else {
-			isMounted.current ++;
+			setIsMounted(true);
 		}
 	}, [username, password]);
 
@@ -34,23 +33,45 @@ export default function Login() {
 			password: "",
 			form: "",
 		};
-
 		if (!username) {
 			errors.username = "Username is required.";
 		}
 		if (!password) {
 			errors.password = "Password is required.";
 		}
-
 		setErrors(errors);
 		setIsFormValid(!errors.username && !errors.password);
 	}
 
-	const handleSubmit = async () => {
-		if (isFormValid && await loginUser(password, username)) {
-			redirect("/dashboard")
-		} else {
-			setErrors({username: "", password: "", form: "The given username or password is incorrect. Please try again."});
+	const handleSubmit = async (formData: FormData) => {
+		try {
+			const response = await fetch('http://localhost:8080/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				router.push("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 400) {
+					setErrors({username: "", password: "", form: "Both username and password must be entered."});
+				} else if (response.status == 401) {
+					setErrors({username: "", password: "", form: "The given username or password is incorrect. Please try again."});
+				} else {
+					setErrors({username: "", password: "", form: "An unexpected error has occurred. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	}
 
