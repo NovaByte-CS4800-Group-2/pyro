@@ -11,8 +11,7 @@ router.post('/register', async (req, res) => {
   const passowrd = validatePassword(password);
 
   if(passowrd.length != 0) return res.status(406).send({error : "Invalid password"});
-  await createProfile(username, name, email, zipCode, password, businessAccount)
-  const {username, name, email, zipCode, password, accountType} = req.body;
+
   await createProfile(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 
   // if (!newUser) return res.status(400).json({ message: "Registration failed" });
