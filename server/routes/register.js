@@ -1,16 +1,15 @@
 import { Router } from "express";
-import {createProfile, getProfile, checkUsernames} from '../functions/register_functions.js'
+import {createProfile, getProfile, checkUsername} from '../functions/register_functions.js'
 
 const router = Router();
 
 router.post('/register', async (req, res) => {
   const {username, name, email, zipCode, password, businessAccount} = req.body
 
-  if(checkUsernames(username)) return res.status(406).send({error : "Username exists"});
+  if(checkUsername(username)) return res.status(406).send({error : "Username exists"});  // duplicate username
 
-  const passowrd = validatePassword(password);
-
-  if(passowrd.length != 0) return res.status(406).send({error : "Invalid password"});
+  const pass = validatePassword(password);
+  if(pass.length != 0) return res.status(406).send(pass); // sending the string with error messages
 
   await createProfile(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 

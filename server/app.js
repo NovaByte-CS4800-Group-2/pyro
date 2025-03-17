@@ -24,15 +24,16 @@ app.use(session({
    
 }))
 
+app.use(cors({
+  origin: 'http://localhost:3000',  // Adjust this to your frontend URL
+  credentials: true  // Allow sending cookies across origins
+}))
+
 app.use(loginRouter);
 app.use(registerRouter);
 app.use(logOutRouter);
 
 // app.use(cors());
-app.use(cors({
-  origin: 'http://localhost:3000',  // Adjust this to your frontend URL
-  credentials: true  // Allow sending cookies across origins
-}))
 
 app.get('/profiles', async (req, res) => {  // gets all profiles
   console.log(req.cookies);  // grab cookies from req object and display in to the console
