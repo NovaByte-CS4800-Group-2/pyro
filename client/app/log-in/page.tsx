@@ -6,12 +6,20 @@ import {useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import {auth} from "@/app/firebase/config"
 import { loginUser } from "../server_functions/functions";
 import { signIn } from "next-auth/react";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {signOut} from 'firebase/auth'
+
 
 export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-
 	const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth); 
+	const [user] = useAuthState(auth); 
+	const userSession = sessionStorage.getItem("user");
+	console.log({user})
+	// Router for redirecting to the dashboard.
+	const router = useRouter();
+
 
 	const [errors, setErrors] = useState({
 		email: "",
@@ -22,8 +30,6 @@ export default function Login() {
 	// false on render so that validation will not run until inputs change.
 	const [isMounted, setIsMounted] = useState(false);
 	
-	// Router for redirecting to the dashboard.
-	const router = useRouter();
 
 	useEffect(() => {
 		if (isMounted == true) {
@@ -87,7 +93,6 @@ export default function Login() {
 			const res = await signInWithEmailAndPassword(email, password);
 			console.log(res)
 			sessionStorage.setItem('user', String(true))// when getting it back, use sessionStorage.getItem('user')
-			//sessionStorage.setItem('user', true);
 			const response = await fetch('http://localhost:8080/login', {
 				method: 'POST',
 				headers: {
