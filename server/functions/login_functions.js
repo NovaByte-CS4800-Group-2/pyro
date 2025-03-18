@@ -1,6 +1,46 @@
 import {hash} from './sha256.js'
 import pool from './pool.js'
 
+
+class Login
+{
+    constructor(email, password)
+    {
+        this.email = email;
+        this.password = hash(password);
+    }
+
+    async checkCredentials()
+    {
+        const storedPassword = await this.getPassword();
+        return storedPassword && storedPassword === this.password;
+    }
+
+    async getPassword()
+    {
+        try {
+            const [rows] = await pool.query("SELECT * from users where email = ? LIMIT 1", [this.email])
+            return rows[0].password
+        } catch (error){
+            return null // if user does not exist, there won't be a password to find 
+        } 
+    }
+
+    async getProfile()
+    {
+        try{
+            const [rows] = await pool.query("SELECT * from users where email = ?", [this.email])
+            return rows
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+export default Login;
+
+
 /* Checks whether a username and password combination matches the database values. */
 export async function checkCredentialsUsername(inputPass, userName){
 
