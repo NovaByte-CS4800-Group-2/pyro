@@ -16,14 +16,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 		userSession = sessionStorage.getItem("user");
 	}
 	
-	if (!user /*&& !userSession*/){
-		router.push("/")
+	if (!user && !userSession){
+		return router.push("/")
 	}
-	else {
-		return (
-			<div>
-				{children}
-			</div>
-		);
-	}
+	return (
+		<div>
+			{children}
+		</div>
+	);
 }

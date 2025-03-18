@@ -20,6 +20,7 @@ export default function Header() {
   if (typeof window !== 'undefined' && window.sessionStorage) {
       userSession = sessionStorage.getItem("user");
   }
+  
 
   useEffect(() => {
     if (!user && !userSession) {

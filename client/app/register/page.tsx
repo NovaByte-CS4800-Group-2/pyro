@@ -109,6 +109,7 @@ export default function Register() {
 
 			const res = await createUserWithEmailAndPassword(email, password)
 			console.log({res})
+			sessionStorage.setItem('user', String(true))// when getting it back, use sessionStorage.getItem('user')
 			const response = await fetch('http://localhost:8080/register', {
 				method: 'POST',
 				headers: {
