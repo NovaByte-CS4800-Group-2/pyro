@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import {useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
+
 import { loginUser } from "../server_functions/functions";
 
 export default function Login() {
@@ -75,8 +77,9 @@ export default function Login() {
 		}
 	}
 
-	const handleSignUp = () => {
+	const handleSignIn = () => {
 		// handle sign up logic here (calling API/firebase auth)
+		
 		console.log("User Signed In:", {username, password});
 	}
 

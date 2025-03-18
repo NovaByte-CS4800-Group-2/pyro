@@ -14,17 +14,17 @@ export default function Register() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 
-	
 	const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
 	const handleSignUp = async () => {
 		// handle sign up logic here
-		console.log("User Signed Up:", {email, password});
 		try {
 			const res = await createUserWithEmailAndPassword(email, password)
 			console.log({res})
+			console.log("User Signed Up:", {email, password});
 			setEmail("");
 			setPassword("");
+			router.push("/dashboard");
 		}
 		catch(e) {
 			console.error(e)
@@ -174,7 +174,7 @@ export default function Register() {
 		  <div className="m-10 ml-30 mr-30 text-center flex flex-col">
 			<h1 className="text-3xl font-display pb-2 font-bold">Create New Account</h1>
 			<h2 className="text-l font-display">Already Registered? <Link href="/log-in" className="font-semibold hover:underline">Log in</Link></h2>
-			<form action={handleSubmit} className="flex flex-col w-full max-w-80 m-auto mt-8 font-normal">
+			<form action={handleSignUp} className="flex flex-col w-full max-w-80 m-auto mt-8 font-normal">
 				<div className="flex flex-col pb-4">
 					<label htmlFor="name" className="self-start">Name</label>
 					<input id="name" name="name" type="text" onChange={(e) => setName(e.target.value)} style={{border: !errors.name ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"/>
