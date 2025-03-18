@@ -18,7 +18,6 @@ export default function Login() {
 	const [user] = useAuthState(auth); 
 	const userSession = sessionStorage.getItem("user");
 
-
 	const [errors, setErrors] = useState({
 		email: "",
 		password: "",

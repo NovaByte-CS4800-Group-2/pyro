@@ -5,11 +5,27 @@ import Link from "next/link";
 import "@/app/globals.css";
 import { usePathname } from "next/navigation";
 import Button from "./button";
+import { useAuthState } from "react-firebase-hooks/auth";
+import {auth} from "@/app/firebase/config";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const pathname = usePathname();
+  const [user] = useAuthState(auth);
+  const router = useRouter(); 
+  let userSession = null;
+  console.log({user})
+  if (typeof window !== 'undefined' && window.sessionStorage) {
+      userSession = sessionStorage.getItem("user");
+  }
+
+  if (!user && !userSession){
+    router.push("/log-in")
+  }
   let html = <></>;
 
+
+    console.log(user)
   if (pathname?.includes("dashboard")) {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
