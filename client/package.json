@@ -14,6 +14,7 @@
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "firebase": "^11.4.0",
+    "firebase-tools": "^13.34.0",
     "next": "15.2.1",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
