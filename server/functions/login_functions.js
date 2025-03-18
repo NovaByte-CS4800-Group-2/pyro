@@ -6,19 +6,20 @@ class Login
     constructor(email, password)
     {
         this.email = email;
-        this.password = hash(password);
+        this.password = password;
     }
 
     updateInfo(email, password)
     {
         this.email = email;
-        this.password = hash(password);
+        this.password = password;
     }
 
     async checkCredentials()
     {
+        const pass = hash(this.password);
         const storedPassword = await this.getPassword();
-        return storedPassword && storedPassword === this.password;
+        return storedPassword && storedPassword === pass;
     }
 
     async getPassword()

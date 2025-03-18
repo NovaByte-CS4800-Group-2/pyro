@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {  // does authentication
 
   if (!email || !password) return res.status(400).json({ error: "Missing email or password" });
 
-  login.updateinfo(email, password);
+  login.updateInfo(email, password);
 
   const user = await login.getProfile(); // getting the profile
   if (!user) return res.status(404).json({ error: "User not found" });
