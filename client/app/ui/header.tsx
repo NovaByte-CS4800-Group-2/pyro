@@ -13,6 +13,7 @@ export default function Header() {
   const pathname = usePathname();
   const [user] = useAuthState(auth);
   const router = useRouter(); 
+
   let userSession = null;
   console.log({user})
   if (typeof window !== 'undefined' && window.sessionStorage) {
