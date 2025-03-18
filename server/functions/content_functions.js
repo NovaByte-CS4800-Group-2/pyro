@@ -66,7 +66,7 @@ class Content {
 }
 
 const content = new Content();
-content.updateInfo(1, "burbank", "natalie", "2023-12-20", "2023-12-20", "OMG first post!!");
+await content.updateInfo(1, "burbank", "natalie", "2023-12-20", "2023-12-20", "OMG first post!!");
 await content.createContent();
 
 // console.log(await content.getUserID("natalie"))

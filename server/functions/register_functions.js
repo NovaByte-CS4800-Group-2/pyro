@@ -76,6 +76,9 @@ class Register
     {
     const minLength = 8; 
     const returnString = []; 
+
+    if(this.password.length === 0)
+        return returnString;
     
     if (this.password.length < minLength)  // check for minimum length of password 
         returnString.push("Password must contain at least 8 characters.")
@@ -96,7 +99,7 @@ class Register
     validateEmail()
     {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // basic regex to check for email format
-        return emailRegex.test(this.email) && this.email.endsWith('.com');
+        return ( this.email.length === 0 || (emailRegex.test(this.email) && this.email.endsWith('.com')));
     }
 
     async duplicateEmail()
@@ -109,7 +112,7 @@ class Register
         return false; 
     }
 
-    validateZipCode() {return /^\d{5}$/.test(this.zipCode);}
+    validateZipCode() {return (this.zipCode.length === 0 || /^\d{5}$/.test(this.zipCode));}
 
     async getErrors()
     {
