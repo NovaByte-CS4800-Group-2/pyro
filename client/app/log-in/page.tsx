@@ -13,12 +13,10 @@ import {signOut} from 'firebase/auth'
 export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
 	const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth); 
 	const [user] = useAuthState(auth); 
 	const userSession = sessionStorage.getItem("user");
-	console.log({user})
-	// Router for redirecting to the dashboard.
-	const router = useRouter();
 
 
 	const [errors, setErrors] = useState({
@@ -30,6 +28,8 @@ export default function Login() {
 	// false on render so that validation will not run until inputs change.
 	const [isMounted, setIsMounted] = useState(false);
 	
+	// Router for redirecting to the dashboard.
+	const router = useRouter();
 
 	useEffect(() => {
 		if (isMounted == true) {
@@ -143,6 +143,12 @@ export default function Login() {
 				<button className="button m-auto text-(--liver) hover:bg-(--moss-green)" style={{opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? "pointer" : "not-allowed"}} disabled={!isFormValid} type="submit">Log In</button>
 				{errors.form && <p className="text-sm text-red-500 self-center mt-3 max-w-50">{errors.form}</p>}
 			</form>
+			<button onClick={() => {
+				signOut(auth)
+				sessionStorage.removeItem('user')
+				}}>
+				Log out
+			</button>
 		</div>
 		</>
 	);
