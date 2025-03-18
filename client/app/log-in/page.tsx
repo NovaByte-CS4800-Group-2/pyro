@@ -143,12 +143,6 @@ export default function Login() {
 				<button className="button m-auto text-(--liver) hover:bg-(--moss-green)" style={{opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? "pointer" : "not-allowed"}} disabled={!isFormValid} type="submit">Log In</button>
 				{errors.form && <p className="text-sm text-red-500 self-center mt-3 max-w-50">{errors.form}</p>}
 			</form>
-			<button onClick={() => {
-				signOut(auth)
-				sessionStorage.removeItem('user')
-				}}>
-				Log out
-			</button>
 		</div>
 		</>
 	);
