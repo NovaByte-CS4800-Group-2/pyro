@@ -86,6 +86,7 @@ export default function Login() {
 		try {
 			const res = await signInWithEmailAndPassword(email, password);
 			console.log(res)
+			sessionStorage.setItem('user', String(true))// when getting it back, use sessionStorage.getItem('user')
 			//sessionStorage.setItem('user', true);
 			const response = await fetch('http://localhost:8080/login', {
 				method: 'POST',
