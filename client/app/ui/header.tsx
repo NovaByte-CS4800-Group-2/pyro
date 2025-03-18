@@ -20,7 +20,7 @@ export default function Header() {
   }
 
   if (!user && !userSession){
-    router.push("/log-in")
+    router.push("/")
   }
   let html = <></>;
 

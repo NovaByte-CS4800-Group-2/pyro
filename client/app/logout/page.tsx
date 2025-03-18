@@ -14,7 +14,7 @@ export default function Logout(){
       try {
         await signOut(auth); 
   
-        router.push("/log-in");
+        router.push("/");
       } catch (e) {
         console.error("Error signing out:", e);
       }
