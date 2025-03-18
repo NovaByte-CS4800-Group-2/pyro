@@ -8,14 +8,13 @@ import { loginUser } from "../server_functions/functions";
 import { signIn } from "next-auth/react";
 
 export default function Login() {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
 	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth); 
 
 	const [errors, setErrors] = useState({
-		username: "",
+		email: "",
 		password: "",
 		form: "",
 	});
@@ -32,22 +31,22 @@ export default function Login() {
 		} else {
 			setIsMounted(true);
 		}
-	}, [username, password]);
+	}, [email, password]);
 
 	const validateForm = () => {
 		let errors = {
-			username: "",
+			email: "",
 			password: "",
 			form: "",
 		};
-		if (!username) {
-			errors.username = "Username is required.";
+		if (!email) {
+			errors.email = "Email is required.";
 		}
 		if (!password) {
 			errors.password = "Password is required.";
 		}
 		setErrors(errors);
-		setIsFormValid(!errors.username && !errors.password);
+		setIsFormValid(!errors.email && !errors.password);
 	}
 
 	const handleSubmit = async (formData: FormData) => {
@@ -69,11 +68,11 @@ export default function Login() {
 				// Handle error response
 				console.error('Error:', response.status);
 				if (response.status == 400) {
-					setErrors({username: "", password: "", form: "Both username and password must be entered."});
+					setErrors({email: "", password: "", form: "Both email and password must be entered."});
 				} else if (response.status == 401) {
-					setErrors({username: "", password: "", form: "The given username or password is incorrect. Please try again."});
+					setErrors({email: "", password: "", form: "The given email or password is incorrect. Please try again."});
 				} else {
-					setErrors({username: "", password: "", form: "An unexpected error has occurred. Please try again."});
+					setErrors({email: "", password: "", form: "An unexpected error has occurred. Please try again."});
 				}
 			}
 		} catch (error) {
@@ -104,9 +103,9 @@ export default function Login() {
 			<h2 className="text-l font-display">Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign Up</Link></h2>
 			<form action={handleSignIn} className="flex flex-col m-auto mt-8 font-normal">
 				<div className="flex flex-col pb-4">
-					<label htmlFor="username" className="self-start">Username</label>
-					<input id="username" name="username" type="text" onChange={(e) => setUsername(e.target.value)} style={{border: !errors.username ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
-					{errors.username && <p className="text-sm text-red-500 self-end pr-1">{errors.username}</p>}
+					<label htmlFor="email" className="self-start">Email</label>
+					<input id="email" name="email" type="text" onChange={(e) => setEmail(e.target.value)} style={{border: !errors.email ? "2px solid var(--liver)" : "2px solid red"}} className="p-2"></input>
+					{errors.email && <p className="text-sm text-red-500 self-end pr-1">{errors.email}</p>}
 				</div>
 				<div className="flex flex-col pb-8">
 					<label htmlFor="password" className="self-start">Password</label>
