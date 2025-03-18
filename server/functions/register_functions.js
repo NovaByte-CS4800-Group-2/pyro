@@ -99,6 +99,16 @@ class Register
         return emailRegex.test(this.email) && this.email.endsWith('.com');
     }
 
+    async duplicateEmail()
+    {
+        const [rows] = await pool.query("SELECT * from users where email = ?", [this.email]);
+
+        // Check if there are rows returned
+        if (rows.length > 0) 
+            return true; 
+        return false; 
+    }
+
     validateZipCode() {return /^\d{5}$/.test(this.zipCode);}
 
     async getErrors()
@@ -108,6 +118,7 @@ class Register
         const pass = this.validatePassword();
         const zip = this.validateZipCode();
         const email = this.validateEmail();
+        const dupEmail = await this.duplicateEmail();
 
         if(user)
             returnString.push("Username already exisits")
@@ -115,6 +126,8 @@ class Register
             returnString.push("Zipcode must be a valid five digit number")
         if(!email)
             returnString.push("Invalid email format")
+        if(dupEmail)
+            returnString.push("An account with this email already exists")
         if (pass.length > 0) 
             returnString.push(...pass)
         
