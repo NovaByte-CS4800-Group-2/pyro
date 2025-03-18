@@ -3,12 +3,13 @@ import {createProfile, getProfile, checkUsername} from '../functions/register_fu
 import Register from "../functions/register_functions.js";
 
 const router = Router();
+const register = new Register();
 
 router.post('/register', async (req, res) => {
   const {username, name, email, zipCode, password, accountType} = req.body
-  
-  const register = new Register(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 
+  register.updateinfo(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
+  
   const errors = await register.getErrors(); 
   if(errors.length > 0) return res.status(400).json({ errors });
 

@@ -14,6 +14,16 @@ class Register
         this.businessAccount = businessAccount;
     }
 
+    updateinfo(username, name, email, zipCode, password, businessAccount)
+    {
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.zipCode = zipCode;
+        this.password = password;
+        this.businessAccount = businessAccount;
+    }
+
     async createProfile()
     {
         try{

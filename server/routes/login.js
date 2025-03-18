@@ -3,14 +3,14 @@ import {checkCredentials, getProfile} from '../functions/login_functions.js'
 import Login from "../functions/login_functions.js";
 
 const router = Router();  // groups together requests
-
+const login = new Login();
 
 router.post('/login', async (req, res) => {  // does authentication
   const {email, password} = req.body;
 
   if (!email || !password) return res.status(400).json({ error: "Missing email or password" });
 
-  const login = new Login(email, password);
+  login.updateinfo(email, password);
 
   const user = await login.getProfile(); // getting the profile
   if (!user) return res.status(404).json({ error: "User not found" });

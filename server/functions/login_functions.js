@@ -9,6 +9,12 @@ class Login
         this.password = hash(password);
     }
 
+    updateInfo(email, password)
+    {
+        this.email = email;
+        this.password = hash(password);
+    }
+
     async checkCredentials()
     {
         const storedPassword = await this.getPassword();
