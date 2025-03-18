@@ -4,12 +4,12 @@ import {createProfile, getProfile, checkUsername} from '../functions/register_fu
 const router = Router();
 
 router.post('/register', async (req, res) => {
-  const {username, name, email, zipCode, password, businessAccount} = req.body
+  const {username, name, email, zipCode, password, accountType} = req.body
 
-  if(checkUsername(username)) return res.status(406).send({error : "Username exists"});  // duplicate username
+  // if(checkUsername(username)) return res.status(406).send({error : "Username exists"});  // duplicate username
 
-  const pass = validatePassword(password);
-  if(pass.length != 0) return res.status(406).send(pass); // sending the string with error messages
+  // const pass = validatePassword(password);
+  // if(pass.length != 0) return res.status(406).send(pass); // sending the string with error messages
 
   await createProfile(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 
