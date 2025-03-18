@@ -16,7 +16,14 @@ export default function Login() {
 
 	const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth); 
 	const [user] = useAuthState(auth); 
-	const userSession = sessionStorage.getItem("user");
+	//const userSession = sessionStorage.getItem("user");
+	
+	let userSession = null;
+	console.log({user})
+	if (typeof window !== 'undefined' && window.sessionStorage) {
+		userSession = sessionStorage.getItem("user");
+	}
+	
 
 	const [errors, setErrors] = useState({
 		email: "",

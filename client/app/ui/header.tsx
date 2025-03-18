@@ -8,6 +8,7 @@ import Button from "./button";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {auth} from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -20,9 +21,12 @@ export default function Header() {
       userSession = sessionStorage.getItem("user");
   }
 
-  if (!user && !userSession){
-    router.push("/")
-  }
+  useEffect(() => {
+    if (!user && !userSession) {
+      router.push('/'); // Navigate to home if no user or session
+    }
+  }, [user, userSession, router]);
+
   let html = <></>;
 
 
