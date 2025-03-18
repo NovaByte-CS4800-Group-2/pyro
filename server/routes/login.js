@@ -1,20 +1,19 @@
 import { Router } from "express";  // create an instance of an express router
-import {checkCredentials} from '../functions/login_functions.js'
-import {getProfile} from '../functions/register_functions.js'
+import {checkCredentials, getProfile} from '../functions/login_functions.js'
 
 const router = Router();  // groups together requests
 
 
 router.post('/login', async (req, res) => {  // does authentication
-  const {username, password} = req.body;
+  const {email, password} = req.body;
 
-  if (!username || !password) return res.status(400).json({ error: "Missing username or password" });
+  if (!email || !password) return res.status(400).json({ error: "Missing email or password" });
 
-  const isValid = await checkCredentials(password, username);  // checking if username and password match
-  if(!isValid) return res.status(401).json({ error: "Invalid credentials" });  // no existing profile
-
-  const user = await getProfile(username); // getting the profile
+  const user = await getProfile(email); // getting the profile
   if (!user) return res.status(404).json({ error: "User not found" });
+
+  const isValid = await checkCredentials(password, email);  // checking if username and password match
+  if(!isValid) return res.status(401).json({ error: "Invalid credentials" });  // no existing profile
 
   req.session.user = user;  // store user in session if found
   return res.status(200).json(user);
