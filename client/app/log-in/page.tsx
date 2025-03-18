@@ -81,18 +81,39 @@ export default function Login() {
 		}
 	}
 
-	const handleSignIn = async () => {
+	const handleSignIn = async (formData: FormData) => {
 		// handle sign up logic here (calling API/firebase auth)
 		try {
 			const res = await signInWithEmailAndPassword(email, password);
 			console.log(res)
 			//sessionStorage.setItem('user', true);
-			setEmail('');
-			setPassword('')
-			router.push("/dashboard");
-		}
-		catch(e) {
-			console.error(e)
+			const response = await fetch('http://localhost:8080/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				router.push("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 400) {
+					setErrors({email: "", password: "", form: "Both email and password must be entered."});
+				} else if (response.status == 401) {
+					setErrors({email: "", password: "", form: "The given email or password is incorrect. Please try again."});
+				} else {
+					setErrors({email: "", password: "", form: "An unexpected error has occurred. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	}
 

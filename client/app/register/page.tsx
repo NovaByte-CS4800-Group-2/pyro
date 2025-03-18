@@ -16,17 +16,48 @@ export default function Register() {
 
 	const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
-	const handleSignUp = async () => {
+	const handleSignUp = async (formData: FormData) => {
 		// handle sign up logic here
 		try {
 			const res = await createUserWithEmailAndPassword(email, password)
 			console.log({res})
-			setEmail("");
-			setPassword("");
-			router.push("/dashboard");
-		}
-		catch(e) {
-			console.error(e)
+			const response = await fetch('http://localhost:8080/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Object.fromEntries(formData)),
+			});
+		
+			if (response.ok) {
+				const responseData = await response.json();
+				// Handle successful response
+				console.log('Success:', responseData);
+				router.push("/dashboard");
+			} else {
+				// Handle error response
+				console.error('Error:', response.status);
+				if (response.status == 404) {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An error has occurred in creating a new user. Please try again."});
+				} else {
+					setErrors({name: "",
+						email: "",
+						username: "",
+						zipCode: "",
+						password: [""],
+						confirmPassword: "",
+						form: "An unexpected error has occurred. Please try again."});
+				}
+			}
+		} catch (error) {
+			// Handle network errors
+			console.error('Fetch error:', error);
 		}
 	};
 
