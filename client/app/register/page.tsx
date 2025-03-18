@@ -21,7 +21,6 @@ export default function Register() {
 		try {
 			const res = await createUserWithEmailAndPassword(email, password)
 			console.log({res})
-			console.log("User Signed Up:", {email, password});
 			setEmail("");
 			setPassword("");
 			router.push("/dashboard");
