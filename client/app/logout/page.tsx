@@ -13,7 +13,7 @@ export default function Logout(){
 		const handleLogout = async () => {
 			try {
 				await signOut(auth); 
-				
+				sessionStorage.removeItem("user");
 				router.push("/");
 			} catch (e) {
 				console.error("Error signing out:", e);
