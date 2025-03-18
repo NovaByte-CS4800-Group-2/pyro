@@ -75,6 +75,11 @@ export default function Login() {
 		}
 	}
 
+	const handleSignUp = () => {
+		// handle sign up logic here (calling API/firebase auth)
+		console.log("User Signed In:", {username, password});
+	}
+
   	return (
 		<>
 		<div className="mt-10 ml-30 mr-30 text-center flex flex-col">

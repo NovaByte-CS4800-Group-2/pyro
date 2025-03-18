@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter, } from "next/navigation";
 import { checkPassword, checkValidUsername, registerUser } from "../server_functions/functions";
-
+import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
+import {auth} from "@/app/firebase/config"
 
 export default function Register() {
 	const [name, setName] = useState("");
@@ -12,6 +13,24 @@ export default function Register() {
 	const [zipCode, setZipCode] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+
+	
+	const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+
+	const handleSignUp = async () => {
+		// handle sign up logic here
+		console.log("User Signed Up:", {email, password});
+		try {
+			const res = await createUserWithEmailAndPassword(email, password)
+			console.log({res})
+			setEmail("");
+			setPassword("");
+		}
+		catch(e) {
+			console.error(e)
+		}
+	};
+
 	const [errors, setErrors] = useState({
 		name: "",
 		email: "",
@@ -149,6 +168,7 @@ export default function Register() {
 		return html;
 	} */
 	
+
 	return (
 		<>
 		  <div className="m-10 ml-30 mr-30 text-center flex flex-col">
