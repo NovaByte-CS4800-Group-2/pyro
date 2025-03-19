@@ -1,17 +1,7 @@
 import pool from './pool.js'
 
-class Content {
-
-  // constructor(contentID, subForumID, userID, postDate, lastEditDate, body)
-  // {
-  //   this.contentID = contentID;
-  //   this.subForumID = subForumID;
-  //   this.userID = userID;
-  //   this.postDate = postDate;
-  //   this.lastEditDate = lastEditDate;
-  //   this.body = body;
-  // }
-
+class Content 
+{
   async updateInfo(contentID, city, name, postDate, lastEditDate, body)
   {
     this.contentID = contentID;
