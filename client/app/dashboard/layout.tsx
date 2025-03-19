@@ -3,6 +3,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import "@/app/globals.css";
+import Navbar from "../ui/navbar";
 
 export default function RootLayout({
   children,
@@ -19,5 +20,9 @@ export default function RootLayout({
   if (!user && !userSession) {
     return router.push("/");
   }
-  return <div>{children}</div>;
+  return (
+    <div className="flex flex-row border-2 min-h-screen">
+      <Navbar></Navbar>
+      {children}
+    </div>);
 }
