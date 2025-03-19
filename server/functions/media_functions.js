@@ -1,40 +1,28 @@
 import pool from './pool.js'
 
-class Content 
+class Media 
 {
-  async createMedia(city, username, body)
+  async createMedia(filepath, filetype)
   {
     try{
-      const fullDate = new Date();
-      const date = fullDate.toISOString().split('T')[0];
-      const subForumID = await this.getSubforumID(city);
-      const userID = await this.getUserID(username);
+      const post_id = await this.getPostID();
+      const file = this.file; 
+      const file_type = this.file_type;
 
-      const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
-                      [subForumID, userID, date, date, body]); // how to find content ID?
-      const content_id = result.insertId;
+      const [result] = await pool.query("INSERT into media (post_id, file, file_type) VALUES (?, ?, ?)",
+                      [post_id, filepath, file_type]); 
+      const media_id = result.insertId;
+
       console.log(content_id);
     }catch(error){
       console.log(error);
     }
   }
 
-  async getUserID(username)
+  async editPostImage(imageURL, post_id)
   {
     try{
-      const [userID] = await pool.query("SELECT user_id FROM users WHERE username = ?", [username]);
-      return userID[0]?.user_id;  // returns just the id, ? is to prevent error if undefined
-      
-    }catch(error){
-      console.log(error);
-      return null;
-    }
-  }
-
-  async getSubforumID(city)
-  {
-    try{
-      const [userID] = await pool.query("SELECT subforum_id FROM subforums WHERE name = ?", [city]);
+      const [userID] = await pool.query("UPDATE SET  subforum_id FROM subforums WHERE name = ?", [city]);
       return userID[0]?.subforum_id;  // returns just the id, ? is to prevent error if undefined
       
     }catch(error){
@@ -57,15 +45,8 @@ class Content
     }
   }
 
-  async updateBody(contentID, newBody)
-  {
-    try{
-      await pool.query("UPDATE content SET body = ? WHERE content_id = ?",
-                        [newBody, contentID]);
-    }catch(error){
-      console.log(error);
-      return null;
-    }
+  async getPostID(user_id, media_id){
+    const result = await pooll.query; 
   }
 }
 
@@ -79,4 +60,4 @@ const content = new Content();
 await content.createMedia("Los Angeles", "kait", "Some random message")
 
 
-export default Content;
+export default Media;
