@@ -10,8 +10,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	const [user] = useAuthState(auth);
 	let userSession = null;
 	
-	console.log({user})
-	
 	if (typeof window !== 'undefined' && window.sessionStorage) {
 		userSession = sessionStorage.getItem("user");
 	}
