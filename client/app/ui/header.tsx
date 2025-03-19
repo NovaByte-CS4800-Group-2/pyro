@@ -32,10 +32,11 @@ export default function Header() {
 
 
     console.log(user)
-  if (pathname?.includes("dashboard")) {
+  if (!user && !userSession) {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
-        <Button label="Logout" link="/logout" />
+        <Button link="/log-in" label="Log In" />
+        <Button link="/register" label="Register" />
       </nav>
     );
 } else if (pathname?.includes("register") || pathname?.includes("log-in")) {
@@ -47,8 +48,8 @@ export default function Header() {
 } else {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
-        <Button link="/log-in" label="Log In" />
-        <Button link="/register" label="Register" />
+        <Button label="Dashboard" link="/dashboard" />
+        <Button label="Logout" link="/logout" />
       </nav>
     );
   }
