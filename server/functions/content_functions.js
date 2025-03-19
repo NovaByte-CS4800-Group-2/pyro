@@ -2,7 +2,7 @@ import pool from './pool.js'
 
 class Content 
 {
-  async createMedia(city, username, body)
+  async createContent(city, username, body)
   {
     try{
       const fullDate = new Date();
@@ -13,7 +13,6 @@ class Content
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
                       [subForumID, userID, date, date, body]); // how to find content ID?
       const content_id = result.insertId;
-      
     }catch(error){
       console.log(error);
     }

@@ -2,7 +2,7 @@ import pool from './pool.js'
 
 class Content 
 {
-  async createContent(city, username, body)
+  async createMedia(city, username, body)
   {
     try{
       const fullDate = new Date();
