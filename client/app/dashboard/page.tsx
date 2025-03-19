@@ -1,11 +1,17 @@
 'use client'
 
-export default function Home() {
-  return (
+import Subforumbar from "../ui/subforumbar";
+
+export default function Dashboard() {
+	
+	
+	
+	return (
 	<>
-		<div className="flex flex-col items-center mt-10">
+		<div className="bg-neutral-200 flex flex-col items-center pt-10 min-h-full flex-grow">
 			<p className="font-bold">This is the dashboard! You made it!</p>
 		</div>
+		<Subforumbar></Subforumbar>
 	</>
   );
 }

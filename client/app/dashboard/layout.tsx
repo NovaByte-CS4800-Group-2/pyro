@@ -21,7 +21,7 @@ export default function RootLayout({
     return router.push("/");
   }
   return (
-    <div className="flex flex-row border-2 min-h-screen">
+    <div className="flex justify-stretch items-stretch flex-row flex-grow">
       <Navbar></Navbar>
       {children}
     </div>);
