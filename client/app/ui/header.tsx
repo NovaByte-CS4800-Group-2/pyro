@@ -16,7 +16,6 @@ export default function Header() {
   const router = useRouter();
 
   let userSession = null;
-  console.log({ user });
   if (typeof window !== "undefined" && window.sessionStorage) {
     userSession = sessionStorage.getItem("user");
   }
@@ -29,24 +28,30 @@ export default function Header() {
 
   let html = <></>;
 
-  console.log(user);
-  if (!user && !userSession) {
+  if (pathname?.includes("register") || pathname?.includes("log-in")) {
+    html = (
+      <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
+        <Button label="Back" link="/" />
+      </nav>
+    );
+  }
+  else if (!user && !userSession) {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
         <Button link="/log-in" label="Log In" />
         <Button link="/register" label="Register" />
       </nav>
     );
-  } else if (pathname?.includes("register") || pathname?.includes("log-in")) {
+  } else if (!pathname?.includes("dashboard")) {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
-        <Button label="Back" link="/" />
+        <Button label="Dashboard" link="/dashboard" />
+        <Button label="Logout" link="/logout" />
       </nav>
     );
   } else {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
-        <Button label="Dashboard" link="/dashboard" />
         <Button label="Logout" link="/logout" />
       </nav>
     );

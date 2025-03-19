@@ -114,7 +114,6 @@ export default function Register() {
       password,
       confirmPassword,
     };
-    console.log(formData);
     // handle sign up logic here
     try {
       const response = await fetch("http://localhost:8080/register", {
@@ -125,7 +124,6 @@ export default function Register() {
         body: JSON.stringify(formData),
         // body: JSON.stringify(Object.fromEntries(formData)),
       });
-      console.log(formData);
       if (response.ok) {
         // Sign in with firebase auth.
         const res = await createUserWithEmailAndPassword(email, password);
@@ -133,12 +131,9 @@ export default function Register() {
         sessionStorage.setItem("user", String(true)); // when getting it back, use sessionStorage.getItem('user')
         const responseData = await response.json();
         // Handle successful response
-        console.log("Success:", responseData);
         router.push("/dashboard");
       } else {
         // Handle error response
-        console.error("Error:", response.status);
-
         if (response.status == 400) {
           const responseData = await response.json();
           let errors = {
