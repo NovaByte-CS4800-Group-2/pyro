@@ -2,7 +2,7 @@ import pool from './pool.js'
 
 class Content 
 {
-  async createMedia(city, username, body)
+  async createContent(city, username, body)
   {
     try{
       const fullDate = new Date();
@@ -13,7 +13,7 @@ class Content
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
                       [subForumID, userID, date, date, body]); // how to find content ID?
       const content_id = result.insertId;
-      
+      console.log(content_id);
     }catch(error){
       console.log(error);
     }
@@ -72,9 +72,11 @@ class Content
 const content = new Content();
 // await content.createContent(1, "burbank", "natalie", "OMG first post!!");
 // await content.updateDate(1);
-await content.updateBody(1, "Upaded the post");
+//await content.updateBody(1, "Upaded the post");
 
 // console.log(await content.getUserID("natalie"))
 // console.log(await content.getSubforumID("burbank"))
+await content.createMedia("Los Angeles", "kait", "Some random message")
+
 
 export default Content;
