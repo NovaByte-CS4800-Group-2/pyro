@@ -42,6 +42,16 @@ class Content
     } 
   }
 
+  async getPosts(subforum_id){
+    try {
+      const [posts] = await pool.query("SELECT * from content where subforum_id = ?", [subforum_id]);
+      return posts; 
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
   async updateDate(contentID)
   {
     try{
@@ -69,10 +79,10 @@ class Content
 }
 
 const content = new Content();
-// await content.createContent(1, "burbank", "natalie", "OMG first post!!");
+await content.createContent(1, "burbank", "natalie", "OMG first post!!");
 // await content.updateDate(1);
 await content.updateBody(1, "Upaded the post");
-
+console.log(await content.getPosts(3))
 // console.log(await content.getUserID("natalie"))
 // console.log(await content.getSubforumID("burbank"))
 
