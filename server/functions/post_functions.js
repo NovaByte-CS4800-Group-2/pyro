@@ -6,16 +6,25 @@ class Post{
     async createPost(city, username, body, has_media){
         try {
             const post_id = await createContent(city, username, body)
-            await pool.query("INSERT into posts (has_media) VALUES (?)", [post_id, has_media])
+            await pool.query("INSERT into posts (post_id, has_media) VALUES (?, ?)", [post_id, has_media])
         } catch(e) {
             console.log(e)
         }
     }
 
-    async editPost(post_id, user_id){
+    async editPost(content_id){
         try{
-            await pool.query /// working on it 
+            await pool.query("UPDATE content SET body = ? WHERE content_id = ?", [content_id])
         } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async deletePost(content_id){
+        try {
+            await pool.query("DELETE FROM content WHERE content_id = ?", [content_id])
+            await pool.query("DELETE FROM posts WHERE post_id = ?", [content_id])
+        } catch(e){
             console.log(e)
         }
     }

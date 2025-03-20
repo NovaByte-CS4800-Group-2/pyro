@@ -16,6 +16,14 @@ class Vote{
             console.log(e)
         }
     }
+
+    async removeVote(content_id, user_id){
+        try{
+            await pool.query("DELETE FROM votes WHERE content_id = ? and user_id = ?", [content_id, user_id])
+        } catch (e){
+            console.log(e)
+        }
+    }
 }
 export default Vote; 
 // const vote = new Vote(); 
