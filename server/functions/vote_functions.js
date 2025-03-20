@@ -17,6 +17,6 @@ class Vote{
         }
     }
 }
-
-const vote = new Vote(); 
-await vote.downvote(1,12);
+export default Vote; 
+// const vote = new Vote(); 
+// await vote.downvote(1,12);

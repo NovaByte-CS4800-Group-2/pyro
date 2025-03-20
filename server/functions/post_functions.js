@@ -13,7 +13,7 @@ class Post{
     }
 }
 
-const post = new Post();
-await post.createPost(0); 
+//const post = new Post();
+//await post.createPost(0); 
 
 export default Post;
