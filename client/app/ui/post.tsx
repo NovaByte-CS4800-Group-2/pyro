@@ -1,6 +1,6 @@
 import "@/app/globals.css";
 
-export default function Post({ userProfile = Blob, username = "", date = "", editedDate = "", body = "",}) {
+export default function Post({ userProfile = null, username = "", date = "", editedDate = "", body = "",}) {
   return (
     <div className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-clip">
 		<div className="flex gap-1 flex-col bg-neutral-300 p-2 font-bold text-sm">
