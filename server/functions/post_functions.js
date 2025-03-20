@@ -11,6 +11,14 @@ class Post{
             console.log(e)
         }
     }
+
+    async editPost(post_id, user_id){
+        try{
+            await pool.query /// working on it 
+        } catch (e) {
+            console.log(e)
+        }
+    }
 }
 
 //const post = new Post();
