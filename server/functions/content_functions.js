@@ -13,6 +13,7 @@ class Content
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
                       [subForumID, userID, date, date, body]); // how to find content ID?
       const content_id = result.insertId;
+      return content_id;
     }catch(error){
       console.log(error);
     }
