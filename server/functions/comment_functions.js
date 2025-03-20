@@ -4,7 +4,7 @@ class Comment {
     async createComment(city, username, body, post_id){
         try {
             const comment_id = await createContent(city, username, body)
-            await pool.query("INSERT into comments (comment_id, post_id) VALUES (?)", [post_id, comment_id])
+            await pool.query("INSERT into comments (comment_id, post_id) VALUES (?, ?)", [post_id, comment_id])
         } catch(e) {
             console.log(e)
         }
