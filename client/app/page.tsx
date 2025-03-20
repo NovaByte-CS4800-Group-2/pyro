@@ -7,11 +7,10 @@ import { EmblaCarousel } from "./ui/carousel";
 const ContentBox = ({ children }: { children: React.ReactNode }) => (
   <div
   className="w-full max-w-4xl mx-auto border-2 border-[--dark-brown] p-4 text-center rounded-lg mt-6 text-[--dark-brown]"
-  style={{ backgroundColor: "rgba(87, 69, 69, 0.5)" }} //to make the opacity 50%
+  style={{ backgroundColor: "rgba(87, 69, 69, 0.5)" }} //to make the opacity
 >
   {children}
 </div>
-
 );
 
 export default function Landing() {
