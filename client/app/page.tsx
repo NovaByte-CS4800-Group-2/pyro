@@ -9,18 +9,10 @@ export default function Landing() {
       <div>
         <EmblaCarousel/>
       </div>
-      <div style={{
-        width: "100%",
-        maxWidth: "1024px", 
-        margin: "0 auto",
-        border: "2px solid var(--dark-brown)",
-        padding: "16px",
-        textAlign: "center",
-        borderRadius: "8px",
-        marginTop: "24px"
-      }}>
+      <div className="w-full max-w-256 m-auto border-2 border-var(--dark-brown) p-4 text-center rounded-lg mt-6">
         Our mission: 
       </div>
+
     </>
   );
 }
