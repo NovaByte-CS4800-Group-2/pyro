@@ -20,8 +20,7 @@ router.post('/content/edit', async(req, res) => {
 
   if (!body || !contentID) return res.status(400).json({ error: "Missing body" });
 
-  content.updateDate(contentID);
-  content.updateBody(contentID, body);
+  content.updateContent(contentID, body);
 
   res.status(201).send({msg: "content edited succesfully"})
 })

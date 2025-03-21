@@ -2,7 +2,7 @@ import pool from './pool.js'
 
 class Content 
 {
-  async createContent(city, username, body)
+  static async createContent(city, username, body)
   {
     try{
       const fullDate = new Date();
@@ -19,7 +19,7 @@ class Content
     }
   }
 
-  async getUserID(username)
+  static async getUserID(username)
   {
     try{
       const [userID] = await pool.query("SELECT user_id FROM users WHERE username = ?", [username]);
@@ -31,7 +31,7 @@ class Content
     }
   }
 
-  async getSubforumID(city)
+  static async getSubforumID(city)
   {
     try{
       const [userID] = await pool.query("SELECT subforum_id FROM subforums WHERE name = ?", [city]);
@@ -43,7 +43,8 @@ class Content
     } 
   }
 
-  async getPosts(subforum_id){
+  static async getPosts(subforum_id)
+  {
     try {
       const [posts] = await pool.query("SELECT * from content where subforum_id = ?", [subforum_id]);
       return posts; 
@@ -53,12 +54,13 @@ class Content
     }
   }
 
-  async updateDate(contentID)
+  static async updateContent(contentID, newBody)
   {
     try{
       const fullDate = new Date();
       const date = fullDate.toISOString().split('T')[0];
-
+      await pool.query("UPDATE content SET body = ? WHERE content_id = ?",
+                        [newBody, contentID]);
       await pool.query("UPDATE content SET last_edit_date = ? WHERE content_id = ?",
                         [date, contentID]);
     }catch(error){
@@ -66,23 +68,12 @@ class Content
       return null;
     }
   }
-
-  async updateBody(contentID, newBody)
-  {
-    try{
-      await pool.query("UPDATE content SET body = ? WHERE content_id = ?",
-                        [newBody, contentID]);
-    }catch(error){
-      console.log(error);
-      return null;
-    }
-  }
 }
 
-const content = new Content();
-await content.createContent(1, "burbank", "natalie", "OMG first post!!");
+// const content = new Content();
+// await content.createContent(1, "burbank", "natalie", "OMG first post!!");
 // await content.updateDate(1);
-await content.updateBody(1, "Upaded the post");
+// await content.updateBody(1, "Upaded the post");
 // console.log(await content.getUserID("natalie"))
 // console.log(await content.getSubforumID("burbank"))
 

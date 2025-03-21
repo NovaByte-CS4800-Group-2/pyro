@@ -6,7 +6,8 @@ import session from 'express-session' // for handeling sessions
 import loginRouter from "./routes/login.js";
 import registerRouter from "./routes/register.js";
 import logOutRouter from "./routes/logout.js";
-import contentRouter from "./routes/content.js"
+import contentRouter from "./routes/content.js";
+import postRouter from "./routes/posts.js";
 
 const app = express()
 
@@ -32,6 +33,7 @@ app.use(loginRouter);
 app.use(registerRouter);
 app.use(logOutRouter);
 app.use(contentRouter);
+app.use(postRouter);
 
 app.get('/', (req, res) => {  // base URL
 
