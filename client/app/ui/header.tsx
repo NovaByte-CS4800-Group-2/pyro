@@ -1,6 +1,6 @@
 "use client";
 
-import { FireIcon } from "@heroicons/react/24/outline";
+import { FireIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import "@/app/globals.css";
 import { usePathname } from "next/navigation";
@@ -53,6 +53,7 @@ export default function Header() {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
         <Button label="Logout" link="/logout" />
+        <Link href="/dashboard/profile"><UserCircleIcon className="text-(--dark-brown) w-10 hover:text-(--sage)"></UserCircleIcon></Link>
       </nav>
     );
   }
