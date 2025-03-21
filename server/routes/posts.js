@@ -7,14 +7,27 @@ const router = Router();  // groups together requests
 router.post('/post', async (req, res) => {
   const {city, username, body, has_media} = req.body;
 
-  if(!city || !username || !body || has_media === undefined || has_media === null)
+  if(!city || !username || !body || (has_media === undefined || has_media === null))
     return res.status(400).json({ error: "Missing value" });
 
   const id = await Post.createPost(city, username, body, has_media);
 
-  if(id === undefined || id === null) return res.status(406).json({ error : "problem getting the id"});
+  if(!id) return res.status(406).json({ error : "problem getting the id"});
 
   return res.status(201).json({id: id});
+})
+
+router.get('/post/:id', async (req, res) => {
+  const { id } = req.params; // read subforum_id from URL parameters
+
+  if(!id)
+    return res.status(400).json({ error: "Missing subforum_id" });
+
+  const posts = await Post.getPosts(id);
+
+  if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
+
+  return res.status(200).json({posts});
 })
 
 router.post('/post/edit', async (req, res) => {
@@ -31,7 +44,7 @@ router.post('/post/edit', async (req, res) => {
 router.post('/post/delete', async (req, res) => {
   const {content_id} = req.body;
 
-  if(content_id === undefined || content_id === null) return res.status(400).json({ error: "Missing content_id" });
+  if(!content_id) return res.status(400).json({ error: "Missing content_id" });
 
   await Post.deletePost(content_id);
 

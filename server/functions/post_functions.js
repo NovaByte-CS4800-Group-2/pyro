@@ -31,6 +31,16 @@ class Post{
             console.log(e)
         }
     }
+
+    static async getPosts(subforum_id)
+    {
+        try {
+            const [rows] = await pool.query("SELECT * FROM content WHERE subforum_id = ?", [subforum_id])
+            return rows;
+        } catch(e){
+            console.log(e)
+        }
+    }
 }
 
 //const post = new Post();

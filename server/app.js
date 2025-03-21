@@ -8,6 +8,7 @@ import registerRouter from "./routes/register.js";
 import logOutRouter from "./routes/logout.js";
 import contentRouter from "./routes/content.js";
 import postRouter from "./routes/posts.js";
+import subforumRouter from './routes/subforum.js';
 
 const app = express()
 
@@ -34,6 +35,7 @@ app.use(registerRouter);
 app.use(logOutRouter);
 app.use(contentRouter);
 app.use(postRouter);
+app.use(subforumRouter);
 
 app.get('/', (req, res) => {  // base URL
 
