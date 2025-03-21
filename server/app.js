@@ -6,9 +6,9 @@ import session from 'express-session' // for handeling sessions
 import loginRouter from "./routes/login.js";
 import registerRouter from "./routes/register.js";
 import logOutRouter from "./routes/logout.js";
-import contentRouter from "./routes/content.js";
 import postRouter from "./routes/posts.js";
 import subforumRouter from './routes/subforum.js';
+import profileRouter from './routes/profile.js';
 
 const app = express()
 
@@ -33,9 +33,9 @@ app.use(cors({
 app.use(loginRouter);
 app.use(registerRouter);
 app.use(logOutRouter);
-app.use(contentRouter);
 app.use(postRouter);
 app.use(subforumRouter);
+app.use(profileRouter);
 
 app.get('/', (req, res) => {  // base URL
 

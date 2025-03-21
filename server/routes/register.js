@@ -5,11 +5,11 @@ const router = Router();
 const register = new Register();
 
 router.post('/register', async (req, res) => {
-  const {username, name, email, zipCode, password, accountType} = req.body
+  const {username, name, email, zipCode, password, confirmPassword, accountType} = req.body
 
   register.updateinfo(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
   
-  const errors = await register.getErrors(); 
+  const errors = await register.getErrors(confirmPassword); 
   if(errors.length > 0) return res.status(400).json({ errors });
 
   await register.createProfile();

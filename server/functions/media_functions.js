@@ -35,6 +35,4 @@ class Media
 
 }
 
-// const media = new Media();
-// await media.createMedia()
 export default Media;

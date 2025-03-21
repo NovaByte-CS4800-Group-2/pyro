@@ -8,8 +8,9 @@ class Post{
             const post_id = await Content.createContent(city, username, body)
             await pool.query("INSERT into posts (post_id, has_media) VALUES (?, ?)", [post_id, has_media])
             return post_id;
-        } catch(e) {
-            console.log(e)
+
+        } catch(error) {
+            console.error("Error in createPost:", error);
             return null;
         }
     }
@@ -18,8 +19,11 @@ class Post{
         try{
             Content.updateContent(content_id, newBody);
             await pool.query("UPDATE content SET body = ? WHERE content_id = ?", [newBody, content_id])
-        } catch (e) {
-            console.log(e)
+            return result.affectedRows > 0;
+
+        } catch (error) {
+            console.error("Error in editPost:", error);
+            return false;
         }
     }
 
@@ -27,8 +31,11 @@ class Post{
         try {
             await pool.query("DELETE FROM posts WHERE post_id = ?", [content_id])
             await pool.query("DELETE FROM content WHERE content_id = ?", [content_id])
-        } catch(e){
-            console.log(e)
+            return postResult.affectedRows > 0 && contentResult.affectedRows > 0;
+
+        } catch(error){
+            console.error("Error in deletePost:", error);
+            return false;
         }
     }
 
@@ -36,14 +43,12 @@ class Post{
     {
         try {
             const [rows] = await pool.query("SELECT * FROM content WHERE subforum_id = ?", [subforum_id])
-            return rows;
-        } catch(e){
-            console.log(e)
+            return rows.length > 0 ? rows : [];
+        } catch(error){
+            console.error("Error in getPosts:", error);
+            return null;
         }
     }
 }
-
-//const post = new Post();
-//await post.createPost(0); 
 
 export default Post;

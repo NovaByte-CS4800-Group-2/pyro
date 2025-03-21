@@ -20,8 +20,7 @@ router.post('/post', async (req, res) => {
 router.get('/post/:id', async (req, res) => {
   const { id } = req.params; // read subforum_id from URL parameters
 
-  if(!id)
-    return res.status(400).json({ error: "Missing subforum_id" });
+  if(!id) return res.status(400).json({ error: "Missing subforum_id" });
 
   const posts = await Post.getPosts(id);
 

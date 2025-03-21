@@ -19,10 +19,12 @@ class Register
         try{
             const hashedPassword = hash(this.password);
             await pool.query("INSERT into users (username, name, email, password, zip_code, business_account) VALUES (?, ?, ?, ?, ?, ?)",
-                              [this.username, this.name, this.email, hashedPassword, this.zipCode, this.businessAccount])
+                              [this.username, this.name, this.email, hashedPassword, this.zipCode, this.businessAccount]);
+            return true;
         }
         catch (error){
-            console.log(error)
+            console.error("Error in createProfile:", error);
+            return false;
         }
     }
 
@@ -30,38 +32,83 @@ class Register
     {
         try{
             const [rows] = await pool.query("SELECT * from users")
-            console.log(rows);
-            return rows
+            return rows.length > 0 ? rows : null;
         }
         catch (error) {
-            console.log(error)
+            console.error("Error in getProfiles:", error);
+            return null;
         }
     }
-
 
     async getProfile()
     {
         try{
             const [rows] = await pool.query("SELECT * from users where username = ?", [this.username])
-            return rows
+            return rows.length > 0 ? rows[0] : null;
         }
         catch (error) {
-            console.log(error)
+            console.error("Error in getProfile:", error);
+            return null;
         }
+    }
+
+    async getErrors(confirmPassword)
+    {
+        const returnString = []; 
+        const user = await this.#validateUsername();
+        const pass = this.#validatePassword();
+        const zip = this.#validateZipCode();
+        const email = this.#validateEmail();
+        const dupEmail = await this.#duplicateEmail();
+
+        if(user)
+            returnString.push("Username already exisits")
+        if(!zip)
+            returnString.push("Zipcode must be a valid five digit number")
+        if(!email)
+            returnString.push("Invalid email format")
+        if(dupEmail)
+            returnString.push("An account with this email already exists")
+        if (pass.length > 0) 
+            returnString.push(...pass)
+        if(this.password != confirmPassword)
+            returnString.push("Passwords do not match")
+        
+        return returnString
     }
 
     /* Checks if an input username exists in the database. */
-    async validateUsername()
+    async #validateUsername()
     {
-        const [rows] = await pool.query("SELECT * from users where userName = ?", [this.username]);
+        try {
+            const [rows] = await pool.query("SELECT 1 FROM users WHERE username = ? LIMIT 1", [this.username]);
+            return rows.length > 0; // true if username exists, false otherwise
 
-        // Check if there are rows returned
-        if (rows.length > 0) 
-            return true;  // Username already exists  
-        return false;  // If no rows, username doesn't exist
+        } catch (error) {
+            console.error("Error in validateUsername:", error);
+            return false;
+        }
     }
 
-    validatePassword()
+    async #duplicateEmail()
+    {
+        try {
+            const [rows] = await pool.query("SELECT 1 FROM users WHERE email = ? LIMIT 1", [this.email]);
+            return rows.length > 0; // True if email exists, false otherwise
+
+        } catch (error) {
+            console.error("Error in duplicateEmail:", error);
+            return false;
+        }
+    }
+
+    #validateEmail()
+    {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // basic regex to check for email format
+        return ( this.email.length === 0 || (emailRegex.test(this.email) && this.email.endsWith('.com')));
+    }
+
+    #validatePassword()
     {
     const minLength = 8; 
     const returnString = []; 
@@ -84,46 +131,7 @@ class Register
     return returnString // if the string is empty, the password is valid 
     }
 
-    validateEmail()
-    {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // basic regex to check for email format
-        return ( this.email.length === 0 || (emailRegex.test(this.email) && this.email.endsWith('.com')));
-    }
-
-    async duplicateEmail()
-    {
-        const [rows] = await pool.query("SELECT * from users where email = ?", [this.email]);
-
-        // Check if there are rows returned
-        if (rows.length > 0) 
-            return true; 
-        return false; 
-    }
-
-    validateZipCode() {return (this.zipCode.length === 0 || /^\d{5}$/.test(this.zipCode));}
-
-    async getErrors()
-    {
-        const returnString = []; 
-        const user = await this.validateUsername();
-        const pass = this.validatePassword();
-        const zip = this.validateZipCode();
-        const email = this.validateEmail();
-        const dupEmail = await this.duplicateEmail();
-
-        if(user)
-            returnString.push("Username already exisits")
-        if(!zip)
-            returnString.push("Zipcode must be a valid five digit number")
-        if(!email)
-            returnString.push("Invalid email format")
-        if(dupEmail)
-            returnString.push("An account with this email already exists")
-        if (pass.length > 0) 
-            returnString.push(...pass)
-        
-        return returnString
-    }
+    #validateZipCode() {return (this.zipCode.length === 0 || /^\d{5}$/.test(this.zipCode));}
 }
 
 export default Register;
