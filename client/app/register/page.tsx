@@ -12,6 +12,7 @@ export default function Register() {
   const [zipCode, setZipCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [accountType, setAccountType] = useState("personalAccount")
 
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
@@ -113,6 +114,7 @@ export default function Register() {
       zipCode,
       password,
       confirmPassword,
+      accountType,
     };
     // handle sign up logic here
     try {
@@ -307,6 +309,7 @@ export default function Register() {
                 name="accountType"
                 type="radio"
                 className="checked:accent-(--cocoa-brown)"
+                onChange={(e) => setAccountType(e.target.value)}
               ></input>
               <label htmlFor="businessAccount" className="self-start">
                 Business Account
@@ -321,6 +324,7 @@ export default function Register() {
                 name="accountType"
                 type="radio"
                 className="checked:accent-(--cocoa-brown)"
+                onChange={(e) => setAccountType(e.target.value)}
               ></input>
               <label htmlFor="personalAccount" className="self-start">
                 Personal Account
