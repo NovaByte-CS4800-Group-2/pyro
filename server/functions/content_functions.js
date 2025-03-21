@@ -34,7 +34,7 @@ class Content
     }
   }
 
-  static async updateContent(contentID, newBody)
+  static async editContent(contentID, newBody)
   {
     try{
       const fullDate = new Date();
@@ -46,6 +46,18 @@ class Content
 
     }catch(error){
       console.error("Error in updateContent:", error);
+      return null;
+    }
+  }
+
+  static async deleteContent(contentID)
+  {
+    try{
+      const [deletedResult] = await pool.query("DELETE FROM content WHERE content_id = ?", [contentID]);
+      return deletedResult.affectedRows > 0;
+
+    }catch(error){
+      console.error("Error in deleteContent:", error);
       return null;
     }
   }

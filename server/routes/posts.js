@@ -1,5 +1,6 @@
 import { Router } from "express";  // create an instance of an express router
 import Post from "../functions/post_functions.js";
+import Content from "../functions/content_functions.js";
 
 
 const router = Router();  // groups together requests
@@ -35,7 +36,7 @@ router.post('/post/edit', async (req, res) => {
   if(!newBody || content_id === undefined || content_id === null)
     return res.status(400).json({ error: "Missing value" });
 
-  await Post.editPost(content_id, newBody);
+  await Content.updateContent(content_id, newBody);
 
   return res.status(201).json({msg: "Succesfully edited post"});
 })
