@@ -18,12 +18,24 @@ router.post('/post', async (req, res) => {
   return res.status(201).json({id: id});
 })
 
-router.get('/post/:id', async (req, res) => {
+router.get('/post/:id', async (req, res) => {  // get all posts from subforum
   const { id } = req.params; // read subforum_id from URL parameters
 
   if(!id) return res.status(400).json({ error: "Missing subforum_id" });
 
-  const posts = await Post.getPosts(id);
+  const posts = await Post.getSubforumPosts(id);
+
+  if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
+
+  return res.status(200).json({posts});
+})
+
+router.get('/userPosts/:id', async (req, res) => {  // get all user posts
+  const { id } = req.params; // read id from URL parameters
+
+  if(!id) return res.status(400).json({ error: "Missing username" });
+
+  const posts = await Post.getUserPosts(id);
 
   if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
 

@@ -7,13 +7,14 @@ class Content
     try{
       const fullDate = new Date();
       const date = fullDate.toISOString().split('T')[0];
-      const subForumID = await this.#getSubforumID(city);
-      const userID = await this.#getUserID(username);
+      const subForumID = await this.getSubforumID(city);
+      const userID = await this.getUserID(username);
 
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
-                      [subForumID, userID, date, date, body]); // how to find content ID?
+                      [subForumID, userID, date, null, body]); // how to find content ID?
       
       const content_id = result.insertId;
+      console.log("content id: " + content_id);
       return content_id;
 
     }catch(error){
@@ -62,7 +63,19 @@ class Content
     }
   }
 
-  static async #getUserID(username)
+  static async deleteContents(contentIDs)
+  {
+    try{
+      const [deletedResult] = await pool.query("DELETE FROM content WHERE content_id IN (?)", [contentIDs]);
+      return deletedResult.affectedRows > 0;
+
+    }catch(error){
+      console.error("Error in deleteContent:", error);
+      return null;
+    }
+  }
+
+  static async getUserID(username)
   {
     try{
       const [userID] = await pool.query("SELECT user_id FROM users WHERE username = ?", [username]);
@@ -74,7 +87,7 @@ class Content
     }
   }
 
-  static async #getSubforumID(city)
+  static async getSubforumID(city)
   {
     try{
       const [SubforumID] = await pool.query("SELECT subforum_id FROM subforums WHERE name = ?", [city]);
@@ -85,6 +98,11 @@ class Content
       return null;
     } 
   }
+
+  static getIds(idRows) // extracts id's from a json object
+    {
+        return idRows.map(row => row.comment_id);
+    }
 }
 
 export default Content;
