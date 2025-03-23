@@ -17,16 +17,16 @@ router.get('/username/:id', async (req, res) => {
 
 router.get('/profile/:username', async (req, res) => {
 
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0'); // Ensures the response is not cached
-  
   const { username } = req.params; // read subforum_id from URL parameters
 
   if(!username) return res.status(400).json({ error: "Missing username" });
 
   const profile = await Profile.getProfile(username);
   if(!profile) return res.status(406).json({ error : "problem getting the profile"});
+
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0'); // Ensures the response is not cached
 
   return res.status(200).json({ profile : profile});
 })
