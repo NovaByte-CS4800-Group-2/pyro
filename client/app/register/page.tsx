@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { Input } from "@heroui/input";
+import { useUpdateProfile } from 'react-firebase-hooks/auth';
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -16,8 +17,8 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [accountType, setAccountType] = useState("personalAccount");
 
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile, updating, error] = useUpdateProfile(auth);
 
   const [errors, setErrors] = useState({
     name: "",
@@ -52,8 +53,8 @@ export default function Register() {
 
       if (response.ok) {
         const res = await createUserWithEmailAndPassword(email, password);
+        const usernameSuccess = updateProfile({displayName: username});
         sessionStorage.setItem("user", String(true));
-        const responseData = await response.json();
         router.push("/dashboard");
       } else {
         if (response.status === 400) {
