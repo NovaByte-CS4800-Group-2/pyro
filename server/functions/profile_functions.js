@@ -71,5 +71,17 @@ class Profile {
         }
     }
 
+    static async getProfile(username)
+    {
+        try{
+            const [rows] = await pool.query("SELECT * from users where username = ?", [username])
+            return rows.length > 0 ? rows[0] : null;
+        }
+        catch (error) {
+            console.error("Error in getProfile:", error);
+            return null;
+        }
+    }
+
 }
 export default Profile;

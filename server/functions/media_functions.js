@@ -2,7 +2,7 @@ import pool from './pool.js'
 
 class Media 
 {
-  async createMedia(post_id, file, filetype)
+  static async createMedia(post_id, file, filetype)
   {
     try{
 
@@ -16,7 +16,7 @@ class Media
     }
   }
 
-  async editMedia(newFile, post_id, media_id)
+  static async editMedia(newFile, post_id, media_id)
   {
     try{
       await pool.query("UPDATE media SET file = ? WHERE post_id = ? AND media_id = ?", [newFile, post_id, media_id]);
@@ -27,7 +27,7 @@ class Media
     } 
   }
 
-  async getMedia(post_id){
+  static async getMedia(post_id){
     const [media] = pool.query("SELECT * FROM media WHERE post_id = ?", [post_id])
     console.log(media);
     return media;
