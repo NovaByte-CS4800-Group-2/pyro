@@ -1,14 +1,12 @@
 import pool from './pool.js'
+import {hash} from './sha256.js'
 
 class Profile {
 
-    // edit email, edit edit password, edit zipcode, edit/update image
-
-    static async addImage(file, user_id)
+    async addImage(file, user_id)
     { // where should i add the update image section
         try {
-            await pool.query("UPDATE users SET blob = ? WHERE user_id = ?", [file, user_id]);
-            console.log(blob)
+            await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
             return true;
         } catch(error){
             console.error("Error in addImage:", error);
@@ -16,7 +14,16 @@ class Profile {
         }
     }
 
-    static async changeUsername(user_id, newUsername)
+    async updateImage(file, user_id){
+        try {
+            await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
+            return true;
+        } catch (error) {
+            console.error("Error in editImage:", error);
+        }
+    }
+
+    async editUsername(user_id, newUsername)
     {
         try{
             await pool.query("UPDATE users SET username = ? WHERE user_id = ?", [newUsername, user_id])
@@ -27,17 +34,42 @@ class Profile {
         }
     }
 
-    static async getUsername(user_id)
+    async getUsername(user_id)
     {
         try{
             const [username] = await pool.query("SELECT username FROM users WHERE user_id = ?", [user_id]);
             return username[0]?.username;  // returns just the id, ? is to prevent error if undefined
-            
+
           }catch(error){
             console.error("Error in getUsername:", error);
             return null;
           }
     }
-}
 
+    async editEmail(newEmail, user_id){
+        try {
+            await pool.query("UPDATE users SET email = ? WHERE user_id = ?", [newEmail, user_id])
+        } catch (error){
+            console.log("Error in editEmail", error)
+        }
+    }
+
+    async editPassword(newPassword, user_id){
+        try {
+            const password = hash(newPassword)
+            await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [password, user_id])
+        } catch (error){
+            console.log("Error in editPassword:", error)
+        }
+    }
+
+    async editZipcode(newZipcode, user_id){
+        try {
+            await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
+        } catch (error){
+            console.log("Error in editZipcode:", error)
+        }
+    }
+
+}
 export default Profile;
