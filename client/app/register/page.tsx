@@ -218,7 +218,7 @@ export default function Register() {
               onChange={(e) => setName(e.target.value)}
               style={{
                 border: !errors.name
-                  ? "2px solid var(--liver)"
+                  ? "2px solid"
                   : "2px solid red",
               }}
               className="p-2"
@@ -241,7 +241,7 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               style={{
                 border: !errors.email
-                  ? "2px solid var(--liver)"
+                  ? "2px solid"
                   : "2px solid red",
               }}
               className="p-2"
@@ -264,7 +264,7 @@ export default function Register() {
               onChange={(e) => setUsername(e.target.value)}
               style={{
                 border: !errors.username
-                  ? "2px solid var(--liver)"
+                  ? "2px solid"
                   : "2px solid red",
               }}
               className="p-2"
@@ -288,7 +288,7 @@ export default function Register() {
               onChange={(e) => setZipCode(e.target.value)}
               style={{
                 border: !errors.zipCode
-                  ? "2px solid var(--liver)"
+                  ? "2px solid"
                   : "2px solid red",
               }}
               className="p-2"
@@ -344,7 +344,7 @@ export default function Register() {
               style={{
                 border:
                   errors.password.length === 1
-                    ? "2px solid var(--liver)"
+                    ? "2px solid"
                     : "2px solid red",
               }}
               className="p-2"
@@ -367,7 +367,7 @@ export default function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               style={{
                 border: !errors.confirmPassword
-                  ? "2px solid var(--liver)"
+                  ? "2px solid"
                   : "2px solid red",
               }}
               className="p-2"
@@ -380,7 +380,7 @@ export default function Register() {
           </div>
           {/* TODO: Switch to use Button component. */}
           <button
-            className="button m-auto text-(--liver) hover:bg-(--moss-green)"
+            className="button m-auto hover:bg-(--moss-green)"
             /*style={{opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? "pointer" : "not-allowed"}} disabled={!isFormValid}*/ type="submit"
           >
             Sign Up

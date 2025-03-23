@@ -15,8 +15,8 @@ export default function Post({ userProfile = null, username = "Default User", da
 			<p className="line-clamp-1 hover:line-clamp-none">{username}</p>
 			<div className="bg-neutral-50 rounded-4xl w-15 h-15"></div>
 			<div className="flex justify-center">
-				<HandThumbUpIcon className="w-1/3 hover:text-(--sage)"></HandThumbUpIcon>
-				<HandThumbDownIcon className="w-1/3 hover:text-(--auburn)"></HandThumbDownIcon>
+				<HandThumbUpIcon className="w-1/3 hover:text-green-800"></HandThumbUpIcon>
+				<HandThumbDownIcon className="w-1/3 hover:text-red-900"></HandThumbDownIcon>
 			</div>
 		</div>
 		<div className="flex flex-col flex-grow text-xs">

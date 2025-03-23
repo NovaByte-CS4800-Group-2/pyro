@@ -47,8 +47,8 @@
 
 /* ===== Base Typography ===== */
 body {
-  background-color: var(--seashell);
-  color: var(--liver);
+  background-color: white;
+  color: dimgrey;
   font-family: var(--font-normal);
 }
 
@@ -115,15 +115,14 @@ body {
 }
 
 body {
-  background-color: var(--seashell);
-  color: var(--liver);
   font-family: var(--font-normal);
+  color: dimgrey;
 }
 Button Styling 
 .button {
   font-family: var(--font-display);
-  background: var(--dark-brown);
-  color: var(--seashell);
+  background: grey;
+  color: white;
   border-radius: 10px;
   padding: 2px;
   padding-left: 5px;

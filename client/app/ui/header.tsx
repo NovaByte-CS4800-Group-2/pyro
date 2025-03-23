@@ -53,17 +53,17 @@ export default function Header() {
     html = (
       <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
         <Button label="Logout" link="/logout" />
-        <Link href="/dashboard/profile"><UserCircleIcon className="text-(--dark-brown) w-10 hover:text-(--sage)"></UserCircleIcon></Link>
+        <Link href="/dashboard/profile"><UserCircleIcon className="text-neutral-600 w-10 hover:text-(--sage)"></UserCircleIcon></Link>
       </nav>
     );
   }
 
   return (
-    <div className="flex bg-[var(--liver)] border-t-2 border-[var(--liver)] w-full h-18 font-display mt-auto">
+    <div className="flex bg-neutral-300 border-t-2 border-neutral-400 w-full h-18 font-display mt-auto">
       <div className="w-1/3" />
       <Link href="/" className="flex justify-center items-center w-1/3">
         <FireIcon className="text-[var(--cocoa-brown)] w-9.5" />
-        <h1 className="text-[var(--seashell)] text-4xl font-bold">Pyro</h1>
+        <h1 className="text-neutral-600 text-4xl font-bold">Pyro</h1>
       </Link>
       {html}
     </div>
