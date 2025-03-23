@@ -22,50 +22,56 @@ export default function Header() {
 
   useEffect(() => {
     if (!user && !userSession) {
-      router.push("/"); // Navigate to home if no user or session
+      router.push("/"); 
     }
   }, [user, userSession, router]);
 
-  let html = <></>;
+  let navContent = <></>;
 
   if (pathname?.includes("register") || pathname?.includes("log-in")) {
-    html = (
-      <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
+    navContent = (
+      <nav className="flex justify-end items-center gap-2">
         <Button label="Back" link="/" />
       </nav>
     );
-  }
-  else if (!user && !userSession) {
-    html = (
-      <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
+  } else if (!user && !userSession) {
+    navContent = (
+      <nav className="flex justify-end items-center gap-2">
         <Button link="/log-in" label="Log In" />
         <Button link="/register" label="Register" />
       </nav>
     );
   } else if (!pathname?.includes("dashboard")) {
-    html = (
-      <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
+    navContent = (
+      <nav className="flex justify-end items-center gap-2">
         <Button label="Dashboard" link="/dashboard" />
         <Button label="Logout" link="/logout" />
       </nav>
     );
   } else {
-    html = (
-      <nav className="w-1/3 flex justify-end items-center p-5 gap-2 font-semibold">
+    navContent = (
+      <nav className="flex justify-end items-center gap-2">
         <Button label="Logout" link="/logout" />
-        <Link href="/dashboard/profile"><UserCircleIcon className="text-neutral-600 w-10 hover:text-(--sage)"></UserCircleIcon></Link>
+        <Link href="/dashboard/profile">
+          <UserCircleIcon className="text-[--liver] w-8 hover:text-[--sage]" />
+        </Link>
       </nav>
     );
   }
 
   return (
-    <div className="flex bg-neutral-300 border-t-2 border-neutral-400 w-full h-18 font-display mt-auto">
+    <header className="w-full bg-white shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]">
       <div className="w-1/3" />
-      <Link href="/" className="flex justify-center items-center w-1/3">
-        <FireIcon className="text-[var(--cocoa-brown)] w-9.5" />
-        <h1 className="text-neutral-600 text-4xl font-bold">Pyro</h1>
+
+      {/* pyro logo */}
+      <Link href="/" className="flex items-center gap-2 w-1/3 justify-center">
+        <FireIcon className="text-[--cocoa-brown] w-8" />
+        <h1 className="text-3xl font-display font-bold text-[--liver]">Pyro</h1>
       </Link>
-      {html}
-    </div>
+
+      <div className="w-1/3 flex justify-end items-center gap-3">
+        {navContent}
+      </div>
+    </header>
   );
 }

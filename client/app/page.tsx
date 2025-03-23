@@ -4,39 +4,52 @@ import Link from "next/link";
 import Button from "./ui/button";
 import { EmblaCarousel } from "./ui/carousel";
 
-
-const ContentBox = ({ children }: { children: React.ReactNode }) => (
-  <div
-  className="w-full max-w-4xl mx-auto border-2 border-neutral-600 p-4 text-center rounded-lg mt-6 text-neutral-700"
-  style={{ backgroundColor: "rgba(87, 69, 69, 0.5)" }} //to make the opacity
->
-  {children}
-</div>
+const ContentCard = ({ children }: { children: React.ReactNode }) => (
+  <div className="w-full max-w-4xl bg-[--off-white] rounded-2xl shadow-xl p-8 text-[--text-color] my-6">
+    {children}
+  </div>
 );
 
 export default function Landing() {
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="w-full">
+    <main className="min-h-screen bg-[--sand] px-4 py-10 flex flex-col items-center text-[--text-color]">
+
+      <div className="w-full max-w-6xl mb-10">
         <EmblaCarousel />
       </div>
 
-      <ContentBox><h3 className="text-xl font-bold">Our mission:</h3>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Est amet earum, error voluptates repudiandae temporibus? Quaerat fugiat temporibus dolorem architecto iusto eum magnam totam ut, quis deserunt, iure rem nihil dolores molestiae nesciunt modi, odio ex a explicabo deleniti facilis optio quae labore? Quo maiores quae quasi illo quibusdam omnis expedita! Fuga officiis accusantium et, perspiciatis neque accusamus dolorem, animi deleniti reiciendis error impedit ex ratione esse corrupti repellendus ullam, possimus aperiam molestias. Modi, ab? A, cupiditate expedita dolores quisquam quam, beatae est nihil eius cum eligendi distinctio laboriosam, ipsam odit numquam sed fugiat eveniet unde in quos veritatis! Autem.</ContentBox>
-      <ContentBox><h3 className="text-xl font-bold">Benefits/Features:</h3> 
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure quaerat delectus doloremque, dolore illo id itaque quos nam numquam blanditiis harum nemo tenetur corporis cumque quis, suscipit ipsa ea, molestias amet. Animi, tenetur perferendis vitae optio nisi natus consectetur repellat officia vel accusamus illum deserunt eum quisquam vero eaque illo nemo similique aut quia itaque dolorem saepe iusto? Cum voluptates excepturi sed et sint, velit dicta in adipisci veniam distinctio nulla molestias accusantium quod corporis voluptatibus numquam laboriosam nobis fugit incidunt aspernatur reiciendis, ullam quae! Temporibus, dolor earum excepturi sint odio, nesciunt eligendi vero voluptas ullam iste fuga inventore natus.</ContentBox>
-      
-      <div className="mt-12 text-5xl font-bold">Ready to Join?</div>
+      {/* our mission*/}
+      <ContentCard>
+        <h3 className="text-xl font-display font-bold mb-2">Our mission:</h3>
+        <p className="font-normal leading-relaxed">
+         Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima consequatur quisquam ratione praesentium explicabo minus, autem enim? Vel maxime quaerat adipisci ullam, labore quos ut, provident aliquid esse pariatur a. Dolor beatae sit eius quod odio sed veniam voluptates ipsum libero officiis eum ea molestias velit, porro consectetur expedita temporibus eos reprehenderit, explicabo vitae iusto voluptatum ipsam, iste esse. Eos magnam repudiandae porro, culpa a eaque, mollitia veritatis obcaecati placeat numquam dolorum laboriosam consequuntur, veniam vel praesentium optio dicta? Ad quasi sapiente aspernatur earum dicta enim eum voluptatum veniam ea? Voluptatibus corporis repudiandae harum vero, earum atque? Iste earum excepturi itaque esse, at velit reprehenderit corrupti ipsum, vitae quasi dolorem, neque doloribus. Esse reprehenderit ipsum libero quidem, sed rem explicabo voluptas repudiandae illo labore. Minima, dicta mollitia vel dignissimos modi omnis recusandae ipsum architecto excepturi in illum! Accusantium accusamus adipisci, exercitationem assumenda architecto aperiam praesentium ex vitae a voluptatibus quos eveniet ipsum mollitia at iusto quas dolorum, facilis omnis. Maxime est amet aperiam enim, accusantium id voluptatum nam libero ratione sint maiores rerum excepturi aliquam magnam porro dolores totam aliquid, odit sit a quos! Temporibus quae placeat debitis ducimus amet minus ipsa iusto, excepturi quidem repellat deleniti, laudantium odit dolor!
+        </p>
+      </ContentCard>
 
-      <nav className="justify-end items-center p-7 gap-2 font-bold text-xl scale-150">
+      {/* benefits/features */}
+      <ContentCard>
+        <h3 className="text-xl font-display font-bold mb-2">Benefits / Features:</h3>
+        <p className="font-normal leading-relaxed">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis dolores tenetur iusto amet laudantium tempora debitis. Iste repellendus sed, dicta quam reprehenderit deserunt laborum repellat illum, in amet quisquam asperiores, totam perspiciatis nesciunt dignissimos odio voluptate vero ex est error fugiat? Dignissimos tempora repudiandae necessitatibus eos! Rerum, quam eveniet! Ipsa alias, ducimus, fugit minima, quia esse amet nobis beatae quae ratione minus? Officiis tempore, quibusdam obcaecati optio quia earum porro distinctio natus minus non cum eum fuga impedit itaque libero, neque magni beatae ut doloremque est velit nesciunt eaque pariatur. Animi soluta delectus nemo adipisci dolor neque reprehenderit atque quasi?
+        </p>
+      </ContentCard>
+
+      <div className="mt-12 text-4xl font-display font-bold text-center">
+        Ready to Join?
+      </div>
+
+      <nav className="mt-6 flex justify-center items-center gap-4">
         <Button label="Register" link="/register" />
       </nav>
 
-      <div className="text-l font-normal">
-        <Link href="/dashboard" className="font-semibold hover:underline text-neutral-600 inline-block px-4 py-4">
+      <div className="text-base font-normal mt-4">
+        <Link
+          href="/dashboard"
+          className="font-semibold hover:underline text-[--liver]"
+        >
           or skip for now
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,18 +1,33 @@
 import Link from "next/link";
 import "@/app/globals.css";
-import Image from "next/image"
+import Image from "next/image";
 import Button from "./button";
 
 export default function Footer() {
-	return (
-		<div className="flex bg-neutral-300 border-t-2 border-neutral-400 w-full h-18 font-display mt-auto">
-			<div className="w-1/3 self-end pb-1 pl-1">
-  				<p className="text-neutral-600">&copy; 2025 Nova Byte</p> 
-  			</div>
-			<Link target="_blank" href="https://novabyte-cs4800-group-2.github.io/NovaByte-website/" className="flex justify-center items-center w-1/3 bg-neutral-300">
-				<Image src="/logo-transparent-svg.svg" alt="The Nova Byte Logo" width={300} height={81}></Image>
-			</Link>
-			<div className="w-1/3 justify-end flex m-auto pr-5"><Button label="Contact Us"></Button></div>
-		</div>
-	);
+  return (
+    <footer className="w-full bg-white shadow-inner rounded-t-2xl px-6 py-4 flex justify-between items-center text-[--text-color] font-display mt-auto">
+      
+      <div className="w-1/3 text-sm pl-1">
+        <p>&copy; 2025 Nova Byte</p>
+      </div>
+
+      <Link
+        target="_blank"
+        href="https://novabyte-cs4800-group-2.github.io/NovaByte-website/"
+        className="flex justify-center w-1/3"
+      >
+        <Image
+          src="/logo-transparent-svg.svg"
+          alt="The Nova Byte Logo"
+          width={150}
+          height={40}
+          className="object-contain"
+        />
+      </Link>
+
+      <div className="w-1/3 flex justify-end pr-2">
+        <Button label="Contact Us" link="/contact" />
+      </div>
+    </footer>
+  );
 }
