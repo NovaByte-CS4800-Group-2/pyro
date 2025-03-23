@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pyro 2.0 Palette</title>
+    <style>
+      :root {
+        --porcelain: #f8f8f6;
+        --olive-stone: #6f7d5c;
+        --greige-mist: #e2e0dc;
+        --bark: #3e3a36;
+        --ash-olive: #9ba189;
+        --clay-beige: #cfc8bb;
+        --deep-moss: #4f5a3d;
+        --muted-terracotta: #d9a173;
+        --deep-terracotta: #b0563c;
+
+        /* Dark Mode Equivalents */
+        --dm-porcelain: #1c1c1a;
+        --dm-olive-stone: #4a5840;
+        --dm-greige-mist: #2a2a28;
+        --dm-bark: #f0f0ed;
+        --dm-ash-olive: #74816d;
+        --dm-clay-beige: #47423c;
+        --dm-deep-moss: #9cb28c;
+        --dm-muted-terracotta: #b8734d;
+        --dm-deep-terracotta: #a14832;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        background-color: var(--porcelain);
+        color: var(--bark);
+        margin: 0;
+        padding: 2rem;
+        transition: background 0.3s ease, color 0.3s ease;
+      }
+
+      .dark-mode {
+        background-color: var(--dm-porcelain);
+        color: var(--dm-bark);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .palette {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .color-box {
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: white;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        height: 140px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        transition: background 0.3s ease, color 0.3s ease;
+      }
+
+      .color-name {
+        font-size: 1rem;
+      }
+
+      .hex {
+        font-size: 0.85rem;
+        opacity: 0.85;
+      }
+
+      /* Light Mode Colors */
+      .porcelain {
+        background-color: var(--porcelain);
+        color: var(--bark);
+      }
+      .olive-stone {
+        background-color: var(--olive-stone);
+      }
+      .greige-mist {
+        background-color: var(--greige-mist);
+        color: var(--bark);
+      }
+      .bark {
+        background-color: var(--bark);
+      }
+      .ash-olive {
+        background-color: var(--ash-olive);
+      }
+      .clay-beige {
+        background-color: var(--clay-beige);
+        color: var(--bark);
+      }
+      .deep-moss {
+        background-color: var(--deep-moss);
+      }
+      .muted-terracotta {
+        background-color: var(--muted-terracotta);
+        color: var(--bark);
+      }
+      .deep-terracotta {
+        background-color: var(--deep-terracotta);
+      }
+
+      /* Dark Mode Colors */
+      .dark-mode .porcelain {
+        background-color: var(--dm-porcelain);
+        color: var(--dm-bark);
+      }
+      .dark-mode .olive-stone {
+        background-color: var(--dm-olive-stone);
+      }
+      .dark-mode .greige-mist {
+        background-color: var(--dm-greige-mist);
+        color: var(--dm-bark);
+      }
+      .dark-mode .bark {
+        background-color: var(--dm-bark);
+        color: var(--dm-porcelain);
+      }
+      .dark-mode .ash-olive {
+        background-color: var(--dm-ash-olive);
+      }
+      .dark-mode .clay-beige {
+        background-color: var(--dm-clay-beige);
+        color: var(--dm-bark);
+      }
+      .dark-mode .deep-moss {
+        background-color: var(--dm-deep-moss);
+      }
+      .dark-mode .muted-terracotta {
+        background-color: var(--dm-muted-terracotta);
+        color: var(--dm-bark);
+      }
+      .dark-mode .deep-terracotta {
+        background-color: var(--dm-deep-terracotta);
+        color: var(--dm-bark);
+      }
+
+      /* Toggle Button */
+      .toggle {
+        display: block;
+        margin: 0 auto 2rem auto;
+        padding: 0.5rem 1rem;
+        background-color: var(--olive-stone);
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      .dark-mode .toggle {
+        background-color: var(--dm-olive-stone);
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      class="toggle"
+      onclick="document.body.classList.toggle('dark-mode')"
+    >
+      Toggle Dark Mode
+    </button>
+
+    <h1>🌿 Pyro 2.0 – Earthy UI Palette</h1>
+
+    <div class="palette">
+      <div class="color-box porcelain">
+        <div class="color-name">Porcelain</div>
+        <div class="hex">#F8F8F6</div>
+      </div>
+      <div class="color-box olive-stone">
+        <div class="color-name">Olive Stone</div>
+        <div class="hex">#6F7D5C</div>
+      </div>
+      <div class="color-box greige-mist">
+        <div class="color-name">Greige Mist</div>
+        <div class="hex">#E2E0DC</div>
+      </div>
+      <div class="color-box bark">
+        <div class="color-name">Bark</div>
+        <div class="hex">#3E3A36</div>
+      </div>
+      <div class="color-box ash-olive">
+        <div class="color-name">Ash Olive</div>
+        <div class="hex">#9BA189</div>
+      </div>
+      <div class="color-box clay-beige">
+        <div class="color-name">Clay Beige</div>
+        <div class="hex">#CFC8BB</div>
+      </div>
+      <div class="color-box deep-moss">
+        <div class="color-name">Deep Moss</div>
+        <div class="hex">#4F5A3D</div>
+      </div>
+      <div class="color-box muted-terracotta">
+        <div class="color-name">Muted Terracotta</div>
+        <div class="hex">#D9A173</div>
+      </div>
+      <div class="color-box deep-terracotta">
+        <div class="color-name">Deep Terracotta</div>
+        <div class="hex">#B0563C</div>
+      </div>
+    </div>
+  </body>
+</html>
