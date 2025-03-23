@@ -3,7 +3,7 @@ import {hash} from './sha256.js'
 
 class Profile {
 
-    async addImage(file, user_id)
+    static async addImage(file, user_id)
     { // where should i add the update image section
         try {
             await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
@@ -14,7 +14,7 @@ class Profile {
         }
     }
 
-    async updateImage(file, user_id){
+    static async updateImage(file, user_id){
         try {
             await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
             return true;
@@ -23,7 +23,7 @@ class Profile {
         }
     }
 
-    async editUsername(user_id, newUsername)
+    static async editUsername(user_id, newUsername)
     {
         try{
             await pool.query("UPDATE users SET username = ? WHERE user_id = ?", [newUsername, user_id])
@@ -34,7 +34,7 @@ class Profile {
         }
     }
 
-    async getUsername(user_id)
+    static async getUsername(user_id)
     {
         try{
             const [username] = await pool.query("SELECT username FROM users WHERE user_id = ?", [user_id]);
@@ -46,7 +46,7 @@ class Profile {
           }
     }
 
-    async editEmail(newEmail, user_id){
+    static async editEmail(newEmail, user_id){
         try {
             await pool.query("UPDATE users SET email = ? WHERE user_id = ?", [newEmail, user_id])
         } catch (error){
@@ -54,7 +54,7 @@ class Profile {
         }
     }
 
-    async editPassword(newPassword, user_id){
+    static async editPassword(newPassword, user_id){
         try {
             const password = hash(newPassword)
             await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [password, user_id])
@@ -63,7 +63,7 @@ class Profile {
         }
     }
 
-    async editZipcode(newZipcode, user_id){
+    static async editZipcode(newZipcode, user_id){
         try {
             await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
         } catch (error){
