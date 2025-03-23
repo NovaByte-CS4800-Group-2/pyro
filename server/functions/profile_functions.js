@@ -49,8 +49,10 @@ class Profile {
     static async editEmail(newEmail, user_id){
         try {
             await pool.query("UPDATE users SET email = ? WHERE user_id = ?", [newEmail, user_id])
+            return true;
         } catch (error){
             console.log("Error in editEmail", error)
+            return false;
         }
     }
 
@@ -58,16 +60,20 @@ class Profile {
         try {
             const password = hash(newPassword)
             await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [password, user_id])
+            return true;
         } catch (error){
             console.log("Error in editPassword:", error)
+            return false;
         }
     }
 
     static async editZipcode(newZipcode, user_id){
         try {
             await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
+            return true;
         } catch (error){
             console.log("Error in editZipcode:", error)
+            return false;
         }
     }
 
@@ -82,8 +88,6 @@ class Profile {
             return null;
         }
     }
-
-    
 
 }
 export default Profile;
