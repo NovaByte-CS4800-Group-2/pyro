@@ -1,68 +1,71 @@
-/* Imports Nova Byte fonts from Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+/* ===== Font Imports ===== */
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 @import "tailwindcss";
 
-/* ===== Custom Color Palette (Earthy) ===== */
+/* ===== Professional Earthy Color Variables ===== */
 :root {
-  --cocoa-brown: #cb5a2d;
-  --liver: #4a3b3b;
-  --dark-brown: #2b2222;
-  --sage: #b7c28a;
-  --moss-green: #8c9570;
-  --auburn: #9c2f31;
-  --seashell: #f7f1ec;
+  --porcelain: #F8F8F6;
+  --olive-stone: #6F7D5C;
+  --greige-mist: #E2E0DC;
+  --bark: #3E3A36;
+  --ash-olive: #9BA189;
+  --clay-beige: #CFC8BB;
+  --deep-moss: #4F5A3D;
+  --muted-terracotta: #D9A173;
+  --deep-terracotta: #B56B44;
 
-  /* Earthy expansion */
-  --soil-brown: #5C4033;
-  --clay: #A47149;
-  --terracotta: #D88C65;
-  --sage-green: #B2BEB5;
-  --sand: #F0EAD6;
-  --charcoal: #2E2E2E;
 
-  --bg-color: var(--seashell);
-  --text-color: var(--liver);
+  /* Global usage */
+  --bg-color: var(--porcelain);
+  --text-color: var(--bark);
   --input-bg: white;
-  --input-border: var(--liver);
-  --button-bg: var(--liver);
-  --button-hover: var(--moss-green);
+  --input-border: var(--ash-olive);
+  --button-bg: var(--olive-stone);
+  --button-hover: var(--deep-moss);
+
+  /* Fonts */
+  --font-display: "Playfair Display", serif;
+  --font-normal: "Barlow", sans-serif;
 }
 
 /* ===== Dark Mode Support ===== */
 .dark {
-  --bg-color: #1a1a1a;
-  --text-color: var(--seashell);
-  --input-bg: #2a2a2a;
-  --input-border: var(--sage);
-  --button-bg: var(--moss-green);
-  --button-hover: var(--cocoa-brown);
+  --bg-color: #1C1C1A;
+  --text-color: #F0F0ED;
+  --input-bg: #2A2A28;
+  --input-border: #74816D;
+  --button-bg: #4A5840;
+  --button-hover: #B8734D;
 }
 
-/* ===== Font Themes ===== */
-@theme {
-  --font-display: "Playfair Display", "serif";
-  --font-normal: "Barlow", "sans-serif";
-}
-
-/* ===== Base Typography ===== */
+/* ===== Base Styles ===== */
 body {
-  background-color: white;
-  color: dimgrey;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-normal);
+}
+
+/* ===== Typography Utilities ===== */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-normal {
   font-family: var(--font-normal);
 }
 
 /* ===== Button Styling ===== */
 .button {
   font-family: var(--font-display);
-  background: var(--dark-brown);
-  color: var(--seashell);
+  background-color: var(--bark);
+  color: var(--porcelain);
   border-radius: 10px;
-  padding: 2px 5px;
+  padding: 0.5rem 1rem;
   transition: background-color 0.2s ease-in-out;
 }
 
 .button:hover {
-  background: var(--moss-green);
+  background-color: var(--deep-moss);
 }
 
 /* ===== Carousel Styles (Embla) ===== */

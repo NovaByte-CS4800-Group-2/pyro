@@ -104,9 +104,9 @@ export default function Login() {
       <img
       src="/images/slide1.png"
       alt="login banner"
-      className="w-full max-w-sm rounded-xl shadow-lg mb-6 object-cover"
+      className="w-full max-w-xl rounded-xl shadow-lg mb-6 object-cover"
     />
-      <div className="w-full max-w-md bg-[--off-white] rounded-2xl shadow-xl p-8">
+      <div className="w-full max-w-4xl bg-[--off-white] rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-display font-bold text-center mb-2">
           Log In
         </h1>

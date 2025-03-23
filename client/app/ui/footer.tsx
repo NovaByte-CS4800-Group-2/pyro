@@ -5,8 +5,10 @@ import Button from "./button";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white shadow-inner rounded-t-2xl px-6 py-4 flex justify-between items-center text-[--text-color] font-display mt-auto">
-      
+    <footer
+      className="w-full shadow-inner rounded-t-2xl px-6 py-4 flex justify-between items-center text-[--text-color] font-display mt-auto"
+      style={{ backgroundColor: "var(--clay-beige)" }}
+    >
       <div className="w-1/3 text-sm pl-1">
         <p>&copy; 2025 Nova Byte</p>
       </div>

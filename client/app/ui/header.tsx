@@ -53,20 +53,24 @@ export default function Header() {
       <nav className="flex justify-end items-center gap-2">
         <Button label="Logout" link="/logout" />
         <Link href="/dashboard/profile">
-          <UserCircleIcon className="text-[--liver] w-8 hover:text-[--sage]" />
+          <UserCircleIcon className="text-[--bark] w-8 hover:text-[--ash-olive]" />
         </Link>
       </nav>
     );
   }
 
   return (
-    <header className="w-full bg-white shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]">
+    <header
+  className="w-full shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]"
+  style={{ backgroundColor: "var(--clay-beige)" }}
+>
+
       <div className="w-1/3" />
 
       {/* pyro logo */}
       <Link href="/" className="flex items-center gap-2 w-1/3 justify-center">
-        <FireIcon className="text-[--cocoa-brown] w-8" />
-        <h1 className="text-3xl font-display font-bold text-[--liver]">Pyro</h1>
+      <FireIcon className="w-8" style={{ color: "var(--deep-terracotta)" }} />
+        <h1 className="text-3xl font-display font-bold text-[--bark]">Pyro</h1>
       </Link>
 
       <div className="w-1/3 flex justify-end items-center gap-3">
