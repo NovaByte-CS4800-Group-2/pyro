@@ -90,4 +90,6 @@ class Profile {
     }
 
 }
+
+console.log(await Profile.getProfile("jess"))
 export default Profile;
