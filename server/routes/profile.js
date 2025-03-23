@@ -26,4 +26,15 @@ router.get('/profile/:username', async (req, res) => {
   return res.status(200).json({ profile : profile});
 })
 
+router.get('/userProfile/:id', async (req, res) => {
+  const { user_id } = req.params; // read user_id from req params 
+
+  if(!user_id) return res.status(400).json({ error: "Missing user ID" });
+
+  const profile = await Profile.getProfile(user_id);
+  if(!profile) return res.status(406).json({ error : "problem getting the profile information"});
+
+  return res.status(200).json({ profile : profile});
+})
+
 export default router;
