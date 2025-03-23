@@ -1,5 +1,6 @@
 import pool from "./pool.js"
 import Content from "./content_functions.js";
+import Vote from './vote_functions.js';
 
 class Comment 
 {
@@ -26,13 +27,14 @@ class Comment
         }
     }
 
-    static async deleteComment(content_id)  // a single comment is deleted
+    static async deleteComment(comment_id)  // a single comment is deleted
     {
         try {
-            const [deleteCommentResult] = await pool.query("DELETE FROM comments WHERE comment_id = ?", [content_id]);
-            const deleteContentResult = await Content.deleteContent(content_id);
+            const deletedVotes = await Vote.removeVotes([comment_id]);
+            const [deleteCommentResult] = await pool.query("DELETE FROM comments WHERE comment_id = ?", [comment_id]);
+            const deleteContentResult = await Content.deleteContent(comment_id);
 
-            return deleteCommentResult.affectedRows > 0 && deleteContentResult;
+            return deleteCommentResult.affectedRows > 0 && deleteContentResult && deletedVotes;
 
         } catch(error){
             console.error("Error in deleteComment:", error);
@@ -45,19 +47,19 @@ class Comment
         try {
             // select the comments
             const [commentRows] = await pool.query("SELECT comment_id FROM comments WHERE post_id = ?", [post_id])
-            const commentIds = Content.getIds(commentRows);  // extract the id's
-
-            if (commentIds.length === 0) 
+            if (commentRows.length === 0) 
             {
                 console.log("No comments found to delete.");
-                return []; // no comments to delete, return empty array
+                return true; // no comments to delete, return true
             }
 
             // delete from comments and content
+            const commentIds = Content.getIds(commentRows);  // extract the id's
+            const deletedVotes = await Vote.removeVotes(commentIds);
             const [deleteCommentResult] = await pool.query("DELETE FROM comments WHERE post_id = ? ", [post_id]);
             const deleteContentResult = await Content.deleteContents(commentIds); 
 
-            return deleteCommentResult.affectedRows > 0 && deleteContentResult;
+            return deleteCommentResult.affectedRows > 0 && deleteContentResult && deletedVotes;
 
         } catch(error){
             console.error("Error in deleteComment:", error);
@@ -84,7 +86,10 @@ class Comment
 }
 
 // await Comment.getComments(3);
-// await Comment.createComment("pomona", "natalie", "ooga booga", 1);
-// await Comment.deleteComments(1);
+// await Comment.createComment("General", "natalie", "ooga booga", 14);
+// await Comment.createComment("General", "natalie", "TYPE SHIT", 14);
+// await Comment.createComment("General", "natalie", "YUHHHHHHHHH", 14);
+// await Comment.createComment("General", "natalie", "WE IN THIS BITCH", 14);
+// await Comment.deleteComment(19);
 
 export default Comment;

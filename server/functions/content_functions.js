@@ -11,26 +11,14 @@ class Content
       const userID = await this.getUserID(username);
 
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
-                      [subForumID, userID, date, null, body]); // how to find content ID?
+                      [subForumID, userID, date, null, body]);
       
       const content_id = result.insertId;
-      console.log("content id: " + content_id);
+      // console.log("content id: " + content_id);
       return content_id;
 
     }catch(error){
       console.error("Error in createContent:", error);
-      return null;
-    }
-  }
-
-  static async getPosts(subforum_id)
-  {
-    try {
-      const [posts] = await pool.query("SELECT * from content where subforum_id = ?", [subforum_id]);
-      return posts.length > 0 ? posts : [];
-
-    } catch (error) {
-      console.error("Error in getPosts:", error);
       return null;
     }
   }
@@ -59,19 +47,21 @@ class Content
 
     }catch(error){
       console.error("Error in deleteContent:", error);
-      return null;
+      return false;
     }
   }
 
   static async deleteContents(contentIDs)
   {
+    if (!contentIDs.length) return false;
+
     try{
       const [deletedResult] = await pool.query("DELETE FROM content WHERE content_id IN (?)", [contentIDs]);
       return deletedResult.affectedRows > 0;
 
     }catch(error){
       console.error("Error in deleteContent:", error);
-      return null;
+      return false;
     }
   }
 

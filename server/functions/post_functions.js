@@ -1,22 +1,37 @@
 import pool from "./pool.js"; 
 import Content from "./content_functions.js";
 import Comment from "./comment_functions.js";
+import Vote from './vote_functions.js';
+import Media from "./media_functions.js";
 
-class Post{
-    
-    static async createPost(city, username, body, has_media)
+class Post
+{
+    static async createPost(city, username, body, files = [], file_types = []) // default values for files and file types
     {
         try {
-            const post_id = await Content.createContent(city, username, body)
-            await pool.query("INSERT into posts (post_id, has_media) VALUES (?, ?)", [post_id, has_media])
+            const post_id = await Content.createContent(city, username, body);
+    
+            const hasMedia = files.length > 0 ? 1 : 0;  // determine if media exists
+            await pool.query("INSERT INTO posts (post_id, has_media) VALUES (?, ?)", [post_id, hasMedia]);
+    
+            if (hasMedia) // if media exists, store each file
+            {
+                const media_ids = [];
+                for (let i = 0; i < files.length; i++) 
+                {
+                    const media_id = await Media.createMedia(post_id, files[i], file_types[i]);
+                    media_ids.push(media_id);
+                }
+                return { post_id, media_ids };
+            }
             return post_id;
-
-        } catch(error) {
+    
+        } catch (error) {
             console.error("Error in createPost:", error);
             return null;
         }
     }
-
+    
     static async editPost(content_id, newBody)
     {
         try{
@@ -29,13 +44,14 @@ class Post{
         }
     }
 
-    static async deletePost(post_id)  // delets from comments and contents too
+    static async deletePost(post_id)  // deletes from comments and contents too
     {  
         try {
+            const deletedVotes = await Vote.removeVotes([post_id]);
+            const commentResult = await Comment.deleteComments(post_id);
             const [postResult] = await pool.query("DELETE FROM posts WHERE post_id = ?", [post_id]);
             const contentResult = await Content.deleteContent(post_id);
-            const commentResult = await Comment.deleteComments(post_id);
-            return postResult.affectedRows > 0 && contentResult && commentResult;
+            return postResult.affectedRows > 0 && contentResult && commentResult && deletedVotes;
 
         } catch(error){
             console.error("Error in deletePost:", error);
@@ -57,10 +73,12 @@ class Post{
         }
     }
 
-    static async getUserPosts(user_id)  // return all posts a user made
+    static async getUserPosts(user_id)  // return all posts a user made NOT comments
     {
         try {
-            const [rows] = await pool.query("SELECT * FROM content WHERE user_id = ?", [user_id]);
+            const [rows] = 
+            await pool.query("SELECT c.* FROM content c JOIN posts p ON c.content_id = p.post_id WHERE c.user_id = ?", 
+                [user_id]);
             return rows.length > 0 ? rows : [];
 
         } catch(error){
@@ -70,5 +88,5 @@ class Post{
     }
 }
 
-// console.log(await Post.getSubforumPosts(1))
+// await Post.deletePost(14);
 export default Post;
