@@ -90,6 +90,5 @@ class Profile {
     }
 
 }
-
-console.log(await Profile.getProfile("jess"))
+await Profile.editPassword("Password1!", 2)
 export default Profile;

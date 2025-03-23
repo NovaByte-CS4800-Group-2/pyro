@@ -9,9 +9,10 @@ class Comment
         try {
             const comment_id = await Content.createContent(city, username, body)
             await pool.query("INSERT into comments (comment_id, post_id) VALUES (?, ?)", [comment_id, post_id])
+            return true;
         } catch(error) {
             console.error("Error in createComment:", error);
-            return null;
+            return false;
         }
     }
 
@@ -93,3 +94,5 @@ class Comment
 // await Comment.deleteComment(19);
 
 export default Comment;
+
+await Comment.editComment(26, "INSANE!");

@@ -5,7 +5,7 @@ import Profile from "../functions/profile_functions.js";
 const router = new Router();
 
 router.get('/username/:id', async (req, res) => {
-  const { id } = req.params; // read subforum_id from URL parameters
+  const { id } = req.params; 
 
   if(!id) return res.status(400).json({ error: "Missing user_id" });
 
@@ -23,10 +23,6 @@ router.get('/profile/:username', async (req, res) => {
 
   const profile = await Profile.getProfile(username);
   if(!profile) return res.status(406).json({ error : "problem getting the profile"});
-
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0'); // Ensures the response is not cached
 
   return res.status(200).json({ profile : profile});
 })
@@ -52,7 +48,7 @@ router.post('/profile/editEmail', async (req, res) => {
   const result = await Profile.editEmail(email, user_id)
   if(!result) return res.status(406).json({ error : "problem updating email"});
   
-  return res.status(200).json("Email updated successfully");
+  return res.status(200).json({msg: "Email updated successfully"});
 })
 
 router.post('/profile/editZipcode', async (req, res) => {
@@ -64,7 +60,7 @@ router.post('/profile/editZipcode', async (req, res) => {
   const result = await Profile.editZipcode(zipcode, user_id)
   if(!result) return res.status(406).json({ error : "problem updating zipcode"});
   
-  return res.status(200).json("Zipcode updated successfully");
+  return res.status(200).json({msg: "Zipcode updated successfully"});
 })
 
 router.post('/profile/editPassword', async (req, res) => {
@@ -76,8 +72,6 @@ router.post('/profile/editPassword', async (req, res) => {
   const result = await Profile.editPassword(password, user_id)
   if(!result) return res.status(406).json({ error : "problem updating password"});
   
-  return res.status(200).json("Password updated successfully");
+  return res.status(200).json({msg:"Password updated successfully"});
 })
-
-
 export default router;

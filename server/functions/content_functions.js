@@ -6,12 +6,12 @@ class Content
   {
     try{
       const fullDate = new Date();
-      const date = fullDate.toISOString().split('T')[0];
+      const postDate = fullDate.toISOString().split('T')[0];
       const subForumID = await this.getSubforumID(city);
       const userID = await this.getUserID(username);
 
       const [result] = await pool.query("INSERT into content (subforum_id, user_id, post_date, last_edit_date, body) VALUES (?, ?, ?, ?, ?)",
-                      [subForumID, userID, date, null, body]);
+                      [subForumID, userID, postDate, null, body]);
       
       const content_id = result.insertId;
       // console.log("content id: " + content_id);
