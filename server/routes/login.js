@@ -1,4 +1,5 @@
 import { Router } from "express";  // create an instance of an express router
+import cors from "cors";
 import Login from "../functions/login_functions.js";
 
 const router = Router();  // groups together requests

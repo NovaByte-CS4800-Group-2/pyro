@@ -25,8 +25,10 @@ app.use(session({
    
 }))
 
+const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000'] 
+
 app.use(cors({
-  origin: 'http://localhost:3000',  // Adjust this to your frontend URL
+  origin: allowedOrigins,  // Adjust this to your frontend URL,
   credentials: true  // Allow sending cookies across origins
 }))
 
