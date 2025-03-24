@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react";
 import Subforumbar from "../ui/subforumbar";
 import Forum from "../ui/forum";
 

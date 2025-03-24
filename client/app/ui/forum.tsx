@@ -22,7 +22,6 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
 		});
 		if (response.ok) {
 			const contentData = await response.json();
-			console.log(contentData);
 			const { username } = contentData;
 			return `${username}`;
 		} else {

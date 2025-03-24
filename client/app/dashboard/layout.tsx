@@ -4,11 +4,40 @@ import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import "@/app/globals.css";
 import Navbar from "../ui/navbar";
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // Router for redirecting to the dashboard.
+  const router = useRouter();
+  const [user, loading, error] = useAuthState(auth);
+  const [authenticating, setAuthenticating] = useState<Boolean>(true);
+
+  useEffect(() => {
+    /* Check session */
+    if (!user) {
+      return router.push("/");
+    }
+    setAuthenticating(false);
+  }, []);
+
+  if (authenticating) {
+    return (
+      <div className="flex items-center justify-center flex-grow">
+        <h2 className="text-2xl font-bold">Authenticating ...</h2>
+      </div>
+    );
+  }
+  else {
+    return (
+      <div className="flex justify-stretch items-stretch flex-row flex-grow">
+        <Navbar></Navbar>
+        {children}
+      </div>);
+  }
+}
+
+  /* Old authentication method?
   const router = useRouter();
   const [user] = useAuthState(auth);
   let userSession = null;
@@ -19,10 +48,4 @@ export default function RootLayout({
 
   if (!user && !userSession) {
     return router.push("/");
-  }
-  return (
-    <div className="flex justify-stretch items-stretch flex-row flex-grow">
-      <Navbar></Navbar>
-      {children}
-    </div>);
-}
+  }*/
