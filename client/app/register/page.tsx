@@ -7,6 +7,7 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { Input } from "@heroui/input";
 import { useUpdateProfile } from 'react-firebase-hooks/auth';
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -18,6 +19,7 @@ export default function Register() {
   const [accountType, setAccountType] = useState("personalAccount");
 
   const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [updateProfile, updating, error] = useUpdateProfile(auth);
 
   const [errors, setErrors] = useState({
@@ -52,7 +54,8 @@ export default function Register() {
       });
 
       if (response.ok) {
-        const res = await createUserWithEmailAndPassword(email, password);
+        const res1 = await createUserWithEmailAndPassword(email, password);
+        const res2 = await signInWithEmailAndPassword(email, password);
         const usernameSuccess = updateProfile({displayName: username});
         sessionStorage.setItem("user", String(true));
         router.push("/dashboard");
@@ -127,6 +130,7 @@ export default function Register() {
           {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
 
           <Input
+            required
             type="email"
             label="Email"
             placeholder="you@example.com"
@@ -138,6 +142,7 @@ export default function Register() {
           {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
 
           <Input
+            required
             label="Username"
             placeholder="username123"
             value={username}
@@ -148,6 +153,7 @@ export default function Register() {
           {errors.username && <p className="text-sm text-red-500">{errors.username}</p>}
 
           <Input
+            required
             label="Zip Code"
             placeholder="90210"
             value={zipCode}
@@ -162,6 +168,7 @@ export default function Register() {
             <div className="flex items-center gap-x-4">
               <label className="flex items-center gap-2">
                 <input
+                  required
                   type="radio"
                   value="businessAccount"
                   name="accountType"
@@ -171,6 +178,7 @@ export default function Register() {
               </label>
               <label className="flex items-center gap-2">
                 <input
+                  required
                   type="radio"
                   value="personalAccount"
                   name="accountType"
@@ -183,6 +191,7 @@ export default function Register() {
           </div>
 
           <Input
+            required
             type="password"
             label="Password"
             placeholder="••••••••"
@@ -196,6 +205,7 @@ export default function Register() {
           )}
 
           <Input
+            required
             type="password"
             label="Confirm Password"
             placeholder="••••••••"

@@ -15,7 +15,11 @@ export default function RootLayout({
 
   useEffect(() => {
     /* Check session */
-    if (!user) {
+    let userSession = null;
+    if (typeof window !== "undefined" && window.sessionStorage) {
+      userSession = sessionStorage.getItem("user");
+    }
+    if (!user && !userSession) {
       return router.push("/");
     }
     setAuthenticating(false);
@@ -36,16 +40,3 @@ export default function RootLayout({
       </div>);
   }
 }
-
-  /* Old authentication method?
-  const router = useRouter();
-  const [user] = useAuthState(auth);
-  let userSession = null;
-
-  if (typeof window !== "undefined" && window.sessionStorage) {
-    userSession = sessionStorage.getItem("user");
-  }
-
-  if (!user && !userSession) {
-    return router.push("/");
-  }*/

@@ -2,7 +2,7 @@ import "@/app/globals.css";
 import { HandThumbDownIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
 import { MouseEventHandler } from "react";
 
-export default function Post({ userProfile = null, username = "Default User", date = "", editeddate = "", body = "",}) {
+export default function Post({ key = -1, username = "Default User", date = "", editeddate = "", body = "",}) {
 	let newDate = date.replace("T07:00:00.000Z", "");
 	let newEditDate;
 	if (editeddate == "null")
@@ -10,7 +10,7 @@ export default function Post({ userProfile = null, username = "Default User", da
 	else
 		newEditDate = editeddate.replace("T07:00:00.000Z", "");
 	return (
-    <div className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-clip shadow-md max-w-175">
+    <div key={key} className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-clip shadow-md max-w-175">
 		<div className="flex gap-1 flex-col bg-neutral-300 p-2 font-bold text-sm max-w-20">
 			<p className="line-clamp-1 hover:line-clamp-none">{username}</p>
 			<div className="bg-neutral-50 rounded-4xl w-15 h-15"></div>
