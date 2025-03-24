@@ -9,7 +9,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
       <HeroUIProvider>
-        <ToastProvider />
+        <ToastProvider placement="top-left" toastOffset={80} />
         <div className="flex flex-col min-h-screen">
           <header className="fixed top-0 left-0 w-full shadow-md z-50">
               <Header />

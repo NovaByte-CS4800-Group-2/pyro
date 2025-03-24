@@ -49,12 +49,12 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
 
 			// Use map to handle async operations
 			const posts = await Promise.all(
-			contentData.posts.map(async (post: any) => {
+			contentData.posts.map(async (post: any, index: any) => {
 				const { post_date, last_edit_date, body, user_id } = post;
 				const username = await getUser(user_id);
 
 				// Return the HTML content for each post
-				return `<post username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
+				return `<post key="${index}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
 			})
 			);
 
