@@ -25,7 +25,7 @@ app.use(session({
    
 }))
 
-const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000'] 
+const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000', 'https://pyro-6fwb.onrender.com/'] 
 
 app.use(cors({
   origin: allowedOrigins,  // Adjust this to your frontend URL,

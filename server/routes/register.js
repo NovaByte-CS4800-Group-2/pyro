@@ -2,19 +2,16 @@ import { Router } from "express";
 import Register from "../functions/register_functions.js";
 
 const router = Router();
-const register = new Register();
 
 router.post('/register', async (req, res) => {
   const {username, name, email, zipCode, password, confirmPassword, accountType} = req.body
-
-  register.updateinfo(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
   
-  const errors = await register.getErrors(confirmPassword); 
+  const errors = await Register.getErrors(username, password, zipCode, email, confirmPassword); 
   if(errors.length > 0) return res.status(400).json({ errors });
 
-  await register.createProfile();
+  await Register.createProfile(username, name, email, zipCode, password, accountType === "businessAccount" ? true : false);
 
-  const newUser = await register.getProfile();
+  const newUser = await Register.getProfile(username);
   if (!newUser) return res.status(404).json({ error: "User not found" });
 
   req.session.user = newUser; // automatically log in the user

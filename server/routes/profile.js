@@ -46,7 +46,7 @@ router.post('/profile/editEmail', async (req, res) => {
   if(!user_id) return res.status(400).json({ error: "Missing userID" });
 
   const result = await Profile.editEmail(email, user_id)
-  if(!result) return res.status(406).json({ error : "problem updating email"});
+  if(result != "") return res.status(406).json({ error : result});
   
   return res.status(200).json({msg: "Email updated successfully"});
 })
@@ -58,7 +58,7 @@ router.post('/profile/editZipcode', async (req, res) => {
   if(!user_id) return res.status(400).json({ error: "Missing userID" });
 
   const result = await Profile.editZipcode(zipcode, user_id)
-  if(!result) return res.status(406).json({ error : "problem updating zipcode"});
+  if(!result) return res.status(406).json({ error : "Invalid zipcode entered"});
   
   return res.status(200).json({msg: "Zipcode updated successfully"});
 })
@@ -70,8 +70,21 @@ router.post('/profile/editPassword', async (req, res) => {
   if(!user_id) return res.status(400).json({ error: "Missing userID" });
 
   const result = await Profile.editPassword(password, user_id)
-  if(!result) return res.status(406).json({ error : "problem updating password"});
+  if(result.length != 0) return res.status(406).json({ error : result});
   
   return res.status(200).json({msg:"Password updated successfully"});
 })
+
+router.post('/profile/editUsername', async (req, res) => {
+  const {username, user_id} = req.body; // read user_id from req body 
+
+  if(!username) return res.status(400).json({ error: "Missing username" });
+  if(!user_id) return res.status(400).json({ error: "Missing userID" });
+
+  const result = await Profile.editUsername(username, user_id)
+  if(!result) return res.status(406).json({ error : "Username already exists"});
+  
+  return res.status(200).json({msg:"Username updated successfully"});
+})
+
 export default router;

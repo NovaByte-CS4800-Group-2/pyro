@@ -1,5 +1,6 @@
 import pool from './pool.js'
 import {hash} from './sha256.js'
+import Register from './register_functions.js'
 
 class Profile {
 
@@ -23,11 +24,14 @@ class Profile {
         }
     }
 
-    static async editUsername(user_id, newUsername)
+    static async editUsername(newUsername, user_id)
     {
         try{
+            const dup = await Register.validateUsername(newUsername);
+            if(dup) return false;
+
             await pool.query("UPDATE users SET username = ? WHERE user_id = ?", [newUsername, user_id])
-            return result.affectedRows > 0; // Returns true if a row was updated
+            return true; 
         } catch (error){
             console.error("Error in changeUsername:", error);
             return false;
@@ -48,8 +52,13 @@ class Profile {
 
     static async editEmail(newEmail, user_id){
         try {
+            const dup = await Register.duplicateEmail(newEmail);
+            const format = Register.validateEmail(newEmail);
+            if(dup) return "An account associated with this email already exists";
+            if(!format) return "Invalid email format";
+
             await pool.query("UPDATE users SET email = ? WHERE user_id = ?", [newEmail, user_id])
-            return true;
+            return "";
         } catch (error){
             console.log("Error in editEmail", error)
             return false;
@@ -58,9 +67,13 @@ class Profile {
 
     static async editPassword(newPassword, user_id){
         try {
+            const passErrors = Register.validatePassword(newPassword)
+            if(passErrors.length != 0) return passErrors;
+
             const password = hash(newPassword)
             await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [password, user_id])
-            return true;
+            return passErrors;
+
         } catch (error){
             console.log("Error in editPassword:", error)
             return false;
@@ -69,6 +82,8 @@ class Profile {
 
     static async editZipcode(newZipcode, user_id){
         try {
+            if(!Register.validateZipCode(newZipcode)) return false;
+
             await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
             return true;
         } catch (error){
@@ -90,5 +105,10 @@ class Profile {
     }
 
 }
-await Profile.editPassword("Password1!", 2)
+
+const check = await Profile.editUsername("natalie", 1);
+if(!check)
+{
+    console.log("correctly denied")
+}
 export default Profile;
