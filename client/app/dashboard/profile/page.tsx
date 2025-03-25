@@ -60,6 +60,7 @@ export default function Profile() {
 			if (response.ok) {
 				userProfile.email = email;
 				addToast({
+					color: "default",
 					title: "Email Change",
 					description: "New email saved successfully!",
 					timeout: 5000,
@@ -67,6 +68,7 @@ export default function Profile() {
 				});
 			} else {
 				addToast({
+					color: "warning",
 					title: "Email Change",
 					description: "An error occurred, please try again.",
 					timeout: 5000,

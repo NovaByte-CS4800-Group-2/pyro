@@ -95,7 +95,7 @@ class Register
     static validateEmail(email)
     {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // basic regex to check for email format
-        return (email.length === 0 || (emailRegex.test(email) && email.endsWith('.com')));
+        return (email.length === 0 || emailRegex.test(email));
     }
 
     static validatePassword(password)
