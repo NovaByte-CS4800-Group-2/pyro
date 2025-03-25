@@ -51,7 +51,7 @@ export default function Header() {
   } else {
     navContent = (
       <nav className="flex justify-end items-center gap-2">
-        <Button label="Create Post" link="/dashboard/createcontent" />
+        <Button label="Create Post" link="/dashboard/createpost" />
         <Button label="Logout" link="/logout" />
         <Link href="/dashboard/profile">
           <UserCircleIcon className="text-[--bark] w-8 hover:text-[--ash-olive]" />
