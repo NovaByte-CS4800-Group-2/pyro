@@ -59,6 +59,9 @@ export default function Login() {
 
   const handleSignIn = async (formData: FormData) => {
     try {
+      const res = await signInWithEmailAndPassword(email, password);
+      console.log(res);
+      sessionStorage.setItem("user", String(true));
       const response = await fetch("http://localhost:8080/login", {
         method: "POST",
         headers: {
@@ -68,8 +71,6 @@ export default function Login() {
       });
 
       if (response.ok) {
-        const res = await signInWithEmailAndPassword(email, password);
-        sessionStorage.setItem("user", String(true));
         const responseData = await response.json();
         router.push("/dashboard");
       } else {
