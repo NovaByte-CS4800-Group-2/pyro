@@ -9,10 +9,10 @@ class Comment
         try {
             const comment_id = await Content.createContent(city, username, body)
             await pool.query("INSERT into comments (comment_id, post_id) VALUES (?, ?)", [comment_id, post_id])
-            return true;
+            return comment_id;
         } catch(error) {
             console.error("Error in createComment:", error);
-            return false;
+            return null;
         }
     }
 
@@ -20,7 +20,7 @@ class Comment
     {
         try{
             const result = await Content.editContent(content_id, newBody);
-            return result.affectedRows > 0;
+            return result;
 
         } catch (error) {
             console.error("Error in editComment:", error);
@@ -31,11 +31,11 @@ class Comment
     static async deleteComment(comment_id)  // a single comment is deleted
     {
         try {
-            const deletedVotes = await Vote.removeVotes([comment_id]);
+            await Vote.removeVotes([comment_id]);
             const [deleteCommentResult] = await pool.query("DELETE FROM comments WHERE comment_id = ?", [comment_id]);
             const deleteContentResult = await Content.deleteContent(comment_id);
 
-            return deleteCommentResult.affectedRows > 0 && deleteContentResult && deletedVotes;
+            return deleteCommentResult.affectedRows > 0 && deleteContentResult;
 
         } catch(error){
             console.error("Error in deleteComment:", error);
@@ -84,15 +84,18 @@ class Comment
             return null;
         }
     }
+
+    static async getComment(comment_id)  // returns single comment
+    {
+        try {
+            const [contentRows] = await pool.query("SELECT * FROM content WHERE content_id = ?", [comment_id]);
+            return contentRows;
+
+        } catch(error){
+            console.error("Error in getComments:", error);
+            return null;
+        }
+    }
 }
 
-// await Comment.getComments(3);
-// await Comment.createComment("General", "natalie", "ooga booga", 14);
-// await Comment.createComment("General", "natalie", "TYPE SHIT", 14);
-// await Comment.createComment("General", "natalie", "YUHHHHHHHHH", 14);
-// await Comment.createComment("General", "natalie", "WE IN THIS BITCH", 14);
-// await Comment.deleteComment(19);
-
 export default Comment;
-
-await Comment.editComment(26, "INSANE!");

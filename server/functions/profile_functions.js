@@ -106,9 +106,9 @@ class Profile {
 
 }
 
-const check = await Profile.editUsername("natalie", 1);
-if(!check)
-{
-    console.log("correctly denied")
-}
+// const check = await Profile.editUsername("natalie", 1);
+// if(!check)
+// {
+//     console.log("correctly denied")
+// }
 export default Profile;

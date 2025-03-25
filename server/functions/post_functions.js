@@ -36,7 +36,7 @@ class Post
     {
         try{
             const result = await Content.editContent(content_id, newBody);
-            return result.affectedRows > 0;
+            return result;
 
         } catch (error) {
             console.error("Error in editPost:", error);
@@ -47,11 +47,11 @@ class Post
     static async deletePost(post_id)  // deletes from comments and contents too
     {  
         try {
-            const deletedVotes = await Vote.removeVotes([post_id]);
-            const commentResult = await Comment.deleteComments(post_id);
+            await Vote.removeVotes([post_id]);
+            await Comment.deleteComments(post_id);
             const [postResult] = await pool.query("DELETE FROM posts WHERE post_id = ?", [post_id]);
             const contentResult = await Content.deleteContent(post_id);
-            return postResult.affectedRows > 0 && contentResult && commentResult && deletedVotes;
+            return postResult.affectedRows > 0 && contentResult;
 
         } catch(error){
             console.error("Error in deletePost:", error);
@@ -79,6 +79,18 @@ class Post
             const [rows] = 
             await pool.query("SELECT c.* FROM content c JOIN posts p ON c.content_id = p.post_id WHERE c.user_id = ?", 
                 [user_id]);
+            return rows.length > 0 ? rows : [];
+
+        } catch(error){
+            console.error("Error in getPosts:", error);
+            return null;
+        }
+    }
+
+    static async getUserPost(post_id)  // return all posts a user made NOT comments
+    {
+        try {
+            const [rows] = await pool.query("SELECT * FROM content WHERE content_id = ?", [post_id]);
             return rows.length > 0 ? rows : [];
 
         } catch(error){
