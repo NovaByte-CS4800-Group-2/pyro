@@ -22,7 +22,7 @@ export default function Header() {
 
   useEffect(() => {
     if (!user && !userSession) {
-      router.push("/");
+      router.push("/"); 
     }
   }, [user, userSession, router]);
 
@@ -51,7 +51,6 @@ export default function Header() {
   } else {
     navContent = (
       <nav className="flex justify-end items-center gap-2">
-        <Button label="Create Post" link="/dashboard/createcontent" />
         <Button label="Logout" link="/logout" />
         <Link href="/dashboard/profile">
           <UserCircleIcon className="text-[--bark] w-8 hover:text-[--ash-olive]" />
@@ -62,14 +61,15 @@ export default function Header() {
 
   return (
     <header
-      className="w-full shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]"
-      style={{ backgroundColor: "var(--clay-beige)" }}
-    >
+  className="w-full shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]"
+  style={{ backgroundColor: "var(--clay-beige)" }}
+>
+
       <div className="w-1/3" />
 
       {/* pyro logo */}
       <Link href="/" className="flex items-center gap-2 w-1/3 justify-center">
-        <FireIcon className="w-8" style={{ color: "var(--deep-terracotta)" }} />
+      <FireIcon className="w-8" style={{ color: "var(--deep-terracotta)" }} />
         <h1 className="text-3xl font-display font-bold text-[--bark]">Pyro</h1>
       </Link>
 
