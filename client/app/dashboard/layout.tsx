@@ -22,8 +22,10 @@ export default function RootLayout({
     if (!user && !userSession) {
       return router.push("/");
     }
-    setAuthenticating(false);
-  }, []);
+    else {
+      setAuthenticating(false);
+    }
+  }, [user]);
 
   if (authenticating) {
     return (
