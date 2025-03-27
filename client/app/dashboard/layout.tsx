@@ -37,7 +37,7 @@ export default function RootLayout({
   }
   else {
     return (
-      <div className="flex justify-stretch items-stretch flex-row flex-grow">
+      <div className="flex justify-stretch items-stretch flex-row flex-grow mt-2 mb-2">
         <Navbar></Navbar>
         {children}
       </div>);

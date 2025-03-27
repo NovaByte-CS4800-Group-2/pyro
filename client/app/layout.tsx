@@ -12,7 +12,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <header className="fixed top-0 left-0 w-full shadow-md z-50">
               <Header />
             </header>
-            <main className="flex flex-col flex-grow mt-18 mb-18 overflow-auto">
+            <main className="flex flex-col flex-grow mt-16 mb-16 overflow-auto">
               {children}
             </main>
             <footer className="fixed bottom-0 left-0 w-full shadow-md z-50">
