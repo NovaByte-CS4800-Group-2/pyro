@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import "@/app/globals.css";
 import Navbar from "../ui/navbar";
 import { useEffect, useState } from "react";
+import { CircularProgress } from "@heroui/react";
 
 export default function RootLayout({
   children,
@@ -30,7 +31,7 @@ export default function RootLayout({
   if (authenticating) {
     return (
       <div className="flex items-center justify-center flex-grow">
-        <h2 className="text-2xl font-bold">Authenticating ...</h2>
+        <CircularProgress className="pr-4" color="primary" aria-label="Loading..." /><h2 className="text-2xl font-bold">Authenticating ...</h2>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 "use client"
-import {addToast, Avatar, Input} from "@heroui/react";
+import {addToast, Avatar, CircularProgress, Input} from "@heroui/react";
 import {Card, CardHeader, CardBody, Button} from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -40,7 +40,7 @@ export default function Profile() {
 				
 			}
 		};
-		if (userProfile.username === "") {
+		if (userProfile.email === "") {
 			loadProfile();
 		}
 	}, [user]);
@@ -80,8 +80,8 @@ export default function Profile() {
 	
 	if (userProfile.email === "") {
 		return (
-			<div className="flex flex-col justify-center align-center flex-grow">
-				<h2 className="text-2xl font-bold text-center">Loading...</h2>
+			<div className="flex flex-col items-center justify-center align-center flex-grow">
+				<h2 className="flex flex-row text-2xl font-bold"><CircularProgress className="pr-4" color="primary" aria-label="Loading..." />Loading...</h2>
 			</div>
 		);
 	}

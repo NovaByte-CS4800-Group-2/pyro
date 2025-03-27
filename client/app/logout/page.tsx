@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { CircularProgress } from "@heroui/react";
 
 export default function Logout() {
   const router = useRouter();
@@ -22,8 +23,8 @@ export default function Logout() {
   }, [router]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold">Logging out...</h1>
+    <div className="flex flex-row items-center justify-center h-screen">
+      <CircularProgress className="pr-4" color="primary" aria-label="Loading..." /><h1 className="text-2xl font-bold">Logging out...</h1>
     </div>
   );
   // trigger the logout when this component is rendered
