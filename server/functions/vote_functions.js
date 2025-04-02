@@ -16,6 +16,21 @@ class Vote
         }
     }
 
+    static async getVote(content_id, user_id)
+    {
+        try {
+            const [rows] = await pool.query("SELECT value from votes WHERE content_id = ? AND user_id = ?", [content_id, user_id])
+
+            if(rows.length == 0) return false;
+
+            return rows;
+
+        } catch (error) {
+            console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
     static async getVotes(content_id)  // get all votes for a content
     {
         try {
@@ -24,6 +39,42 @@ class Vote
 
         } catch (error) {
             console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
+    static async getUpVotes(content_id)
+    {
+        try {
+            const [rows] = await pool.query("SELECT value from votes WHERE content_id = ? AND value = 1", [content_id])
+            return rows.length;
+
+        } catch (error) {
+            console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
+    static async getDownVotes(content_id)
+    {
+        try {
+            const [rows] = await pool.query("SELECT value from votes WHERE content_id = ? AND value = 0", [content_id])
+            return rows.length;
+
+        } catch (error) {
+            console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
+    static async getUserVotes(user_id)  // get all votes from a user
+    {
+        try {
+            const [rows] = await pool.query("SELECT * from votes WHERE user_id = ?", [user_id])
+            return rows;
+
+        } catch (error) {
+            console.error("Error in getUserVotes:", error);
             return null;
         }
     }
@@ -54,6 +105,7 @@ class Vote
 }
 
 
+// console.log(await Vote.getVote(1, 1));
 // await Vote.vote(19, 1, 0);
 // await Vote.vote(19, 2, 0);
 // await Vote.vote(19, 3, 0);
