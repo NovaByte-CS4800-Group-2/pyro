@@ -1,16 +1,18 @@
 "use client"
-import {addToast, Avatar, CircularProgress} from "@heroui/react";
-import {Card, CardHeader, CardBody} from "@heroui/react";
+import {addToast, Avatar, Button, CircularProgress, Input, useDisclosure} from "@heroui/react";
+import {Card, CardHeader, CardBody, Image, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter} from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function Profile() {
 	const router = useRouter();
 	const [user, loading, error] = useAuthState(auth);
 	const [verifyBeforeUpdateEmail, emailUpdating, emailError] = useVerifyBeforeUpdateEmail(auth);
 	const [updateProfile, profileUpdating, profileError] = useUpdateProfile(auth);
+	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const [userProfile, setUserProfile] = useState({
 		user_id: 0,
 		username: "",
@@ -23,6 +25,8 @@ export default function Profile() {
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [zipcode, setZipcode] = useState("");
+	const [profileURL, setProfileURL] = useState("");
+	const [profilePic, setProfilePic] = useState<Blob | ArrayBuffer | Uint8Array<ArrayBufferLike> | undefined>();
 	
 	useEffect(() => {
 		const loadProfile = async () => {
@@ -196,7 +200,68 @@ export default function Profile() {
 			}
 		}
 	}
-	
+	const onImageChange = (e: any) => {
+		if (e.target.files && e.target.files[0]) {
+			setProfilePic(e.target.files[0]);
+			setProfileURL(URL.createObjectURL(e.target.files[0]));
+		}
+	}
+	const uploadImageToStorage = async (userId: String) => {
+		const storage = getStorage();
+		const storageRef = ref(storage, 'profilePics/' + userId); // Create a reference
+		
+		// Upload the file
+		if (profilePic) {
+			await uploadBytes(storageRef, profilePic);
+			
+			// Get download URL
+			const url = await getDownloadURL(storageRef);
+			return url;
+		}
+		else {
+			return null;
+		}
+	  }
+	const updateProfilePic = async () => {
+		try {
+			const userId = auth.currentUser?.uid;
+			if (userId) {
+				const photoURL = await uploadImageToStorage(userId);
+				if (photoURL) {
+					await updateProfile({ photoURL });
+					addToast({
+						color: "success",
+						title: "Profile Picture Change",
+						description: `New profile picture saved successfully!`,
+						timeout: 5000,
+						shouldShowTimeoutProgress: true,
+					});	
+				}
+				else {
+					addToast({
+						color: "warning",
+						title: "Profile Picture Change",
+						description: `No profile picture given. Please try again.`,
+						timeout: 5000,
+						shouldShowTimeoutProgress: true,
+					});	
+				}
+			}
+			else {
+				addToast({
+					color: "danger",
+					title: "Profile Picture Change",
+					description: `How did you get here??? You're not logged in!`,
+					timeout: 5000,
+					shouldShowTimeoutProgress: true,
+				});	
+			}
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
+
 	if (userProfile.email === "") {
 		return (
 			<div className="flex flex-col items-center justify-center flex-grow">
@@ -213,7 +278,7 @@ export default function Profile() {
 						<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
 					</CardHeader>
 					<CardBody className="pt-2">
-						<Avatar isBordered color="primary" src="" className="w-40 h-40"/>
+						<Avatar isBordered color="primary" src="" className="w-40 h-40" onClick={onOpen}/>
 					</CardBody>
 				</Card>
 				<div className="flex border-2 border-gray-500 rounded-xl p-2 max-w-[500px]">
@@ -231,6 +296,27 @@ export default function Profile() {
 					<input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>
 					<button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onClick={saveZipcode} value="Change">Save</button>
 				</div>
+				<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+					<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">Change Profile Picture</ModalHeader>
+							<ModalBody>
+								<Input type="file" accept=".jpg, .jpeg, .png" onChange={onImageChange}></Input>
+								<img className="aspect-square max-w-[300px] object-cover rounded-full self-center" alt={profileURL ? "Profile Picture" : ""} src={profileURL ? profileURL : undefined}></img>
+							</ModalBody>
+							<ModalFooter>
+								<Button color="danger" variant="light" onPress={onClose}>
+								Close
+								</Button>
+								<Button color="primary" onPress={() => {onClose(); updateProfilePic();}}>
+								Save
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+					</ModalContent>
+				</Modal>
 			</div>
 		);
 	}
