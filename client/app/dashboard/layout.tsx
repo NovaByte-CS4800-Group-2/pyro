@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import "@/app/globals.css";
 import Navbar from "../ui/navbar";
 import { useEffect, useState } from "react";
+import { CircularProgress } from "@heroui/react";
 
 export default function RootLayout({
   children,
@@ -22,19 +23,21 @@ export default function RootLayout({
     if (!user && !userSession) {
       return router.push("/");
     }
-    setAuthenticating(false);
-  }, []);
+    else {
+      setAuthenticating(false);
+    }
+  }, [user]);
 
   if (authenticating) {
     return (
       <div className="flex items-center justify-center flex-grow">
-        <h2 className="text-2xl font-bold">Authenticating ...</h2>
+        <CircularProgress className="pr-4" color="primary" aria-label="Loading..." /><h2 className="text-2xl font-bold">Authenticating ...</h2>
       </div>
     );
   }
   else {
     return (
-      <div className="flex justify-stretch items-stretch flex-row flex-grow">
+      <div className="flex justify-stretch items-stretch flex-row flex-grow mt-2 mb-2">
         <Navbar></Navbar>
         {children}
       </div>);

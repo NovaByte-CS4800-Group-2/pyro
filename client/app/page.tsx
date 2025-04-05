@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Button from "./ui/button";
 import { EmblaCarousel } from "./ui/carousel";
+import { useEffect, useState } from "react";
 
 const ContentCard = ({ children }: { children: React.ReactNode }) => (
   <div className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 text-[--text-color] my-6">
@@ -11,6 +12,15 @@ const ContentCard = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function Landing() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const session = sessionStorage.getItem("user");
+    if (session === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <main className="min-h-screen w-full bg-[--greige-mist] px-4 py-10 flex flex-col items-center text-[--text-color]">
 
@@ -32,26 +42,30 @@ export default function Landing() {
         </p>
       </ContentCard>
 
-      <section
-      className="w-full text-[--bark] py-12 px-4 rounded-xl shadow-lg"
-      style={{ backgroundColor: "var(--ash-olive)" }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-4xl font-display font-bold mb-6">
-            Ready to Join?
-          </div>
-          <nav className="inline-block">
-            <Button label="Register" link="/register" />
-          </nav>
+      {!isLoggedIn && (
+        <section
+          className="w-full text-[--bark] py-12 px-4 rounded-xl shadow-lg"
+          style={{ backgroundColor: "var(--ash-olive)" }}
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="text-4xl font-display font-bold mb-6">
+              Ready to Join?
+            </div>
+            <nav className="inline-block">
+              <Button label="Register" link="/register" />
+            </nav>
 
-          <div className="text-base font-normal mt-4">
-            <Link
-            href="/dashboard"
-            className="font-semibold hover:underline text-[--olive-stone]">
-              or skip for now
-            </Link>
+            <div className="text-base font-normal mt-4">
+              <Link
+                href="/dashboard"
+                className="font-semibold hover:underline text-[--olive-stone]"
+              >
+                or skip for now
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }
