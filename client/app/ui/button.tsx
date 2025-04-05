@@ -1,16 +1,5 @@
 import Link from "next/link";
 import "@/app/globals.css";
-
-export default function Button({ label = "Button", link = "/" }) {
-  return (
-    <Link href={link} className="button">
-      {label}
-    </Link>
-  );
-}
-
-/* import Link from "next/link";
-import "@/app/globals.css";
 import React from "react";
 
 interface ButtonProps {
@@ -47,4 +36,3 @@ export default function Button({
     );
   }
 }
-*/
