@@ -54,7 +54,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
 				const username = await getUser(user_id);
 
 				// Return the HTML content for each post
-				return `<post key="${index}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
+				return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
 			})
 			);
 
