@@ -11,6 +11,8 @@ import subforumRouter from './routes/subforum.js';
 import profileRouter from './routes/profile.js';
 import commentRouter from './routes/comments.js';
 import voteRouter from './routes/votes.js';
+import matchingRouter from './routes/matching.js';
+import chatbotRouter from './routes/chatbot.js';
 
 const app = express()
 
@@ -42,6 +44,8 @@ app.use(subforumRouter);
 app.use(profileRouter);
 app.use(commentRouter);
 app.use(voteRouter);
+app.use(matchingRouter);
+app.use(chatbotRouter);
 
 app.get('/', (req, res) => {  // base URL
 

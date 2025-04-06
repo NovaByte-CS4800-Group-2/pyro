@@ -31,14 +31,14 @@ export default function Landing() {
       <ContentCard>
         <h3 className="text-xl font-display font-bold mb-2">Our mission:</h3>
         <p className="font-normal leading-relaxed">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel iure exercitationem dolorem ratione totam voluptatibus ipsum odio temporibus sint perferendis nemo quis explicabo, tempora voluptas nobis, a esse accusantium saepe praesentium, laboriosam amet magnam sit mollitia magni. Voluptatem nemo tenetur sed rerum provident omnis facilis, dolorem nisi suscipit adipisci repellendus incidunt perferendis quos tempore obcaecati vitae enim ipsa sunt sint deleniti ullam unde dolores quasi! Porro ab saepe dolorum doloremque molestias, esse, delectus explicabo soluta veritatis facere necessitatibus veniam. A magnam ullam, ratione beatae modi ipsam rem commodi ut impedit incidunt esse tempora, culpa vel expedita quo vitae quos iste!
+          By creating our wildfire disaster reponse application Pyro, NovaByte hopes to empower survivors of wildfires across the United States. By providing real-time data, collaborative communication, and a safe space to spread hope and positive energy, our application aims to minimize the disastrous impact of wildfires, protect lives, and preserve communities.
         </p>
       </ContentCard>
 
       <ContentCard>
-        <h3 className="text-xl font-display font-bold mb-2">Benefits / Features:</h3>
+        <h3 className="text-xl font-display font-bold mb-2">Features:</h3>
         <p className="font-normal leading-relaxed">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem, nisi. Voluptates accusantium quae ullam laboriosam architecto saepe, aut eaque natus, ipsa, fuga maiores veniam provident? Voluptate voluptatem, natus dolores vel eum quos expedita culpa quidem tempore ut iste, sed tempora! Ipsam dolores laborum sint. Laudantium cum, iste fugit libero inventore repudiandae blanditiis nostrum deleniti vero eveniet provident quasi illo ipsa odio dicta excepturi architecto facere delectus esse voluptas quaerat voluptates quo nesciunt labore. Incidunt velit magnam fuga, adipisci architecto ex facilis, quod eaque dolorum saepe explicabo impedit, beatae obcaecati quaerat optio soluta? Laudantium, impedit animi. Tempora modi dolorum atque fugiat.
+        Pyro provides a safe, collaborative and encouraging space for those affected by wildfires around the country. Some key features that make Pyro truly stand out include our chatbot NovaBot that is always ready to provide comprehensive answers to any question related to wildfire preparedness, safety, and evacuation. Our fundraising forum provides a space for businesses to assist members of their community through various types of aid. Through host-evacuee matching, those that have been evacuated can still find a roof over their head and the comfort of community to help them recover after a disaster. Finally, our open chat forums that allow for user posts consisting of images, videos and text epitomize the final piece that makes those affected feel the safest and most supported despite the challenges they have encountered.
         </p>
       </ContentCard>
 
