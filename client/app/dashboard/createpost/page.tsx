@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 
-export default function CreateContent() {
+export default function CreatePost() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -19,46 +19,48 @@ export default function CreateContent() {
   const [user] = useAuthState(auth);
   const [posts, setPosts] = useState<any[]>([]);
 
-  // Fetch subforum ID on component mount
+  // Fetch subform ID and user data
   useEffect(() => {
-    const fetchSubforumId = async () => {
+    const fetchUserAndSubforumId = async () => {
       try {
-        const response = await fetch("http://localhost:8080/subforums", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        const text = await response.text();
-
-        if (!response.ok) {
-          console.error("Server responded with error HTML or message:", text);
-          throw new Error("Failed to fetch subforum ID.");
+        if (!user || !user.uid) {
+          setErrorMessage("User is not authenticated.");
+          return;
         }
 
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch (error) {
-          console.error("Failed to parse JSON response:", error);
-          throw new Error("Invalid response format.");
+        console.log("User ID:", user.uid);
+        console.log("User Display Name:", user.displayName);
+
+        // Fetch user data
+        const userResponse = await fetch(
+          `http://localhost:8080/user/${user.uid}`
+        );
+        const userData = await userResponse.json();
+
+        const userCity = userData.city;
+        if (!userCity) throw new Error("User city is missing.");
+
+        const subforumResponse = await fetch(
+          `http://localhost:8080/subform/${userCity}`
+        );
+        const subforumData = await subforumResponse.json();
+
+        if (!subforumData.subforum_id) {
+          throw new Error("Subforum ID is missing.");
         }
-        if (data.subforum_id) {
-          setSubforumId(data.subforum_id);
-        } else {
-          throw new Error("Subforum ID is undefined.");
-        }
+        setSubforumId(subforumData.subforum_id);
       } catch (error) {
-        console.error("Error fetching subforum ID:", error);
-        setErrorMessage("Failed to fetch subforum ID.");
+        console.error("Error fetching user and subforum ID:", error);
+        setErrorMessage("Failed to load your subforum.");
       }
     };
 
-    fetchSubforumId();
+    fetchUserAndSubforumId();
     setIsOpen(true);
     setIsClient(true);
 
     return () => setIsOpen(false);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (subforumId) {
@@ -111,39 +113,47 @@ export default function CreateContent() {
     }
 
     try {
-      const formData = new FormData();
+      // Fetch user data
+      const userResponse = await fetch(
+        `http://localhost:8080/user/${user?.uid}`
+      );
 
-      if (user?.uid) {
-        formData.append("user_id", user.uid);
-      } else {
-        throw new Error("User ID is undefined.");
+      if (!userResponse.ok) {
+        const errorData = await userResponse.json();
+        throw new Error(errorData.error || "Failed to fetch user data.");
       }
 
-      formData.append("subforum_id", subforumId || "");
-      formData.append("body", postContent.body);
+      const userData = await userResponse.json();
 
-      files.forEach((file, index) => {
-        formData.append(`files[${index}]`, file);
-        formData.append(`file_types[${index}]`, file.type);
-      });
+      if (!userData || !userData.city) {
+        throw new Error("User data is missing or invalid.");
+      }
 
-      // Re-fetch posts
-      const response = await fetch(`http://localhost:8080/posts/${subforumId}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const updatedPosts = await response.json();
-      setPosts(updatedPosts);
+      const city = userData.city;
+      const username = user?.displayName || user?.uid;
 
+      // submit post
       const postResponse = await fetch("http://localhost:8080/post", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city,
+          username,
+          body: postContent.body,
+        }),
       });
 
       if (!postResponse.ok) {
         const errorData = await postResponse.json();
         throw new Error(errorData.error || "Failed to submit post.");
       }
+
+      const postData = await postResponse.json();
+
+      // Re-fetch posts
+      const response = await fetch(`http://localhost:8080/posts/${subforumId}`);
+      const { posts: updatedPosts } = await response.json();
+      setPosts(updatedPosts);
 
       console.log("Post submitted successfully!");
       router.push("/dashboard");
