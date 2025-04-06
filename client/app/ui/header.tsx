@@ -1,6 +1,6 @@
 "use client";
 
-import { FireIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { FireIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import "@/app/globals.css";
 import { usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Avatar } from "@heroui/react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -53,7 +54,7 @@ export default function Header() {
       <nav className="flex justify-end items-center gap-2">
         <Button label="Logout" link="/logout" />
         <Link href="/dashboard/profile">
-          <UserCircleIcon className="text-[--bark] w-8 hover:text-[--ash-olive]" />
+          <Avatar className="w-10 h-10" isBordered src={user?.photoURL || undefined}></Avatar>
         </Link>
       </nav>
     );
