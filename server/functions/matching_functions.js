@@ -47,7 +47,9 @@ class Matching
       if(type === "requesting") 
         newType = "offering";
 
-      const [rows] = await pool.query("SELECT * FROM matching_request_forms WHERE type = ?", [newType]);
+      const [rows] = await pool.query(`SELECT form_id, num_rooms, num_people, young_children, adolescent_children, 
+        teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
+        WHERE type = ?`, [newType]);
 
       if(!rows.length) return false; // there were no forms to match
 
@@ -61,36 +63,49 @@ class Matching
   static async getForm(form_id)
   {
     try{
-      const [rows] = await pool.query("SELECT * FROM matching_request_forms WHERE form_id = ?", [form_id]);
+
+      const [rows] = await pool.query(`SELECT form_id, num_rooms, num_people, young_children, adolescent_children, 
+        teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
+        WHERE form_id = ?`, [form_id]);
 
       if(!rows.length) return false; // no form existis with that id
-      return rows;
+      return rows[0];
 
     }catch(error){
       console.log("Error in getForm:", error)
     }
   }
 
-  static async match(form_id, type)
+  static async match(form_id, type) // gets all the forms that are matches
   {
     try{
       const match_form = await this.getForm(form_id);  // form that needs to be matched
       const forms = await this.getForms(type); // forms that are going to be searched through
       if(!forms || !match_form) return false; // no forms to match
 
-      // for(let i = 0; i < type.length; i++)
-      // {
-      //   for(let j = 0; j < match_form.legnth; j++)
-      //   {
+      const matches = [];
 
-      //   }
-      // }
+      for (const form of forms) 
+      {
+        let score = 0;
+        for(const key in form)
+        {
+          if(key != "form_id")
+            if(form[key] >= match_form[key]) 
+              score ++;
+        }
+        if(score > 7)
+          matches.push(form.form_id);
+      }
+      if(matches.length === 0) return false;
+      return matches;
+
     }catch(error){
       console.log("Error in match:", error)
     }
   }
 }
 
-// console.log(await Matching.getForms("requesting"));
+console.log(await Matching.match(1, "requesting"));
 
 export default Matching;
