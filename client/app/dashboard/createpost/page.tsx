@@ -33,22 +33,26 @@ export default function CreatePost() {
 
         // Fetch user data
         const userResponse = await fetch(
-          `http://localhost:8080/user/${user.uid}`
+          `http://localhost:8080/profile/${user.displayName}`
         );
+
         const userData = await userResponse.json();
 
-        const userCity = userData.city;
+        const userCity = "Los Angeles";//userData.city;
         if (!userCity) throw new Error("User city is missing.");
 
-        const subforumResponse = await fetch(
-          `http://localhost:8080/subform/${userCity}`
-        );
-        const subforumData = await subforumResponse.json();
+        // you need to figure out how you want to get the subforum id
+        // ex: you may want to provide a dropdown menu of the subforums for them to choose then get the ID of that subforum from the db
 
-        if (!subforumData.subforum_id) {
-          throw new Error("Subforum ID is missing.");
-        }
-        setSubforumId(subforumData.subforum_id);
+        // const subforumResponse = await fetch(
+        //   `http://localhost:8080/subforum/${userCity}` // this isn't doing anything
+        // );
+        // const subforumData = await subforumResponse.json();
+
+        // if (!subforumData.subforum_id) {
+        //   throw new Error("Subforum ID is missing.");
+        // }
+        // setSubforumId(subforumData.subforum_id);
       } catch (error) {
         console.error("Error fetching user and subforum ID:", error);
         setErrorMessage("Failed to load your subforum.");
@@ -62,32 +66,32 @@ export default function CreatePost() {
     return () => setIsOpen(false);
   }, [user]);
 
-  useEffect(() => {
-    if (subforumId) {
-      const fetchPosts = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:8080/posts/${subforumId}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            }
-          );
+  // useEffect(() => {
+  //   if (subforumId) {
+  //     const fetchPosts = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           `http://localhost:8080/posts/${subforumId}`,
+  //           {
+  //             method: "GET",
+  //             headers: { "Content-Type": "application/json" },
+  //           }
+  //         );
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Failed to fetch posts.");
-          }
+  //         if (!response.ok) {
+  //           const errorData = await response.json();
+  //           throw new Error(errorData.error || "Failed to fetch posts.");
+  //         }
 
-          const data = await response.json();
-          console.log("Fetched posts:", data);
-        } catch (error) {
-          console.error("Error fetching posts:", error);
-        }
-      };
-      fetchPosts();
-    }
-  }, [subforumId]);
+  //         const data = await response.json();
+  //         console.log("Fetched posts:", data);
+  //       } catch (error) {
+  //         console.error("Error fetching posts:", error);
+  //       }
+  //     };
+  //     fetchPosts();
+  //   }
+  // }, [subforumId]);
 
   // Handle input changes for post content
   const handleChange = (
@@ -111,11 +115,10 @@ export default function CreatePost() {
       setErrorMessage("Post cannot be empty.");
       return;
     }
-
     try {
       // Fetch user data
       const userResponse = await fetch(
-        `http://localhost:8080/user/${user?.uid}`
+        `http://localhost:8080/profile/${user.displayName}`
       );
 
       if (!userResponse.ok) {
@@ -129,7 +132,7 @@ export default function CreatePost() {
         throw new Error("User data is missing or invalid.");
       }
 
-      const city = userData.city;
+      const city =  "Los Angeles"; //userData.city;
       const username = user?.displayName || user?.uid;
 
       // submit post
