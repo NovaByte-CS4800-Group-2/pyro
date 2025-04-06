@@ -1,0 +1,145 @@
+'use client'
+import { useState, useEffect, useRef } from "react";
+
+export default function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const chatboxRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const offset = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMessage: { role: "user"; content: string } = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:8080/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+
+      const data = await res.json();
+      const botMessage: { role: "assistant"; content: string } = { role: "assistant", content: data.reply };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Error occurred." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      setMessages([{ role: "assistant", content: "Hi there! I'm NovaBot 🤖. How can I assist you today?" }]);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isOpen]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!chatboxRef.current) return;
+    isDragging.current = true;
+    const rect = chatboxRef.current.getBoundingClientRect();
+    offset.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging.current || !chatboxRef.current) return;
+    chatboxRef.current.style.left = `${e.clientX - offset.current.x}px`;
+    chatboxRef.current.style.top = `${e.clientY - offset.current.y}px`;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-24 right-6 bg-[--olive-stone] text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-[--deep-moss] z-[100]"
+      >
+        💬
+      </button>
+
+      {isOpen && (
+        <div
+          ref={chatboxRef}
+          className="fixed bg-[--porcelain] border-2 border-[--bark] rounded-2xl shadow-xl flex flex-col z-[100]"
+          style={{ width: "20rem", height: "28rem", resize: "both", overflow: "auto", left: "calc(100% - 23rem)", bottom: "6.5rem" }}
+        >
+          <div
+            onMouseDown={handleMouseDown}
+            className="bg-[--bark] text-[--porcelain] text-lg font-display font-bold p-3 rounded-t-2xl flex justify-between items-center cursor-move"
+          >
+            NovaBot ⭐️🤖
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-[--porcelain] text-xl font-bold px-2 hover:text-[--muted-terracotta]"
+              aria-label="Close chat"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-6 text-sm font-normal flex flex-col">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`w-fit max-w-[85%] p-2 rounded-xl ${
+                  msg.role === "user"
+                    ? "bg-[--bark] text-[--porcelain] self-end text-right"
+                    : "bg-[--deep-moss] text-[--porcelain] self-start text-left"
+                }`}
+              >
+                {msg.content}
+              </div>
+            ))}
+            {loading && <div className="text-left text-gray-500">NovaBot is typing...</div>}
+            <div ref={bottomRef} />
+          </div>
+
+          <div className="flex p-3 gap-2 border-t border-[--bark]">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              className="flex-1 px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-white text-[--bark]"
+              placeholder="Type a message..."
+            />
+            <button
+              onClick={handleSend}
+              className="bg-[--olive-stone] hover:bg-[--deep-moss] px-4 py-2 rounded-lg text-white font-semibold"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
