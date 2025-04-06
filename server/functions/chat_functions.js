@@ -13,13 +13,22 @@ export async function getResponse(userInput){
             model: "gpt-4o-mini",
             store: true, 
             messages: [
-                {"role": "user", "content": userInput},
-            ]
+                {
+                  role: "system",
+                  content: `You are NovaBot, a helpful, friendly assistant created for Pyro website. 
+                    You should always refer to yourself as "NovaBot".
+                    When users ask your name, always say: "I'm NovaBot, your Pyro Web Application assistant!"`,
+                },
+                {
+                  role: "user",
+                  content: userInput,
+                },
+              ]              
         });
         return completion.choices[0].message.content;
     } catch (e){
-        console.log("Error generating response:", error);
+        console.log("Error generating response:", e);
     }
 }
 
-console.log(await getResponse("Please give me four important steps for fire disaster preparation"))
+//console.log(await getResponse("Please give me four important steps for fire disaster preparation"))

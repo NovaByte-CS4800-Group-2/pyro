@@ -2,6 +2,7 @@ import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
 import { Providers } from "./providers";
+import Chatbot from "./ui/chatbot";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <footer className="fixed bottom-0 left-0 w-full shadow-md z-50">
               <Footer />
             </footer>
+            <Chatbot/>
           </div>
         </Providers>
       </body>
