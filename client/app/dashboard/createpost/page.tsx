@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input, Textarea } from "@heroui/react";
 import Button from "@/app/ui/button";
 import { useRouter } from "next/navigation";
@@ -12,16 +12,16 @@ export default function CreateContent() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [postContent, setPostContent] = useState({ body: "" });
-  const [subformId, setSubformId] = useState<string | null>(null);
+  const [subforumId, setSubforumId] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [user] = useAuthState(auth);
   const [posts, setPosts] = useState<any[]>([]);
 
-  // Fetch subform ID on component mount
+  // Fetch subforum ID on component mount
   useEffect(() => {
-    const fetchSubformId = async () => {
+    const fetchSubforumId = async () => {
       try {
         const response = await fetch("http://localhost:8080/subforums", {
           method: "GET",
@@ -32,7 +32,7 @@ export default function CreateContent() {
 
         if (!response.ok) {
           console.error("Server responded with error HTML or message:", text);
-          throw new Error("Failed to fetch subform ID.");
+          throw new Error("Failed to fetch subforum ID.");
         }
 
         let data;
@@ -42,18 +42,18 @@ export default function CreateContent() {
           console.error("Failed to parse JSON response:", error);
           throw new Error("Invalid response format.");
         }
-        if (data.subform_id) {
-          setSubformId(data.subform_id);
+        if (data.subforum_id) {
+          setSubforumId(data.subforum_id);
         } else {
-          throw new Error("Subform ID is undefined.");
+          throw new Error("Subforum ID is undefined.");
         }
       } catch (error) {
-        console.error("Error fetching subform ID:", error);
-        setErrorMessage("Failed to fetch subform ID.");
+        console.error("Error fetching subforum ID:", error);
+        setErrorMessage("Failed to fetch subforum ID.");
       }
     };
 
-    fetchSubformId();
+    fetchSubforumId();
     setIsOpen(true);
     setIsClient(true);
 
@@ -61,11 +61,11 @@ export default function CreateContent() {
   }, []);
 
   useEffect(() => {
-    if (subformId) {
+    if (subforumId) {
       const fetchPosts = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/posts/${subformId}`,
+            `http://localhost:8080/posts/${subforumId}`,
             {
               method: "GET",
               headers: { "Content-Type": "application/json" },
@@ -85,7 +85,7 @@ export default function CreateContent() {
       };
       fetchPosts();
     }
-  }, [subformId]);
+  }, [subforumId]);
 
   // Handle input changes for post content
   const handleChange = (
@@ -119,7 +119,7 @@ export default function CreateContent() {
         throw new Error("User ID is undefined.");
       }
 
-      formData.append("subform_id", subformId || "");
+      formData.append("subforum_id", subforumId || "");
       formData.append("body", postContent.body);
 
       files.forEach((file, index) => {
@@ -128,7 +128,7 @@ export default function CreateContent() {
       });
 
       // Re-fetch posts
-      const response = await fetch(`http://localhost:8080/posts/${subformId}`, {
+      const response = await fetch(`http://localhost:8080/posts/${subforumId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
