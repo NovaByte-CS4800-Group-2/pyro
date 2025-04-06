@@ -19,7 +19,7 @@ export default function Profile() {
 		name: "",
 		email: "",
 		zip_code: 0,
-		profile_picture: null,
+		profile_picture: "",
 		business_account: 0,
 	});
 	const [email, setEmail] = useState("");
@@ -41,7 +41,11 @@ export default function Profile() {
 				if (response.ok) {
 					const responseData = await response.json();
 					const { profile } = responseData;
-					const { user_id, username, name, email, zip_code, profile_picture, business_account } = profile;
+					const { user_id, username, name, email, zip_code, business_account } = profile;
+					let profile_picture = ""
+					if (user?.photoURL) {
+						profile_picture = user?.photoURL;
+					}
 					const userProf = {user_id, username, name, email, zip_code, profile_picture, business_account};
 					setUserProfile(userProf);
 				}
@@ -229,6 +233,7 @@ export default function Profile() {
 				const photoURL = await uploadImageToStorage(userId);
 				if (photoURL) {
 					await updateProfile({ photoURL });
+					userProfile.profile_picture = photoURL;
 					addToast({
 						color: "success",
 						title: "Profile Picture Change",
@@ -278,7 +283,7 @@ export default function Profile() {
 						<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
 					</CardHeader>
 					<CardBody className="pt-2">
-						<Avatar isBordered color="primary" src="" className="w-40 h-40" onClick={onOpen}/>
+						<Avatar className="w-40 h-40 hover:cursor-pointer" isBordered color="primary" src={userProfile.profile_picture} onClick={onOpen}/>
 					</CardBody>
 				</Card>
 				<div className="flex border-2 border-gray-500 rounded-xl p-2 max-w-[500px]">
