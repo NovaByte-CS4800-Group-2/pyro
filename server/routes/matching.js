@@ -29,30 +29,6 @@ router.get('/get/match/:id/:type', async(req, res) => {
   return res.status(200).json({ matches: matches })
 })
 
-router.get('/get/form/:id', async(req, res) => {
-  const {id} = req.params;
-
-  if(!id) return res.status(400).json({ error: "missing id"});
-
-  const form = await Matching.getForm(id);
-
-  if(!form) return res.status(204).json({ msg: "no form was found"});
-
-  return res.status(200).json({ form: form })
-})
-
-router.get('/get/forms/by/type/:type', async(req, res) => {
-  const {type} = req.params;
-
-  if(!type) return res.status(400).json({ error: "missing type"});
-
-  const forms = await Matching.getForms(type);
-
-  if(!forms) return res.status(204).json({ msg: "no forms were found"});
-
-  return res.status(200).json({ forms: forms })
-})
-
 router.delete('/delete/single/form/:id', async(req, res) => {
   const {id} = req.params;
 
