@@ -61,7 +61,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       const response = await fetch("http://localhost:8080/post/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content_id: contentId, newBody }),
+        body: JSON.stringify({ "content_id": contentId, "newBody": newBody }),
       });
 
       if (!response.ok) {
@@ -124,9 +124,9 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
             date={date}
             editeddate={editeddate}
             body={body}
-            contentId={parseInt(contentId)}
-            onDeletePost={deletePost} // Pass the deletePost function
-            onEditPost={onEditPost} // Pass the editPost function
+            contentId={36}
+            onDeletePost={() => deletePost(37)} // Pass the deletePost function
+            onEditPost={() => onEditPost(37, "hello~")} // Pass the editPost function
           />
         );
       }

@@ -12,7 +12,7 @@ export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [postContent, setPostContent] = useState({ body: "" });
-  const [city, setCity] = useState<string>("general"); // Default to "general"
+  const [city, setCity] = useState<string>("General"); // Default to "general"
   const [files, setFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
