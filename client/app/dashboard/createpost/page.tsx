@@ -18,7 +18,11 @@ export default function CreatePost() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [user] = useAuthState(auth);
   const [posts, setPosts] = useState<any[]>([]);
-  const [userData, setUserData] = useState<any>(null); // State for user data
+  const [userData, setUserData] = useState({
+    user_id: 0,
+    username: "",
+    city: "",
+  }); // State for user data
   const [subforums, setSubforums] = useState<any[]>([]); // State to store subforums
 
   // Fetch subforums
@@ -44,22 +48,36 @@ export default function CreatePost() {
       try {
         if (!user || !user.displayName) {
           setErrorMessage("User is not authenticated.");
+          console.log("User is not authenticated:", user);
           return;
         }
 
         console.log("Fetching user data for username:", user.displayName);
 
         const userResponse = await fetch(
-          `http://localhost:8080/profile/${user.displayName}`
+          `http://localhost:8080/profile/${user.displayName}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
         );
+
         if (!userResponse.ok) {
-          throw new Error("Failed to fetch user data.");
+          const errorData = await userResponse.json();
+          console.error("Error fetching user data:", errorData);
+          throw new Error(errorData.error || "Failed to fetch user data.");
         }
 
-        const userData = await userResponse.json();
-        console.log("Fetched user data:", userData);
+        const responseData = await userResponse.json();
+        console.log("Fetched user data:", responseData);
 
-        setUserData(userData.profile);
+        const { profile } = responseData;
+        if (!profile) {
+          throw new Error("Invalid user data received.");
+        }
+
+        setUserData(profile);
+        console.log("Updated userData state:", profile);
       } catch (error) {
         setErrorMessage("Failed to fetch user data.");
         console.error("Error fetching user data:", error);
@@ -67,6 +85,9 @@ export default function CreatePost() {
     };
 
     fetchUserData();
+  }, [user]);
+
+  useEffect(() => {
     setIsOpen(true);
     setIsClient(true);
 
@@ -106,19 +127,26 @@ export default function CreatePost() {
       return;
     }
 
+    if (!userData || !userData.city || !userData.username) {
+      setErrorMessage("User data is incomplete. Please try again.");
+      return;
+    }
+
     try {
-      // submit post
+      const requestBody = {
+        city: userData.city,
+        username: userData.username,
+        body: postContent.body,
+      };
+      console.log("Request body:", requestBody);
+
       const postResponse = await fetch("http://localhost:8080/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          city: userData.city,
-          username: userData.username,
-          user_id: userData.user_id,
-          subforum_id: subforumId,
-          body: postContent.body,
-        }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log("Post response:", postResponse);
 
       if (!postResponse.ok) {
         const errorData = await postResponse.json();
@@ -126,15 +154,9 @@ export default function CreatePost() {
       }
 
       const postData = await postResponse.json();
+      console.log("Post submitted successfully:", postData);
 
-      // Re-fetch posts
-      const response = await fetch(`http://localhost:8080/post/${subforumId}`);
-      const { posts: updatedPosts } = await response.json();
-      setPosts(updatedPosts);
-
-      console.log("Post submitted successfully!");
       router.push("/dashboard");
-      router.refresh();
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
