@@ -21,8 +21,8 @@ interface PostProps {
   editeddate: string;
   body: string;
   contentId: number;
-  onDeletePost: (contentId: number) => void; // Properly type the onDeletePost prop
-  onEditPost: (contentId: number, newBody: string) => void; // Properly type the onEditPost prop
+  onDeletePost: (contentId: number) => void; 
+  onEditPost: (contentId: number, newBody: string) => void; 
 }
 
 export default function Post({
