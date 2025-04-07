@@ -118,17 +118,14 @@ export default function CreatePost() {
 
     if (!postContent.body.trim()) {
       setErrorMessage("Post cannot be empty.");
-      return;
     }
 
     if (!city) {
       setErrorMessage("Please select a subforum.");
-      return;
     }
 
     if (!userData || !userData.username) {
       setErrorMessage("User data is incomplete. Please try again.");
-      return;
     }
 
     try {
