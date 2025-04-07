@@ -38,7 +38,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([{ role: "assistant", content: "Hi there! I'm NovaBot 🤖. How can I assist you today?" }]);
+      setMessages([{ role: "assistant", content: "Hi there! I'm NovaBot ⭐️🤖. Feel free to ask any questions related to fire safety and response!" }]);
     }
   }, [isOpen]);
 
