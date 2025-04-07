@@ -12,12 +12,11 @@ export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [postContent, setPostContent] = useState({ body: "" });
-  const [subforumId, setSubforumId] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null); // Use city instead of subforumId
   const [files, setFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [user] = useAuthState(auth);
-  const [posts, setPosts] = useState<any[]>([]);
   const [userData, setUserData] = useState({
     user_id: 0,
     username: "",
@@ -114,7 +113,7 @@ export default function CreatePost() {
 
     console.log("Submitting post...");
     console.log("Post content:", postContent.body);
-    console.log("Subforum ID:", subforumId);
+    console.log("City (subforum name):", city);
     console.log("User data:", userData);
 
     if (!postContent.body.trim()) {
@@ -122,19 +121,19 @@ export default function CreatePost() {
       return;
     }
 
-    if (!subforumId) {
+    if (!city) {
       setErrorMessage("Please select a subforum.");
       return;
     }
 
-    if (!userData || !userData.city || !userData.username) {
+    if (!userData || !userData.username) {
       setErrorMessage("User data is incomplete. Please try again.");
       return;
     }
 
     try {
       const requestBody = {
-        city: userData.city,
+        city, // Use the selected subforum name as city
         username: userData.username,
         body: postContent.body,
       };
@@ -199,22 +198,22 @@ export default function CreatePost() {
                 htmlFor="subforum"
                 className="block text-sm font-medium text-gray-700"
               >
-                Select Subforum
+                Select City
               </label>
               <select
                 id="subforum"
                 name="subforum"
-                value={subforumId || ""}
-                onChange={(e) => setSubforumId(e.target.value)}
+                value={city || ""}
+                onChange={(e) => setCity(e.target.value)} // Update city instead of subforumId
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
                 <option value="" disabled>
-                  -- Select a Subforum --
+                  -- Select a City --
                 </option>
                 {subforums.map((subforum) => (
                   <option
                     key={subforum.subforum_id}
-                    value={subforum.subforum_id}
+                    value={subforum.name} // Use subforum name as the value
                   >
                     {subforum.name}
                   </option>
