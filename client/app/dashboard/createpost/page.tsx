@@ -227,7 +227,7 @@ export default function CreatePost() {
               className="mb-4 w-full"
             />
 
-            {/* File input */}
+            {/* File input *}
             <Input
               type="file"
               multiple
@@ -263,12 +263,12 @@ export default function CreatePost() {
                 onClick={handleSubmit}
                 disabled={!postContent.body.trim()}
               />
-              <div className="flex justify-start">
+             {/* <div className="flex justify-start">
                 <Button
                   label="Add Media"
                   onClick={() => fileInputRef.current?.click()}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
