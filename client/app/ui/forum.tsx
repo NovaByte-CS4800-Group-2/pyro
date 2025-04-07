@@ -54,7 +54,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
 				const username = await getUser(user_id);
 
 				// Return the HTML content for each post
-				return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
+				return `<post key="${index}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}"></post>`;
 			})
 			);
 
@@ -73,14 +73,13 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
 				(domNode as Element).name === "post"
 			) {
 				const attribs = (domNode as any).attribs || {};
-				const { date, editeddate, body, username} = attribs;
+				const { key, date, editeddate, body, username} = attribs;
 				return (
-					<Post username={username} date={date} editeddate={editeddate} body={body} />
+					<Post key={key} username={username} date={date} editeddate={editeddate} body={body} />
 				);
 			}
 		},
 	});
-
 	return <>{parsedContent || <p>No posts available</p>}</>;
 };
 

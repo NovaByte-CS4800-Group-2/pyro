@@ -1,9 +1,8 @@
 import "@/app/globals.css";
 import { HandThumbDownIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@heroui/react";
-import { MouseEventHandler } from "react";
 
-export default function Post({ key = -1, username = "Default User", date = "", editeddate = "", body = "",}) {
+export default function Post({ username = "Default User", date = "", editeddate = "", body = "",}) {
 	let newDate = date.replace("T07:00:00.000Z", "");
 	let newEditDate;
 	if (editeddate == "null")
@@ -11,7 +10,7 @@ export default function Post({ key = -1, username = "Default User", date = "", e
 	else
 		newEditDate = editeddate.replace("T07:00:00.000Z", "");
 	return (
-    <div key={key} className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-clip shadow-md max-w-[700px]">
+    <div className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-clip shadow-md max-w-[700px]">
 		<div className="flex items-center gap-1 flex-col bg-neutral-300 p-2 font-bold text-sm max-w-20">
 			<p className="line-clamp-1 hover:line-clamp-none">{username}</p>
 			<Avatar className="min-w-[45px] min-h-[45px]" size="md" src={undefined} isBordered ></Avatar>
