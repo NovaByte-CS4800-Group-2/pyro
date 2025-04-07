@@ -12,7 +12,7 @@ export default function CreatePost() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [postContent, setPostContent] = useState({ body: "" });
-  const [city, setCity] = useState<string | null>(null); // Use city instead of subforumId
+  const [city, setCity] = useState<string>("general"); // Default to "general"
   const [files, setFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -195,7 +195,7 @@ export default function CreatePost() {
                 htmlFor="subforum"
                 className="block text-sm font-medium text-gray-700"
               >
-                Select City
+                Select Subforum
               </label>
               <select
                 id="subforum"
@@ -205,7 +205,7 @@ export default function CreatePost() {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
                 <option value="" disabled>
-                  -- Select a City --
+                  -- Select a Subforum --
                 </option>
                 {subforums.map((subforum) => (
                   <option
