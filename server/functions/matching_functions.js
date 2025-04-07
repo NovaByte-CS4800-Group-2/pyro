@@ -60,7 +60,7 @@ class Matching
     }
   }
 
-  static async getForm(form_id)
+  static async getForm(form_id)  // returns the form that is going to be used to find a match
   {
     try{
 
@@ -95,13 +95,36 @@ class Matching
               score ++;
         }
         if(score > 7)
-          matches.push(form.form_id);
+          matches.push(form);
       }
       if(matches.length === 0) return false;
       return matches;
 
     }catch(error){
       console.log("Error in match:", error)
+      return false;
+    }
+  }
+
+  static async deleteForm(form_id)  // deleting a single form
+  {
+    try{
+      const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id = ?", [form_id])
+            return result.affectedRows > 0;
+    }catch(error){
+      console.log("error in deleteForm:", error);
+      return false;
+    }
+  }
+
+  static async deleteForms(form_ids)  // deleting multiple forms
+  {
+    try{
+      const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id IN (?)", [form_ids])
+            return result.affectedRows > 0;
+    }catch(error){
+      console.log("error in deleteForms:", error);
+      return false;
     }
   }
 }
