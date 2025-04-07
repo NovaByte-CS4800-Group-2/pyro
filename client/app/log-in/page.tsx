@@ -101,10 +101,10 @@ export default function Login() {
   return (
     <main className="min-h-screen bg-[--sand] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
       <img
-      src="/images/slide1.png"
-      alt="login banner"
-      className="w-full max-w-xl rounded-xl shadow-lg mb-6 object-cover"
-    />
+        src="/images/slide1.png"
+        alt="login banner"
+        className="w-full max-w-xl rounded-xl shadow-lg mb-6 object-cover"
+      />
       <div className="w-full max-w-4xl bg-[--off-white] rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-display font-bold text-center mb-2">
           Log In
