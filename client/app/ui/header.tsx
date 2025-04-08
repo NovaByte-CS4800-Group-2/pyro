@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { FireIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -31,50 +31,52 @@ export default function Header() {
 
   if (pathname?.includes("register") || pathname?.includes("log-in")) {
     navContent = (
-      <nav className="flex justify-end items-center gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button label="Back" link="/" />
-      </nav>
+      </div>
     );
   } else if (!user && !userSession) {
     navContent = (
-      <nav className="flex justify-end items-center gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button link="/log-in" label="Log In" />
         <Button link="/register" label="Register" />
-      </nav>
+      </div>
     );
   } else if (!pathname?.includes("dashboard")) {
     navContent = (
-      <nav className="flex justify-end items-center gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button label="Dashboard" link="/dashboard" />
         <Button label="Logout" link="/logout" />
-      </nav>
+      </div>
     );
   } else {
     navContent = (
-      <nav className="flex justify-end items-center gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button label="Create Post" link="/dashboard/createpost" />
         <Button label="Logout" link="/logout" />
         <Link href="/dashboard/profile">
-          <Avatar className="w-10 h-10" isBordered src={user?.photoURL || undefined}></Avatar>
+          <Avatar className="w-10 h-10" isBordered src={user?.photoURL || undefined} />
         </Link>
-      </nav>
+      </div>
     );
   }
 
   return (
     <header
-      className="w-full shadow-md rounded-b-2xl px-6 py-4 flex justify-between items-center text-[--text-color]"
+      className="w-full shadow-md rounded-b-2xl px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 text-[--text-color]"
       style={{ backgroundColor: "var(--clay-beige)" }}
     >
-      <div className="w-1/3" />
+
+      <div className="w-full sm:w-1/3 flex justify-start" />
 
       {/* pyro logo */}
-      <Link href="/" className="flex items-center gap-2 w-1/3 justify-center">
+      <Link href="/" className="flex items-center gap-2 w-full sm:w-1/3 justify-center">
         <FireIcon className="w-8" style={{ color: "var(--deep-terracotta)" }} />
         <h1 className="text-3xl font-display font-bold text-[--bark]">Pyro</h1>
       </Link>
 
-      <div className="w-1/3 flex justify-end items-center gap-3">
+      
+      <div className= "w-full sm:w-1/3 flex justify-center sm:justify-end items-center gap-2 flex-wrap sm:flex-nowrap">
         {navContent}
       </div>
     </header>
