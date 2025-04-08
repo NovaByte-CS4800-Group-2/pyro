@@ -131,7 +131,7 @@ export default function CreatePost() {
 
     try {
       const requestBody = {
-        city, // Use the selected subforum name as city
+        city: city, // Use the selected subforum name as city
         username: userData.username,
         body: postContent.body,
       };
@@ -181,7 +181,7 @@ export default function CreatePost() {
 
     try {
       const requestBody = {
-        city: "Fundraiser", // Businesses can only post to fundraiser forum
+        city: city, // Businesses can only post to fundraiser forum
         username: userData.username,
         body: postContent.body,
       };
@@ -244,7 +244,7 @@ export default function CreatePost() {
             <h2 className="text-xl font-bold mb-4">New Post</h2>
 
             {/* Subforum selection */}
-            <div className="mb-4">
+            {!userData.business_account && <div className="mb-4">
               <label
                 htmlFor="subforum"
                 className="block text-sm font-medium text-gray-700"
@@ -266,21 +266,15 @@ export default function CreatePost() {
                     return <option
                       key={subforum.subforum_id}
                       value={subforum.name} // Use subforum name as the value
-                    >
-                      {subforum.name}
-                    </option>
-                  } else if (userData.business_account && subforum.subforum_id == 0) {
-                    return <option
-                      key={subforum.subforum_id}
-                      value={subforum.name} // Use subforum name as the value
+                      
                     >
                       {subforum.name}
                     </option>
                   }
                   })}
               </select>
-            </div>
-
+            </div>}
+  
             {/* Textarea for post content */}
             <Textarea
               name="body"
@@ -316,7 +310,7 @@ export default function CreatePost() {
                 </div>
               ))}
             </div>
-
+  
             {/* Action buttons */}
             <div className="flex justify-end">
               <Button label="Cancel" onClick={handleCancel} />
