@@ -181,7 +181,7 @@ export default function CreatePost() {
 
     try {
       const requestBody = {
-        city, // Use the selected subforum name as city
+        city: "Fundraiser", // Businesses can only post to fundraiser forum
         username: userData.username,
         body: postContent.body,
       };
@@ -213,7 +213,10 @@ export default function CreatePost() {
   // Handle cancel button click
   const handleCancel = (event: React.MouseEvent) => {
     event.preventDefault();
-    router.push("/dashboard");
+    if (userData.business_account){
+      router.push("/dashboard/fundraiser");
+    } else 
+    {router.push("/dashboard");}
   };
 
   if (!isClient) return null;
