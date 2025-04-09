@@ -1,12 +1,67 @@
+"use client";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import "@/app/globals.css";
 
-export default function Subforumbar() {
+type Subforum = {
+  subforum_id: number;
+  name: string;
+  zipcode: string;
+};
+
+interface SubforumbarProps {
+  className?: string;
+}
+
+export default function Subforumbar({ className }: SubforumbarProps) {
+  const [subforums, setSubforums] = useState<Subforum[]>([]);
+  const [selectedSubforumId, setSelectedSubforumId] = useState<number>(1); // Default to subforum_id 1
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const fetchSubforums = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/subforums");
+        const data = await res.json();
+        setSubforums(data.rows);
+      } catch (error) {
+        console.error("Failed to fetch subforums:", error);
+      }
+    };
+
+    fetchSubforums();
+  }, []);
+
+  // When pathname changes, update the selected subforum if it's in the URL
+  useEffect(() => {
+    const subforumMatch = pathname?.match(/\/subforum\/(\d+)/);
+    if (subforumMatch) {
+      setSelectedSubforumId(Number(subforumMatch[1]));
+    }
+  }, [pathname]);
+
   return (
-    <div className="flex flex-col min-w-1/6 bg-neutral-300 lg:text-xl md:text-lg sm:text-md font-bold max-w-30">
-	{/*<div className="fixed right-0 top-18 h-[calc(100vh-4.5rem)] w-60 bg-[--moss-green] flex flex-col lg:text-xl md:text-lg sm:text-md font-bold z-50">*/}
-		<Link href="" className="bg-neutral-200 border-neutral-400 p-5 border-2 text-center border-b-1 hover:bg-(--moss-green)">General</Link>
-		<Link href="" className="bg-neutral-200 border-neutral-400 p-5 border-2 text-center border-b-2 hover:bg-(--moss-green)">Example 1</Link>
-	</div>
+    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm ${className}`}>
+      <h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-300">
+        Subforums
+      </h2>
+      {subforums.map((sf) => {
+        const isSelected = selectedSubforumId === sf.subforum_id;
+        return (
+          <Link
+            key={sf.subforum_id}
+            href={`/dashboard/subforum/${sf.subforum_id}`}
+            className={`text-left px-4 py-3 border-b border-stone-200 transition-colors block
+              ${isSelected
+                ? "bg-stone-300 text-black font-semibold"
+                : "bg-white text-neutral-800 hover:bg-stone-200 hover:text-neutral-900"
+              }`}
+            onClick={() => setSelectedSubforumId(sf.subforum_id)} // Set selected subforum on click
+          >
+            {sf.name}
+          </Link>
+        );
+      })}
+    </div>
   );
 }
