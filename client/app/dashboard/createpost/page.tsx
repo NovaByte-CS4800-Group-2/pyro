@@ -21,6 +21,7 @@ export default function CreatePost() {
     user_id: 0,
     username: "",
     city: "",
+    business_account: 0,
   }); // State for user data
   const [subforums, setSubforums] = useState<any[]>([]); // State to store subforums
 
@@ -108,7 +109,7 @@ export default function CreatePost() {
   };
 
   // Handle form submission
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handlePersonalSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     console.log("Submitting post...");
@@ -130,7 +131,7 @@ export default function CreatePost() {
 
     try {
       const requestBody = {
-        city, // Use the selected subforum name as city
+        city: city, // Use the selected subforum name as city
         username: userData.username,
         body: postContent.body,
       };
@@ -159,10 +160,63 @@ export default function CreatePost() {
     }
   };
 
+  const handleBusinessSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    console.log("Submitting post...");
+    console.log("Post content:", postContent.body);
+    console.log("User data:", userData);
+
+    if (!postContent.body.trim()) {
+      setErrorMessage("Post cannot be empty.");
+    }
+
+    if (!city) {
+      setErrorMessage("Please select a subforum.");
+    }
+
+    if (!userData || !userData.username) {
+      setErrorMessage("User data is incomplete. Please try again.");
+    }
+
+    try {
+      const requestBody = {
+        city: city, // Businesses can only post to fundraiser forum
+        username: userData.username,
+        body: postContent.body,
+      };
+      console.log("Request body:", requestBody);
+
+      const postResponse = await fetch("http://localhost:8080/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log("Post response:", postResponse);
+
+      if (!postResponse.ok) {
+        const errorData = await postResponse.json();
+        throw new Error(errorData.error || "Failed to submit post.");
+      }
+
+      const postData = await postResponse.json();
+      console.log("Post submitted successfully:", postData);
+
+      router.push("/dashboard/fundraiser");
+    } catch (error: any) {
+      setErrorMessage(error.message || "An unexpected error occurred.");
+      console.error("Error submitting post:", error);
+    }
+  };
+
   // Handle cancel button click
   const handleCancel = (event: React.MouseEvent) => {
     event.preventDefault();
-    router.push("/dashboard");
+    if (userData.business_account){
+      router.push("/dashboard/fundraiser");
+    } else 
+    {router.push("/dashboard");}
   };
 
   if (!isClient) return null;
@@ -190,7 +244,7 @@ export default function CreatePost() {
             <h2 className="text-xl font-bold mb-4">New Post</h2>
 
             {/* Subforum selection */}
-            <div className="mb-4">
+            {!userData.business_account && <div className="mb-4">
               <label
                 htmlFor="subforum"
                 className="block text-sm font-medium text-gray-700"
@@ -207,17 +261,20 @@ export default function CreatePost() {
                 <option value="" disabled>
                   -- Select a Subforum --
                 </option>
-                {subforums.map((subforum) => (
-                  <option
-                    key={subforum.subforum_id}
-                    value={subforum.name} // Use subforum name as the value
-                  >
-                    {subforum.name}
-                  </option>
-                ))}
+                {subforums.map((subforum) => {                  
+                  if (!userData.business_account && subforum.subforum_id != 0) {
+                    return <option
+                      key={subforum.subforum_id}
+                      value={subforum.name} // Use subforum name as the value
+                      
+                    >
+                      {subforum.name}
+                    </option>
+                  }
+                  })}
               </select>
-            </div>
-
+            </div>}
+  
             {/* Textarea for post content */}
             <Textarea
               name="body"
@@ -253,14 +310,14 @@ export default function CreatePost() {
                 </div>
               ))}
             </div>
-
+  
             {/* Action buttons */}
             <div className="flex justify-end">
               <Button label="Cancel" onClick={handleCancel} />
               <Button
                 type="submit"
                 label="Post"
-                onClick={handleSubmit}
+                onClick={userData.business_account ? handleBusinessSubmit: handlePersonalSubmit}
                 disabled={!postContent.body.trim()}
               />
              {/* <div className="flex justify-start">

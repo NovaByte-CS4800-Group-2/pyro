@@ -85,6 +85,7 @@ export default function Profile() {
 				if (emailUpdating) {
 					addToast({
 						color: "primary",
+						variant: "bordered",
 						title: "Email Change",
 						description: "An email has been sent to your current email address. Please open it to confirm your change.",
 					});
@@ -94,36 +95,36 @@ export default function Profile() {
 					userProfile.email = email;
 					addToast({
 						color: "success",
+						variant: "bordered",
 						title: "Email Change",
 						description: "New email saved successfully!",
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});
 				}
 				else {
 					addToast({
 						color: "danger",
+						variant: "bordered",
 						title: "Email Change",
 						description: `FIREBASE ERROR >:( ${emailError}`,
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});
 				}
 			} else if (response.status == 400) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Email Change",
 					description: "An error occurred, please try again.",
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});
 			} else if (response.status == 406) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Email Change",
 					description: `${await response.json()}`,
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});	
 			}
 		}
@@ -142,36 +143,36 @@ export default function Profile() {
 					userProfile.username = username;
 					addToast({
 						color: "success",
+						variant: "bordered",
 						title: "Username Change",
 						description: "New username saved successfully!",
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});
 				}
 				else {
 					addToast({
 						color: "danger",
+						variant: "bordered",
 						title: "Username Change",
 						description: `FIREBASE ERROR >:( ${profileError}`,
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});
 				}
 			} else if (response.status == 400) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Username Change",
 					description: "An error occurred, please try again.",
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});
 			} else if (response.status == 406) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Username Change",
 					description: `The username ${username} is taken. Please select a different username.`,
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});				
 			}
 		}
@@ -189,26 +190,26 @@ export default function Profile() {
 				userProfile.zip_code = zipcodeNum;
 				addToast({
 					color: "success",
+					variant: "bordered",
 					title: "Zipcode Change",
 					description: "New zipcode saved successfully!",
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});
 			} else if (response.status == 400) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Zipcode Change",
 					description: "An error occurred, please try again.",
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});
 			} else if (response.status == 406) {
 				addToast({
 					color: "warning",
+					variant: "bordered",
 					title: "Zipcode Change",
 					description: `Invalid zipcode format. Please correct the error and try again.`,
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});				
 			}
 		}
@@ -245,29 +246,29 @@ export default function Profile() {
 					userProfile.profile_picture = photoURL;
 					addToast({
 						color: "success",
+						variant: "bordered",
 						title: "Profile Picture Change",
 						description: `New profile picture saved successfully!`,
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});	
 				}
 				else {
 					addToast({
 						color: "warning",
+						variant: "bordered",
 						title: "Profile Picture Change",
 						description: `No profile picture given. Please try again.`,
-						timeout: 5000,
-						shouldShowTimeoutProgress: true,
+						timeout: 1000,
 					});	
 				}
 			}
 			else {
 				addToast({
 					color: "danger",
+					variant: "bordered",
 					title: "Profile Picture Change",
 					description: `How did you get here??? You're not logged in!`,
-					timeout: 5000,
-					shouldShowTimeoutProgress: true,
+					timeout: 1000,
 				});	
 			}
 		} catch(e) {
