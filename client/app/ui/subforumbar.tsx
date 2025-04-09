@@ -41,7 +41,7 @@ export default function Subforumbar({ className }: SubforumbarProps) {
   }, [pathname]);
 
   return (
-    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm ${className}`}>
+    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm ${className}`}>
       <h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-300">
         Subforums
       </h2>

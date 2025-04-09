@@ -184,7 +184,7 @@ export default function CreatePost() {
 
     try {
       const requestBody = {
-        city: city, // Businesses can only post to fundraiser forum
+        city: "Fundraiser", // Businesses can only post to fundraiser forum
         username: userData.username,
         body: postContent.body,
       };

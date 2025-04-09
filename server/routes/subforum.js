@@ -7,7 +7,7 @@ const router = Router();  // groups together requests
 router.get('/subforums', async (req, res) => {
 
   try {
-    const [rows] = await pool.query("SELECT * FROM subforums")
+    const [rows] = await pool.query("SELECT * FROM subforums WHERE subforum_id > 0")
     return res.status(200).json({rows});
   } catch(e){
       console.log(e)
