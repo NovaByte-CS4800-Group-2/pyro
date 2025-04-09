@@ -7,8 +7,9 @@ const router = Router();  // groups together requests
 router.post('/post', async (req, res) => {
   const {city, username, body} = req.body;
 
-  if(!city || !username || !body)
-    return res.status(400).json({ error: "Missing value" });
+  if(!city) return res.status(400).json({ error: "Missing city" });
+  if(!username) return res.status(400).json({ error: "Missing username" });
+  if(!body) return res.status(400).json({ error: "Missing body" });
 
   const id = await Post.createPost(city, username, body);
 
