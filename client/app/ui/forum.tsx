@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 import parse, { DOMNode, Element } from "html-react-parser";
 import Post from "./post";
 
@@ -10,22 +12,35 @@ interface ForumProps {
 
 const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   const [html, setHtml] = useState<string>("");
+  const [isVerified, setIsVerified] = useState<boolean>(false); // Track user verification status
+  const [user] = useAuthState(auth);
+  const [currentUser, setCurrentUser] = useState<string>("Default User");
 
-  const getUser = async (user_id: String) => {
-    const fetchString = `http://localhost:8080/username/${user_id}`;
+  // Fetch the current user's verification status
+  const fetchUserVerification = async () => {
+    try {
+      if (!user || !user.displayName) {
+        console.error("User is not logged in or displayName is missing.");
+        return;
+      }
 
-    const response = await fetch(fetchString, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.ok) {
-      const contentData = await response.json();
-      const { username } = contentData;
-      return `${username}`;
-    } else {
-      return "Default User";
+      const response = await fetch(
+        `http://localhost:8080/profile/${user.displayName}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.ok) {
+        const userData = await response.json();
+        setIsVerified(userData.verified);
+        setCurrentUser(userData.username); // Set the current user's username
+      } else {
+        console.error("Failed to fetch user verification status.");
+      }
+    } catch (error) {
+      console.error("Error fetching user verification status:", error);
     }
   };
 
@@ -61,7 +76,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       const response = await fetch("http://localhost:8080/post/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "content_id": contentId, "newBody": newBody }),
+        body: JSON.stringify({ content_id: contentId, newBody: newBody }),
       });
 
       if (!response.ok) {
@@ -92,14 +107,14 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
     }
 
     const contentData = await response.json();
-		console.log("Fetched posts from backend:", contentData.posts); // Debug log
+    console.log("Fetched posts from backend:", contentData.posts); // Debug log
 
     // Use map to handle async operations
     const posts = await Promise.all(
       contentData.posts.map(async (post: any, index: any) => {
         const { post_date, last_edit_date, body, user_id, content_id } = post;
-				console.log("Post content_id:", content_id); // Debug log
-        const username = await getUser(user_id);
+        console.log("Post content_id:", content_id); // Debug log
+        const username = currentUser;
 
         // Return the HTML content for each post
         return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}"></post>`;
@@ -111,7 +126,8 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchUserVerification(); // Fetch verification status on component mount
+    fetchPosts(); // Fetch posts
   }, [subforumID]);
 
   const parsedContent = parse(html, {
@@ -119,22 +135,26 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       // Correctly type the domNode as Element
       if (domNode.type === "tag" && (domNode as Element).name === "post") {
         const attribs = (domNode as any).attribs || {};
-				console.log("Post attributes:", attribs); // Debug log
+        console.log("Post attributes:", attribs); // Debug log
         const { date, editeddate, body, username, contentid } = attribs;
 
-				console.log("Parse content_Id:", contentid); // Debug log
-				const parsedContentId = parseInt(contentid);
+        console.log("Parse content_Id:", contentid); // Debug log
+        const parsedContentId = parseInt(contentid);
 
         return (
           <Post
-						key={parsedContentId}
+            key={parsedContentId}
             username={username}
             date={date}
             editeddate={editeddate}
             body={body}
             contentId={parsedContentId}
+            isVerified={isVerified}
+            isOwner={user?.displayName === username}
             onDeletePost={() => deletePost(parsedContentId)} // Pass the deletePost function
-            onEditPost={(contentId: number, newBody: string) => onEditPost(contentId, newBody)} // Pass the editPost function
+            onEditPost={(contentId: number, newBody: string) =>
+              onEditPost(contentId, newBody)
+            } // Pass the editPost function
           />
         );
       }

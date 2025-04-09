@@ -21,8 +21,10 @@ interface PostProps {
   editeddate: string;
   body: string;
   contentId: number;
-  onDeletePost: (contentId: number) => void; 
-  onEditPost: (contentId: number, newBody: string) => void; 
+  isVerified: boolean;
+  isOwner: boolean;
+  onDeletePost: (contentId: number) => void;
+  onEditPost: (contentId: number, newBody: string) => void;
 }
 
 export default function Post({
@@ -31,6 +33,8 @@ export default function Post({
   editeddate = "",
   body = "",
   contentId = 0,
+  isVerified = false,
+  isOwner = false,
   onDeletePost,
   onEditPost,
 }: PostProps) {
@@ -91,6 +95,7 @@ export default function Post({
         </div>
 
         {/* Three Dots Menu */}
+        {isOwner && isVerified && (
         <div className="absolute bottom-2 right-2">
           <EllipsisVerticalIcon
             className="w-6 h-6 cursor-pointer hover:text-gray-600"
@@ -119,6 +124,7 @@ export default function Post({
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Confirmation Modal for Deletion */}
