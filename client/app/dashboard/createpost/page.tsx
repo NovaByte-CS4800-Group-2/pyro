@@ -153,7 +153,10 @@ export default function CreatePost() {
       const postData = await postResponse.json();
       console.log("Post submitted successfully:", postData);
 
-      router.push("/dashboard");
+      const res = await fetch(`http://localhost:8080/get/subforum/${city}`);
+      const data = await res.json();
+
+      router.push(`/dashboard/subforum/${data.subforumId}`);
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
@@ -211,12 +214,17 @@ export default function CreatePost() {
   };
 
   // Handle cancel button click
-  const handleCancel = (event: React.MouseEvent) => {
+  const handleCancel = async (event: React.MouseEvent) => {
     event.preventDefault();
     if (userData.business_account){
       router.push("/dashboard/fundraiser");
     } else 
-    {router.push("/dashboard");}
+    {
+      const res = await fetch(`http://localhost:8080/get/subforum/${city}`);
+      const data = await res.json();
+      
+      router.push(`/dashboard/subforum/${data.subforumId}`);
+    }
   };
 
   if (!isClient) return null;
