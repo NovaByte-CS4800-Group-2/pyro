@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/app/firebase/config";
 import parse, { DOMNode, Element } from "html-react-parser";
 import Post from "./post";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 
 interface ForumProps {
   subforumID?: string;
@@ -12,35 +12,61 @@ interface ForumProps {
 
 const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   const [html, setHtml] = useState<string>("");
-  const [isVerified, setIsVerified] = useState<boolean>(false); // Track user verification status
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const [user] = useAuthState(auth);
-  const [currentUser, setCurrentUser] = useState<string>("Default User");
 
-  // Fetch the current user's verification status
-  const fetchUserVerification = async () => {
+  // Function to fetch the logged-in user's ID
+  const fetchLoggedInUserId = async (username: string) => {
     try {
-      if (!user || !user.displayName) {
-        console.error("User is not logged in or displayName is missing.");
-        return;
-      }
-
       const response = await fetch(
-        `http://localhost:8080/profile/${user.displayName}`,
+        `http://localhost:8080/profile/${username}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
-      if (response.ok) {
-        const userData = await response.json();
-        setIsVerified(userData.verified);
-        setCurrentUser(userData.username); // Set the current user's username
+      if (!response.ok) {
+        throw new Error("Failed to fetch user ID");
+      }
+
+      const data = await response.json();
+      const { profile } = data;
+
+      if (profile && profile.user_id) {
+        setLoggedInUserId(profile.user_id);
       } else {
-        console.error("Failed to fetch user verification status.");
+        throw new Error("Invalid user data received");
       }
     } catch (error) {
-      console.error("Error fetching user verification status:", error);
+      console.error("Error fetching logged-in user ID:", error);
+    }
+  };
+
+  // Fetch the logged-in user's ID when the component mounts
+  useEffect(() => {
+    if (user && user.displayName) {
+      fetchLoggedInUserId(user.displayName);
+    }
+  }, [user]);
+
+  const getUser = async (user_id: String) => {
+    const fetchString = `http://localhost:8080/username/${user_id}`;
+
+    const response = await fetch(fetchString, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      const contentData = await response.json();
+      const { username } = contentData;
+      return `${username}`;
+    } else {
+      return "Default User";
     }
   };
 
@@ -114,10 +140,13 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       contentData.posts.map(async (post: any, index: any) => {
         const { post_date, last_edit_date, body, user_id, content_id } = post;
         console.log("Post content_id:", content_id); // Debug log
-        const username = currentUser;
+        const username = await getUser(user_id);
+
+        // Determine if the logged-in user is the owner of the post
+        const isOwner = user_id === loggedInUserId;
 
         // Return the HTML content for each post
-        return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}"></post>`;
+        return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
       })
     );
 
@@ -126,9 +155,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   useEffect(() => {
-    fetchUserVerification(); // Fetch verification status on component mount
-    fetchPosts(); // Fetch posts
-  }, [subforumID]);
+    if (loggedInUserId != null) {
+    fetchPosts();
+    }
+  }, [subforumID, loggedInUserId]);
 
   const parsedContent = parse(html, {
     transform: (reactNode: React.ReactNode, domNode: DOMNode) => {
@@ -149,12 +179,12 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
             editeddate={editeddate}
             body={body}
             contentId={parsedContentId}
-            isVerified={isVerified}
-            isOwner={user?.displayName === username}
-            onDeletePost={() => deletePost(parsedContentId)} // Pass the deletePost function
+            isVerified={true}
+            isOwner={attribs.isowner === "true"}
+            onDeletePost={() => deletePost(parsedContentId)}
             onEditPost={(contentId: number, newBody: string) =>
               onEditPost(contentId, newBody)
-            } // Pass the editPost function
+            }
           />
         );
       }
