@@ -2,6 +2,8 @@ import "@/app/globals.css";
 import {
   HandThumbDownIcon,
   HandThumbUpIcon,
+  ChatBubbleLeftIcon,
+  ShareIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -21,8 +23,10 @@ interface PostProps {
   editeddate: string;
   body: string;
   contentId: number;
-  onDeletePost: (contentId: number) => void; 
-  onEditPost: (contentId: number, newBody: string) => void; 
+  isVerified: boolean;
+  isOwner: boolean;
+  onDeletePost: (contentId: number) => void;
+  onEditPost: (contentId: number, newBody: string) => void;
 }
 
 export default function Post({
@@ -31,87 +35,71 @@ export default function Post({
   editeddate = "",
   body = "",
   contentId = 0,
+  isVerified = false,
+  isOwner = false,
   onDeletePost,
   onEditPost,
 }: PostProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // For the three dots menu
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // For delete confirmation
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // For edit modal
-  const [editedBody, setEditedBody] = useState(body); // State for edited post content
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editedBody, setEditedBody] = useState(body);
 
-  // Format the date strings
   const formattedDate = date.replace("T07:00:00.000Z", "");
   const formattedEditDate =
     editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", "");
 
-  // Handle the delete action
   const handleDelete = () => {
-    if (onDeletePost && contentId) {
-      onDeletePost(contentId); // Call the deletePost function with the contentId
-      setIsDeleteModalOpen(false); // Close the modal after deletion
-    }
+    onDeletePost(contentId);
+    setIsDeleteModalOpen(false);
   };
 
-  // Handle the edit action
   const handleEdit = () => {
-    if (onEditPost && contentId) {
-      onEditPost(contentId, editedBody); // Call the editPost function with the contentId and new body
-      setIsEditModalOpen(false); // Close the modal after editing
-    }
+    onEditPost(contentId, editedBody);
+    setIsEditModalOpen(false);
   };
 
   return (
-    <div className="bg-neutral-50 flex text-center ml-2 mr-2 rounded-md overflow-visible shadow-md max-w-[700px] p-4">
-      {/* User Info Section */}
-      <div className="flex items-center gap-1 flex-col bg-neutral-300 p-2 font-bold text-sm max-w-20">
-        <p className="line-clamp-1 hover:line-clamp-none">{username}</p>
-        <Avatar
-          className="min-w-[45px] min-h-[45px]"
-          size="md"
-          src={undefined}
-          isBordered
-        />
-        <div className="flex justify-center">
-          <HandThumbUpIcon className="w-1/3 hover:text-green-800" />
-          <HandThumbDownIcon className="w-1/3 hover:text-red-900" />
+    <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
+      {/* Top bar */}
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+        <div className="flex items-center gap-2">
+          <Avatar size="sm" isBordered className="w-6 h-6" />
+          <span className="font-semibold text-sm text-gray-700">
+            {username}
+          </span>
+          <span className="text-gray-400">•</span>
+          <span>
+            {formattedEditDate ? `Edited ${formattedEditDate}` : `Posted ${formattedDate}`}
+          </span>
         </div>
       </div>
 
       {/* Post Content Section */}
       <div className="flex flex-col flex-grow text-xs relative">
-        <div className="bg-neutral-300 flex justify-between pl-1 pr-1">
-          <p>Posted: {formattedDate}</p>
-          <p>
-            {formattedEditDate !== "" ? "Last Edited: " : ""}
-            {formattedEditDate}
-          </p>
-        </div>
-        <div className="overflow-auto p-1 pt-0.5 pb-0.5 text-start md:text-lg sm:text-sm">
-          {body}
-        </div>
-
         {/* Three Dots Menu */}
+        {isOwner && isVerified && (
         <div className="absolute bottom-2 right-2">
           <EllipsisVerticalIcon
-            className="w-6 h-6 cursor-pointer hover:text-gray-600"
-            onClick={() => setIsMenuOpen(!isMenuOpen)} // Toggle the menu
+            className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           />
           {isMenuOpen && (
-            <div className="absolute right-0 bottom-8 bg-white shadow-lg rounded-md p-2">
+            <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
               <button
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => {
                   setIsMenuOpen(false);
-                  setIsEditModalOpen(true); // Open the edit modal
+                  setIsEditModalOpen(true);
                 }}
               >
                 Edit
               </button>
               <button
-                className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-100"
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
                 onClick={() => {
                   setIsMenuOpen(false);
-                  setIsDeleteModalOpen(true); // Open the delete confirmation modal
+                  setIsDeleteModalOpen(true);
                 }}
               >
                 Delete
@@ -119,9 +107,36 @@ export default function Post({
             </div>
           )}
         </div>
+        )}
       </div>
 
-      {/* Confirmation Modal for Deletion */}
+      {/* Post content */}
+      <div className="text-sm text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
+        {body}
+      </div>
+
+      {/* Interaction bar */}
+      <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
+        <div className="flex items-center space-x-2">
+          <HandThumbUpIcon className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer" />
+          <span className="text-sm font-medium text-gray-700">123</span> {/* Replace with real vote count */}
+          <HandThumbDownIcon className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer" />
+        </div>
+
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+            <ChatBubbleLeftIcon className="w-4 h-4" />
+            <span>Comment</span>
+          </div>
+          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+            <ShareIcon className="w-4 h-4" />
+            <span>Share</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Delete Modal */}
       {isDeleteModalOpen && (
         <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
           <ModalContent>

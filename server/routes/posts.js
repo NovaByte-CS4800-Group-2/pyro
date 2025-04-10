@@ -7,12 +7,13 @@ const router = Router();  // groups together requests
 router.post('/post', async (req, res) => {
   const {city, username, body} = req.body;
 
-  if(!city || !username || !body)
-    return res.status(400).json({ error: "Missing value" });
+  if(!city) return res.status(400).json({ error: "Missing city" });
+  if(!username) return res.status(400).json({ error: "Missing username" });
+  if(!body) return res.status(400).json({ error: "Missing body" });
 
   const id = await Post.createPost(city, username, body);
 
-  if(!id) return res.status(406).json({ error : "problem getting the id"});
+  // if(!id) return res.status(406).json({ error : "problem getting the id"});
 
   return res.status(201).json({id: id});
 })
@@ -20,11 +21,11 @@ router.post('/post', async (req, res) => {
 router.get('/get/post/:id', async (req, res) => {  // get single post
   const { id } = req.params; // read subforum_id from URL parameters
 
-  if(!id) return res.status(400).json({ error: "Missing post_id" });
+  // if(!id) return res.status(400).json({ error: "Missing post_id" });
 
   const post = await Post.getUserPost(id);
 
-  if(!post || post.length === 0) return res.status(406).json({ error : "problem getting the post"});
+  // if(!post || post.length === 0) return res.status(406).json({ error : "problem getting the post"});
 
   return res.status(200).json({post});
 })
@@ -32,11 +33,11 @@ router.get('/get/post/:id', async (req, res) => {  // get single post
 router.get('/post/:id', async (req, res) => {  // get all posts from subforum
   const { id } = req.params; // read subforum_id from URL parameters
 
-  if(!id) return res.status(400).json({ error: "Missing subforum_id" });
+  // if(!id) return res.status(400).json({ error: "Missing subforum_id" });
 
   const posts = await Post.getSubforumPosts(id);
 
-  if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
+  // if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
 
   return res.status(200).json({posts});
 })

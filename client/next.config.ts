@@ -6,4 +6,8 @@ const nextConfig: NextConfig = {
   output: 'export', // enable static export 
 };
 
+// module.exports = {
+//   env: {
+//     NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY},
+// };
 export default nextConfig;
