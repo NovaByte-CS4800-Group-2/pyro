@@ -70,7 +70,9 @@ export default function Post({
           </span>
           <span className="text-gray-400">•</span>
           <span>
-            {formattedEditDate ? `Edited ${formattedEditDate}` : `Posted ${formattedDate}`}
+            {formattedEditDate
+              ? `Edited ${formattedEditDate}`
+              : `Posted ${formattedDate}`}
           </span>
         </div>
       </div>
@@ -79,34 +81,34 @@ export default function Post({
       <div className="flex flex-col flex-grow text-xs relative">
         {/* Three Dots Menu */}
         {isOwner && isVerified && (
-        <div className="absolute bottom-2 right-2">
-          <EllipsisVerticalIcon
-            className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          />
-          {isMenuOpen && (
-            <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
-              <button
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsEditModalOpen(true);
-                }}
-              >
-                Edit
-              </button>
-              <button
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsDeleteModalOpen(true);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        </div>
+          <div className="absolute bottom-2 right-2">
+            <EllipsisVerticalIcon
+              className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsEditModalOpen(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsDeleteModalOpen(true);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -119,21 +121,30 @@ export default function Post({
       <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
         <div className="flex items-center space-x-2">
           <HandThumbUpIcon className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer" />
-          <span className="text-sm font-medium text-gray-700">123</span> {/* Replace with real vote count */}
+          <span className="text-sm font-medium text-gray-700">123</span>{" "}
+          {/* Replace with real vote count */}
           <HandThumbDownIcon className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer" />
         </div>
 
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ChatBubbleLeftIcon className="w-4 h-4" />
-            <span>Comment</span>
+            <span>Comments</span>
           </div>
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ShareIcon className="w-4 h-4" />
             <span>Share</span>
           </div>
         </div>
+      </div>
 
+      {/*Leave a comment*/}
+      <div className="mt-4">
+        <textarea
+          className="w-full border rounded-md p-1 text-sm"
+          placeholder="Leave a comment..."
+        />
+        <div></div>
       </div>
 
       {/* Delete Modal */}
