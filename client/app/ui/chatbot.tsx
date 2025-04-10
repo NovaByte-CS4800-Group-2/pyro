@@ -7,6 +7,7 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const chatboxRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const offset = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
 
@@ -16,6 +17,9 @@ export default function Chatbot() {
     const userMessage: { role: "user"; content: string } = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; 
+    }
     setLoading(true);
 
     try {
@@ -120,6 +124,7 @@ export default function Chatbot() {
           <div className="flex flex-col border-t border-[--bark] px-3 py-2">
           <div className="flex gap-2 items-end">
             <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
