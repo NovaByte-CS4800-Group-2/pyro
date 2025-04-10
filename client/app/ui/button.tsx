@@ -19,7 +19,7 @@ export default function Button({
 }: ButtonProps) {
   if (link) {
     return (
-      <Link href={link} className="button">
+      <Link href={link} className="button whitespace-nowrap">
         {label}
       </Link>
     );
@@ -29,7 +29,7 @@ export default function Button({
         type={type}
         onClick={onClick}
         disabled={disabled}
-        className="button"
+        className="button whitespace-nowrap"
       >
         {label}
       </button>
