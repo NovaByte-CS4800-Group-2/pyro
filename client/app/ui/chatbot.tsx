@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
-
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
@@ -104,32 +103,38 @@ export default function Chatbot() {
           <div className="flex-1 overflow-y-auto p-4 space-y-6 text-sm font-normal flex flex-col">
             {messages.map((msg, idx) => (
               <div
-                key={idx}
-                className={`w-fit max-w-[85%] p-2 rounded-xl ${
-                  msg.role === "user"
-                    ? "bg-[--bark] text-[--porcelain] self-end text-right"
-                    : "bg-[--deep-moss] text-[--porcelain] self-start text-left"
-                }`}
+              key={idx}
+              className={`w-fit max-w-[85%] p-2 rounded-xl whitespace-pre-line ${
+                msg.role === "user"
+                  ? "bg-[--bark] text-[--porcelain] self-end text-right"
+                  : "bg-[--deep-moss] text-[--porcelain] self-start text-left"
+              }`}
               >
-                {msg.content}
+              {msg.content}
               </div>
             ))}
             {loading && <div className="text-left text-gray-500">NovaBot is typing...</div>}
             <div ref={bottomRef} />
           </div>
 
-          <div className="flex p-3 gap-2 border-t border-[--bark]">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              className="flex-1 px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-white text-[--bark]"
-              placeholder="Type a message..."
+          <div className="flex flex-col border-t border-[--bark] px-3 py-2">
+          <div className="flex gap-2 items-end">
+            <textarea
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            rows={1}
+            className="w-full px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-white text-[--bark] resize-none overflow-hidden leading-snug"
+            placeholder="Type a message..."
             />
             <button
               onClick={handleSend}
@@ -139,6 +144,7 @@ export default function Chatbot() {
             </button>
           </div>
         </div>
+      </div>
       )}
     </>
   );
