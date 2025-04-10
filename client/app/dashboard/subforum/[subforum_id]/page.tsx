@@ -24,5 +24,9 @@ export async function generateStaticParams() {
   return [
     { subforum_id: "1" },
     { subforum_id: "2" },
+    { subforum_id: "3" },
+    { subforum_id: "4" },
+    { subforum_id: "5" },
+    { subforum_id: "6" }
   ];
 }
