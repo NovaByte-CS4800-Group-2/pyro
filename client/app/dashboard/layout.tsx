@@ -1,9 +1,9 @@
 "use client";
 import "@/app/globals.css";
+import Navbar from "../ui/navbar";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
-import Navbar from "../ui/navbar";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@heroui/react";
 

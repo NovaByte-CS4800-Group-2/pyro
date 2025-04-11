@@ -5,6 +5,7 @@ import Subforumbar from "../ui/subforumbar";
 import Forum from "../ui/forum";
 
 export default function Dashboard() {
+  // Return html
   return (
     <>
       <div className="bg-[--greige-mist] flex-grow min-h-full pl-2 pr-2">

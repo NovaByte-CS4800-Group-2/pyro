@@ -1,15 +1,16 @@
 import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
-import { Providers } from "./providers";
 import Chatbot from "./ui/chatbot";
+import { Providers } from "./providers";
 import { auth } from "@/app/firebase/config";
 import { browserSessionPersistence } from "firebase/auth";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   // Set session persistence (log-out on close).
   auth.setPersistence(browserSessionPersistence);
-
+  
+  // Return html
   return (
     <html lang="en">
       <body>
