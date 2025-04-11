@@ -7,9 +7,9 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { Input } from "@heroui/input";
 import { useUpdateProfile } from 'react-firebase-hooks/auth';
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export default function Register() {
+  // Input States
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -18,10 +18,11 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [accountType, setAccountType] = useState("personalAccount");
 
+  // Create Account function
   const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [updateProfile, updating, error] = useUpdateProfile(auth);
 
+  // Error Validation State
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -32,8 +33,10 @@ export default function Register() {
     form: "",
   });
 
+  // Router to redirect the user.
   const router = useRouter();
 
+  // Sign Up function
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
     let formData = {
@@ -54,10 +57,8 @@ export default function Register() {
       });
 
       if (response.ok) {
-        const res1 = await createUserWithEmailAndPassword(email, password);
-        const res2 = await signInWithEmailAndPassword(email, password);
-        const usernameSuccess = updateProfile({displayName: username});
-        sessionStorage.setItem("user", String(true));
+        await createUserWithEmailAndPassword(email, password);
+        await updateProfile({displayName: username});
         router.push("/dashboard");
       } else {
         if (response.status === 400) {
@@ -96,6 +97,7 @@ export default function Register() {
     }
   };
 
+  // Return html
   return (
     <main className="min-h-screen bg-[--sand] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
       <img
