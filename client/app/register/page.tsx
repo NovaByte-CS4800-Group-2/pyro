@@ -20,7 +20,7 @@ export default function Register() {
 
   // Create Account function
   const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-  const [updateProfile, updating, error] = useUpdateProfile(auth);
+  const [updateProfile] = useUpdateProfile(auth);
 
   // Error Validation State
   const [errors, setErrors] = useState({

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { Input } from "@heroui/input";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import { Input } from "@heroui/input";
 
 export default function Login() {
   // Email and Password states
