@@ -8,9 +8,10 @@ import { auth } from "@/app/firebase/config";
 
 interface ForumProps {
   subforumID?: string;
+  userID?: string;
 }
 
-const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
+const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   const [html, setHtml] = useState<string>("");
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const [user] = useAuthState(auth);
@@ -118,7 +119,11 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   const fetchPosts = async () => {
-    const fetchString = `http://localhost:8080/post/${subforumID}`;
+    let fetchString = `http://localhost:8080/post/${subforumID}`;
+
+    if (userID !== "-1") {
+      fetchString =  `http://localhost:8080/userPosts/${userID}`;
+    }
 
     const response = await fetch(fetchString, {
       method: "GET",
