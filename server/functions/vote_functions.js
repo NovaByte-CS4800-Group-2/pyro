@@ -21,9 +21,9 @@ class Vote
         try {
             const [rows] = await pool.query("SELECT value from votes WHERE content_id = ? AND user_id = ?", [content_id, user_id])
 
-            if(rows.length == 0) return false;
+            if(rows.length == 0) return null;
 
-            return rows;
+            return rows[0].value[0];
 
         } catch (error) {
             console.error("Error in getVotes:", error);
@@ -35,6 +35,8 @@ class Vote
     {
         try {
             const [rows] = await pool.query("SELECT * from votes WHERE content_id = ?", [content_id])
+
+            if(rows.length == 0) return null
             return rows;
 
         } catch (error) {
@@ -62,6 +64,20 @@ class Vote
             return rows.length;
 
         } catch (error) {
+            console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
+    static async getTotalVotes(content_id)
+    {
+        try{
+            const upvotes = await this.getUpVotes(content_id);
+            const downvotes = await this.getDownVotes(content_id);
+            const total = upvotes - downvotes;
+            return total;
+
+        }catch (error) {
             console.error("Error in getVotes:", error);
             return null;
         }

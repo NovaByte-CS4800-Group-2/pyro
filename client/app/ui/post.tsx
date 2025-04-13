@@ -16,8 +16,10 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { useState } from "react";
+import Vote from './vote'
 
 interface PostProps {
+  userId: number;
   username: string;
   date: string;
   editeddate: string;
@@ -30,6 +32,7 @@ interface PostProps {
 }
 
 export default function Post({
+  userId = 0,
   username = "Default User",
   date = "",
   editeddate = "",
