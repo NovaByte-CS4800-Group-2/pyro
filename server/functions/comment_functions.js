@@ -98,4 +98,6 @@ class Comment
     }
 }
 
+
+//console.log(await Comment.createComment("General", "jess", "new comment!", 57))
 export default Comment;

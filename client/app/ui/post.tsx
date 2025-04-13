@@ -15,7 +15,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 interface PostProps {
   username: string;
@@ -44,21 +44,89 @@ export default function Post({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editedBody, setEditedBody] = useState(body);
-
   const formattedDate = date.replace("T07:00:00.000Z", "");
   const formattedEditDate =
     editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", "");
+  const [comment, setComment] = useState("")
+  const [newComment, setNewComment] = useState();
+  const [refreshComments, setRefreshComments] = useState("")
 
-  const handleDelete = () => {
+
+  const handleDelete = async () => {
     onDeletePost(contentId);
     setIsDeleteModalOpen(false);
+    try {
+      const res = await fetch(`http://localhost:8080/deleteComment}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }, 
+        body:  JSON.stringify({
+          comment_id: contentId})
+      })
+    } catch (e){
+      console.log("Could not delete comment:", e)
+    }
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     onEditPost(contentId, editedBody);
     setIsEditModalOpen(false);
   };
 
+  // const getCommentsData(contentId) {
+  //   console.log("hello")
+  // }
+  
+  const showComments = async () => {
+    console.log("postID:", contentId)
+      try {
+        const res = await fetch(`http://localhost:8080/comments/for/post/${contentId}`);
+        const data = await res.json();
+        if (data.comments == ""){
+          console.log("No comments to display")
+        } else {
+          const comments = data.comments;
+          comments.forEach((comment: { 
+            body: "", 
+            last_edit_date: "",
+            post_date: "", 
+            subforum_id: 0
+            user_id: 0}) => {
+
+            console.log("Updated Comment Data Body:", comment.body);
+            console.log("Last Edit Date:", comment.last_edit_date);
+            console.log("Post Date:", comment.post_date);
+            console.log("Subforum ID:", comment.subforum_id);
+
+          });}
+      } catch (error) {
+        console.error("Failed to fetch comments:", error);
+      }
+  }
+  
+
+  const postComment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("Comment:", comment);
+    setComment(comment);
+    try{
+      const res = await fetch(`http://localhost:8080/createComment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }, 
+        body:  JSON.stringify({
+          city: "Burbank" ,
+          username: "sample", 
+          body: comment, 
+          post_id: 2})
+      }); 
+    
+      console.log("Comment sucessfully posted!")
+      setComment("")
+    } catch (e){
+      console.log("Failed to post comment: ", e)
+    }
+  }
+
+  
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
@@ -128,8 +196,14 @@ export default function Post({
 
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
-            <ChatBubbleLeftIcon className="w-4 h-4" />
-            <span>Comments</span>
+            <Button
+              className="bg-white"
+              onPress={() => {
+                showComments();
+              }}>
+              <ChatBubbleLeftIcon className="w-4 h-4" />
+              Comments
+            </Button>
           </div>
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ShareIcon className="w-4 h-4" />
@@ -140,10 +214,19 @@ export default function Post({
 
       {/*Leave a comment*/}
       <div className="mt-4">
+        <form onSubmit={postComment}>
         <textarea
+          name = "comment"
           className="w-full border rounded-md p-1 text-sm"
           placeholder="Leave a comment..."
+          value = {comment}
+          onChange = {(e) => setComment(e.target.value)}
         />
+        <Button
+          type ="submit">
+          Submit
+        </Button>
+        </form>
         <div></div>
       </div>
 
