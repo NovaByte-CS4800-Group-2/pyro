@@ -15,11 +15,13 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Vote from './vote'
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 interface PostProps {
-  userId: number;
+  userId: string;
+  posterId: string;
   username: string;
   date: string;
   editeddate: string;
@@ -32,7 +34,8 @@ interface PostProps {
 }
 
 export default function Post({
-  userId = 0,
+  userId = "",
+  posterId = "",
   username = "Default User",
   date = "",
   editeddate = "",
@@ -52,6 +55,21 @@ export default function Post({
   const formattedEditDate =
     editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", "");
 
+  const storage = getStorage();
+  const [profileURL, setProfileURL] = useState("");
+
+  // Get user profile pic url.
+  useEffect(() => {
+    const storageRef = ref(storage, 'profilePics/' + posterId);
+      getDownloadURL(storageRef)
+      .then((url) => {
+        setProfileURL(url);
+      }).catch((e) => {
+        console.log(e);
+        // Do Nothing
+      })
+  }, [])
+
   const handleDelete = () => {
     onDeletePost(contentId);
     setIsDeleteModalOpen(false);
@@ -67,7 +85,7 @@ export default function Post({
       {/* Top bar */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
         <div className="flex items-center gap-2">
-          <Avatar size="sm" isBordered className="w-6 h-6" />
+          <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL}/>
           <span className="font-semibold text-sm text-gray-700">
             {username}
           </span>

@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 interface VoteProps {
   contentId: number;
-  userId: number;
+  userId: string;
 }
 
 export default function Vote({ contentId, userId }: VoteProps) {
