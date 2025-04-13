@@ -1,31 +1,17 @@
 'use client'
 
-import { FireIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import "@/app/globals.css";
-import { usePathname } from "next/navigation";
+import { FireIcon } from "@heroicons/react/24/outline";
+import { Avatar } from "@heroui/react";
+import Link from "next/link";
 import Button from "./button";
+import { usePathname } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Avatar } from "@heroui/react";
 
 export default function Header() {
   const pathname = usePathname();
   const [user] = useAuthState(auth);
-  const router = useRouter();
-
-  let userSession = null;
-  if (typeof window !== "undefined" && window.sessionStorage) {
-    userSession = sessionStorage.getItem("user");
-  }
-
-  useEffect(() => {
-    if (!user && !userSession) {
-      router.push("/");
-    }
-  }, [user, userSession, router]);
 
   let navContent = <></>;
 
@@ -35,7 +21,7 @@ export default function Header() {
         <Button label="Back" link="/" />
       </div>
     );
-  } else if (!user && !userSession) {
+  } else if (!user) {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button link="/log-in" label="Log In" />

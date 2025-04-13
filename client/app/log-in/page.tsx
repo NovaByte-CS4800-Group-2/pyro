@@ -12,7 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // Firebase sign In function
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword, firebaseUser, firebaseLoading, firebaseError] = useSignInWithEmailAndPassword(auth);
   // Error Validation
   const [errors, setErrors] = useState({
     email: "",
@@ -26,14 +26,42 @@ export default function Login() {
 
   // Only validate if the user has started typing.
   useEffect(() => {
-    if (isMounted == true) {
+    if (isMounted) {
       validateForm();
     } else {
       setIsMounted(true);
     }
   }, [email, password]);
 
-  // Function to validate form and show errors.
+  // Display sign in errors.
+  useEffect(() => {
+    if (firebaseError) {
+      switch (firebaseError.code) {
+        case 'auth/invalid-credential':
+          setErrors({
+            email: "",
+            password: "",
+            form: "Email and password do not match. Please try again.",
+          });
+          break;
+        case 'auth/invalid-email':
+          setErrors({
+            email: "Invalid email address.",
+            password: "",
+            form: "",
+          });
+          break;
+        default:
+          setErrors({
+            email: "",
+            password: "",
+            form: "Failed to sign in. Please try again.",
+          });
+      }
+    }
+  }, [firebaseError])
+
+  // Function to validate form and show errors for empty fields.
   const validateForm = () => {
     let errors = {
       email: "",
@@ -51,43 +79,16 @@ export default function Login() {
   };
 
   // Function to sign the user in with Firebase.
-  const handleSignIn = async (formData: FormData) => {
-    try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-      });
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
 
-      if (response.ok) {
-        await signInWithEmailAndPassword(email, password);
-        router.push("/dashboard");
-      } else {
-        if (response.status == 400) {
-          setErrors({
-            email: "",
-            password: "",
-            form: "Both email and password must be entered.",
-          });
-        } else if (response.status == 401) {
-          setErrors({
-            email: "",
-            password: "",
-            form: "The given email or password is incorrect. Please try again.",
-          });
-        } else {
-          setErrors({
-            email: "",
-            password: "",
-            form: "The given email or password is incorrect. Please try again.",
-          });
+    // Errors handled in useEffect for firebaseError.
+    signInWithEmailAndPassword(email, password)
+      .then(() => {
+        if (firebaseUser != undefined) {
+          router.push("/dashboard");
         }
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
+      })
   };
 
   // Return html
@@ -112,7 +113,7 @@ export default function Login() {
           </Link>
         </h2>
 
-        <form action={handleSignIn} className="space-y-6 font-normal">
+        <form onSubmit={handleSignIn} className="space-y-6 font-normal">
           {/* email input */}
           <div className="flex flex-col gap-1">
             <Input
@@ -164,11 +165,9 @@ export default function Login() {
             Log In
           </button>
 
-          {errors.form && (
-            <p className="text-sm text-red-500 text-center mt-2">
-              {errors.form}
-            </p>
-          )}
+          <p className="text-sm text-red-500 text-center mt-2">
+            {errors.form}
+          </p>
         </form>
       </div>
     </main>
