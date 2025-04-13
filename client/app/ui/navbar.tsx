@@ -14,12 +14,18 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-400 shadow-sm">
-      <h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-300">
+    <div className="flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm">
+      <h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-200">
         Navigation
       </h2>
       {navLinks.map((link) => {
-        const isActive = pathname === link.href;
+        const isActive =
+          (link.href === "/dashboard" && pathname.startsWith("/dashboard")) &&
+          !pathname.startsWith("/dashboard/fundraiser") &&
+          !pathname.startsWith("/dashboard/resources") &&
+          !pathname.startsWith("/dashboard/matching") ||
+          pathname === link.href;
+
         return (
           <Link
             key={link.href}
@@ -37,4 +43,3 @@ export default function Navbar() {
     </div>
   );
 }
-
