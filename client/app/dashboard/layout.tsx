@@ -1,26 +1,23 @@
 "use client";
+import "@/app/globals.css";
+import Navbar from "../ui/navbar";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
-import "@/app/globals.css";
-import Navbar from "../ui/navbar";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@heroui/react";
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Router for redirecting the user.
   const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
+  // Authentication functions
+  const [user] = useAuthState(auth);
   const [authenticating, setAuthenticating] = useState<Boolean>(true);
 
+  // Function to check if user is signed in.
   useEffect(() => {
     /* Check session */
-    let userSession = null;
-    if (typeof window !== "undefined" && window.sessionStorage) {
-      userSession = sessionStorage.getItem("user");
-    }
-    if (!user && !userSession) {
+    if (!user) {
       return router.push("/");
     }
     else {
@@ -28,10 +25,11 @@ export default function RootLayout({
     }
   }, [user]);
 
+  // Return html
   if (authenticating) {
     return (
       <div className="flex items-center justify-center flex-grow">
-        <CircularProgress className="pr-4" color="primary" aria-label="Loading..." /><h2 className="text-2xl font-bold">Authenticating ...</h2>
+        <CircularProgress className="pr-4" color="primary" aria-label="Authenticating ..." /><h2 className="text-2xl font-bold">Authenticating ...</h2>
       </div>
     );
   }

@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import {getAuth} from "firebase/auth"
-import { getAnalytics } from "firebase/analytics";
+import {initializeAuth, browserSessionPersistence} from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-librariesc
@@ -18,7 +17,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
-console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
-const auth = getAuth(app) //now expose this to application 
-export {app, auth}
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// Initialize auth with session persistence (log-out on close).
+const auth = initializeAuth(app, { persistence: browserSessionPersistence}); //now expose this to application 
+export {app, auth};
