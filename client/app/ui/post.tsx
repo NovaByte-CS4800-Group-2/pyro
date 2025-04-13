@@ -198,7 +198,7 @@ export default function Post({
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <Button
               className="bg-white"
-              onPress={() => {
+                onClick={() => {
                 showComments();
               }}>
               <ChatBubbleLeftIcon className="w-4 h-4" />
@@ -243,14 +243,14 @@ export default function Post({
                 <ModalFooter>
                   <Button
                     color="danger"
-                    onPress={() => {
+                    onClick={() => {
                       handleDelete();
                       onClose();
                     }}
                   >
                     Delete
                   </Button>
-                  <Button color="default" onPress={onClose}>
+                  <Button color="default" onClick={onClose}>
                     Cancel
                   </Button>
                 </ModalFooter>
@@ -277,14 +277,14 @@ export default function Post({
                 <ModalFooter>
                   <Button
                     color="primary"
-                    onPress={() => {
+                    onClick={() => {
                       handleEdit();
                       onClose();
                     }}
                   >
                     Save
                   </Button>
-                  <Button color="default" onPress={onClose}>
+                  <Button color="default" onClick={onClose}>
                     Cancel
                   </Button>
                 </ModalFooter>
