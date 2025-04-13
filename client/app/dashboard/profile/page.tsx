@@ -1,17 +1,17 @@
 "use client"
-import {addToast, Avatar, Button, CircularProgress, Input, useDisclosure} from "@heroui/react";
-import {Card, CardHeader, CardBody, Image, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter} from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import {addToast, Avatar, Button, Card, CardHeader, CardBody, CircularProgress, Input, 
+		Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
+import React, { useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
+import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function Profile() {
 	const router = useRouter();
-	const [user, loading, error] = useAuthState(auth);
+	const [user] = useAuthState(auth);
 	const [verifyBeforeUpdateEmail, emailUpdating, emailError] = useVerifyBeforeUpdateEmail(auth);
-	const [updateProfile, profileUpdating, profileError] = useUpdateProfile(auth);
+	const [updateProfile, profileError] = useUpdateProfile(auth);
 	const profileModal = useDisclosure();
 	const passwordModal = useDisclosure();
 	// User Info States (from database)
@@ -37,6 +37,7 @@ export default function Profile() {
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 
+	// Function to load user profile information.
 	useEffect(() => {
 		const loadProfile = async () => {
 			if (!user) {
@@ -61,11 +62,10 @@ export default function Profile() {
 				
 			}
 		};
-		if (userProfile.email === "") {
-			loadProfile();
-		}
+		loadProfile();
 	}, [user]);
 
+	// Function to set input states.
 	useEffect(() => {
 		setEmail(userProfile.email);
 		setUsername(userProfile.username);
@@ -129,6 +129,8 @@ export default function Profile() {
 			}
 		}
 	};
+
+	// Function to change username.
 	const saveUsername = async () => {
 		if (username !== userProfile.username) {
 			const user_id = userProfile.user_id;
@@ -177,6 +179,8 @@ export default function Profile() {
 			}
 		}
 	};
+
+	// Function to change zipcode.
 	const saveZipcode = async () => {
 		const zipcodeNum = parseInt(zipcode);
 		if (zipcodeNum !== userProfile.zip_code) {
@@ -214,12 +218,16 @@ export default function Profile() {
 			}
 		}
 	};
+
+	// Function to display profile image on file selection.
 	const onImageChange = (e: any) => {
 		if (e.target.files && e.target.files[0]) {
 			setProfilePic(e.target.files[0]);
 			setProfileURL(URL.createObjectURL(e.target.files[0]));
 		}
 	};
+
+	// Function to upload profile image to Firestore.
 	const uploadImageToStorage = async (userId: String) => {
 		const storage = getStorage();
 		const storageRef = ref(storage, 'profilePics/' + userId); // Create a reference
@@ -236,6 +244,8 @@ export default function Profile() {
 			return null;
 		}
 	};
+
+	// Function to update user profile picture.
 	const updateProfilePic = async () => {
 		try {
 			const userId = auth.currentUser?.uid;
@@ -275,9 +285,13 @@ export default function Profile() {
 			console.log(e);
 		}
 	};
+
+	// TODO: function to change user password.
 	const updateUserPassword = () => {
 		
 	}
+
+	// Function to toggle edit state.
 	const toggleEditting = () => {
 		if (editing) {
 			setEditing(false);
@@ -288,7 +302,7 @@ export default function Profile() {
 		}
 	};
 
-
+	// Return html
 	if (userProfile.email === "") {
 		return (
 			<div className="flex flex-col items-center justify-center flex-grow">

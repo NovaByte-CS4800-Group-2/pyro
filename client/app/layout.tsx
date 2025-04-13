@@ -1,10 +1,12 @@
 import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
-import { Providers } from "./providers";
 import Chatbot from "./ui/chatbot";
+import { Providers } from "./providers";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+  
+  // Return html
   return (
     <html lang="en">
       <body>

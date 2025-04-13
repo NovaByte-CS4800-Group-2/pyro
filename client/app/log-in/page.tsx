@@ -1,28 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import { signIn } from "next-auth/react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { signOut } from "firebase/auth";
 import { Input } from "@heroui/input";
 
 export default function Login() {
+  // Email and Password states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  // Firebase sign In function
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-  const [user] = useAuthState(auth);
-
-  let userSession = null;
-  console.log({ user });
-  if (typeof window !== "undefined" && window.sessionStorage) {
-    userSession = sessionStorage.getItem("user");
-  }
-
+  // Error Validation
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -30,9 +21,10 @@ export default function Login() {
   });
   const [isFormValid, setIsFormValid] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
+  // Router for redirecting the user.
   const router = useRouter();
 
+  // Only validate if the user has started typing.
   useEffect(() => {
     if (isMounted == true) {
       validateForm();
@@ -41,6 +33,7 @@ export default function Login() {
     }
   }, [email, password]);
 
+  // Function to validate form and show errors.
   const validateForm = () => {
     let errors = {
       email: "",
@@ -57,6 +50,7 @@ export default function Login() {
     setIsFormValid(!errors.email && !errors.password);
   };
 
+  // Function to sign the user in with Firebase.
   const handleSignIn = async (formData: FormData) => {
     try {
       const response = await fetch("http://localhost:8080/login", {
@@ -68,9 +62,7 @@ export default function Login() {
       });
 
       if (response.ok) {
-        const res = await signInWithEmailAndPassword(email, password);
-        sessionStorage.setItem("user", String(true));
-        const responseData = await response.json();
+        await signInWithEmailAndPassword(email, password);
         router.push("/dashboard");
       } else {
         if (response.status == 400) {
@@ -98,6 +90,7 @@ export default function Login() {
     }
   };
 
+  // Return html
   return (
     <main className="min-h-screen bg-[--sand] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
       <img
