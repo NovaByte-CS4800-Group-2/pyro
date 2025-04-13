@@ -2,7 +2,15 @@ import pool from "./pool.js";
 
 class Vote
 {
-    static async vote(content_id, user_id, value)  // a user votes (1 -> up, 0 -> down)
+    /**
+     * Casts or updates a vote.
+     * 
+     * @param {number} content_id - ID of the content (post or comment) being voted on
+     * @param {number} user_id - ID of the user casting the vote
+     * @param {number} value - Vote value (1 for upvote, 0 for downvote)
+     * @returns {boolean} - Returns true if vote was successful, false on error
+     */
+    static async vote(content_id, user_id, value)
     {
         try {
             await 
@@ -16,25 +24,40 @@ class Vote
         }
     }
 
+    /**
+     * Retrieves a specific user's vote on a piece of content.
+     * 
+     * @param {number} content_id - ID of the content
+     * @param {number} user_id - ID of the user
+     * @returns {number|null} - Returns vote value (0 or 1), or null if no vote exists
+     */
+
     static async getVote(content_id, user_id)
     {
         try {
             const [rows] = await pool.query("SELECT value from votes WHERE content_id = ? AND user_id = ?", [content_id, user_id])
 
-            if(rows.length == 0) return false;
-
-            return rows;
+            if(rows.length == 0) return null;
+            return rows[0].value[0];
 
         } catch (error) {
-            console.error("Error in getVotes:", error);
+            console.error("Error in getVote:", error);
             return null;
         }
     }
 
-    static async getVotes(content_id)  // get all votes for a content
+    /**
+     * Retrieves all vote records for a piece of content.
+     * 
+     * @param {number} content_id - ID of the content
+     * @returns {Array<Object>} - Array of vote objects or empty array on error
+     */
+    static async getVotes(content_id)
     {
         try {
             const [rows] = await pool.query("SELECT * from votes WHERE content_id = ?", [content_id])
+
+            if(rows.length == 0) return null;
             return rows;
 
         } catch (error) {
@@ -43,6 +66,12 @@ class Vote
         }
     }
 
+    /**
+     * Retrieves the number of upvotes for a piece of content.
+     * 
+     * @param {number} content_id - ID of the content
+     * @returns {number} - Number of upvotes, or 0 on error
+     */
     static async getUpVotes(content_id)
     {
         try {
@@ -55,6 +84,12 @@ class Vote
         }
     }
 
+    /**
+     * Retrieves the number of downvotes for a piece of content.
+     * 
+     * @param {number} content_id - ID of the content
+     * @returns {number} - Number of downvotes, or 0 on error
+     */
     static async getDownVotes(content_id)
     {
         try {
@@ -67,7 +102,33 @@ class Vote
         }
     }
 
-    static async getUserVotes(user_id)  // get all votes from a user
+    /**
+     * Calculates the net vote score for a piece of content (upvotes - downvotes).
+     * 
+     * @param {number} content_id - ID of the content
+     * @returns {number|null} - Net vote score, or null on error
+     */
+    static async getTotalVotes(content_id)
+    {
+        try{
+            const upvotes = await this.getUpVotes(content_id);  // get upvote count
+            const downvotes = await this.getDownVotes(content_id);  // get downvote count
+            const total = upvotes - downvotes;
+            return total;
+
+        }catch (error) {
+            console.error("Error in getVotes:", error);
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves all votes cast by a specific user.
+     * 
+     * @param {number} user_id - ID of the user
+     * @returns {Array<Object>} - Array of vote records or empty array on error
+     */
+    static async getUserVotes(user_id)
     {
         try {
             const [rows] = await pool.query("SELECT * from votes WHERE user_id = ?", [user_id])
@@ -79,7 +140,15 @@ class Vote
         }
     }
 
-    static async removeVote(content_id, user_id)  // a user removes a single vote
+    /**
+     * Removes a specific vote by a user on a piece of content.
+     * 
+     * @param {number} content_id - ID of the content
+     * @param {number} user_id - ID of the user
+     * @returns {boolean} - True if vote was deleted, false otherwise
+     */
+
+    static async removeVote(content_id, user_id) 
     {
         try{
             const [result] = await pool.query("DELETE FROM votes WHERE content_id = ? and user_id = ?", [content_id, user_id])
@@ -91,7 +160,13 @@ class Vote
         }
     }
 
-    static async removeVotes(content_ids)  // remove all votes associated with comment/post
+    /**
+     * Removes all votes associated with a list of content IDs.
+     * 
+     * @param {number[]} content_ids - Array of content IDs to remove votes for
+     * @returns {boolean} - True if any votes were deleted, false otherwise
+     */
+    static async removeVotes(content_ids) 
     {
         try{
             const [result] = await pool.query("DELETE FROM votes WHERE content_id IN (?)", [content_ids])
@@ -104,11 +179,4 @@ class Vote
     }
 }
 
-
-// console.log(await Vote.getVote(1, 1));
-// await Vote.vote(19, 1, 0);
-// await Vote.vote(19, 2, 0);
-// await Vote.vote(19, 3, 0);
-// await Vote.vote(19, 4, 1);
-// await Vote.removeVotes(14, [14]);
 export default Vote; 

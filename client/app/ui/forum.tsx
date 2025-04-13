@@ -178,6 +178,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
 
         return (
           <Post
+            userId={loggedInUserId ?? 0}
             key={parsedContentId}
             username={username}
             date={date}
