@@ -6,7 +6,7 @@ type Props = {
   params: { subforum_id: string };
 };
 
-export default function SubforumPage({ params }: Props) {
+export default async function SubforumPage({ params }: Props) {
   return (
     <>
       <div className="bg-[--greige-mist] flex-grow min-h-full pl-2 pr-2">

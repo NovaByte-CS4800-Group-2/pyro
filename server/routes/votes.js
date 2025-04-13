@@ -51,14 +51,14 @@ router.get('/content/votes/:id', async(req, res) => {  // dont think we really n
   res.status(200).json({ votes: votes})
 })
 
-router.get('/single/vote/:content/:user', async(req, res) => {  // rn returns the buffer, dont know how to return only 1 or 0
+router.get('/single/vote/:content/:user', async(req, res) => { 
   const { content, user } = req.params;
 
   if(!content || !user) return res.status(400).json( { error: "Missing values" });
 
   const vote = await Vote.getVote(content, user);
 
-  if(vote === false) return res.status(406).json({ error: "no vote exists"})
+  // if (vote === false) return res.status(200).json({ vote: null });
   res.status(200).json({ vote: vote})
 })
 
@@ -90,6 +90,16 @@ router.get('/content/up/votes/:id', async(req, res) => {
   const votes = await Vote.getUpVotes(id);
 
   res.status(200).json({ amount: votes})
+})
+
+router.get('/content/total/votes/:id', async(req, res) => {
+  const { id } = req.params;
+
+  if(!id) return res.status(400).json( { error: "Missing id" });
+
+  const votes = await Vote.getTotalVotes(id);
+
+  res.status(200).json({ totalVotes: votes})
 })
 
 export default router;
