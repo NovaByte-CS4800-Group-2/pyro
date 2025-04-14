@@ -133,13 +133,13 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
     }
 
     const contentData = await response.json();
-    console.log("Fetched posts from backend:", contentData.posts); // Debug log
+    //console.log("Fetched posts from backend:", contentData.posts); // Debug log
 
     // Use map to handle async operations
     const posts = await Promise.all(
       contentData.posts.map(async (post: any, index: any) => {
         const { post_date, last_edit_date, body, user_id, content_id } = post;
-        console.log("Post content_id:", content_id); // Debug log
+        //console.log("Post content_id:", content_id); // Debug log
         const username = await getUser(user_id);
 
         // Determine if the logged-in user is the owner of the post
@@ -163,10 +163,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       // Correctly type the domNode as Element
       if (domNode.type === "tag" && (domNode as Element).name === "post") {
         const attribs = (domNode as any).attribs || {};
-        console.log("Post attributes:", attribs); // Debug log
+        //console.log("Post attributes:", attribs); // Debug log
         const { date, editeddate, body, username, contentid } = attribs;
 
-        console.log("Parse content_Id:", contentid); // Debug log
+        //console.log("Parse content_Id:", contentid); // Debug log
         const parsedContentId = parseInt(contentid);
 
         return (
