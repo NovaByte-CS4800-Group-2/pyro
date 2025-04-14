@@ -5,6 +5,7 @@ import parse, { DOMNode, Element } from "html-react-parser";
 import Post from "./post";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { getServerSideProps } from "next/dist/build/templates/pages";
 
 interface ForumProps {
   subforumID?: string;

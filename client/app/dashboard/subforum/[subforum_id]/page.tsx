@@ -2,14 +2,16 @@ import Forum from "@/app/ui/forum";
 import Subforumbar from "../../../ui/subforumbar";
 
 // define the expected props shape for this page
-type Props = {
-  params: { subforum_id: string };
+interface Props  {
+  params: Promise <{ subforum_id: string }>;
 };
+
+export type paramsType = Promise <{subforum_id: string}>;
 
 // this is the dynamic page component for a given subforum ID
 export default async function SubforumPage(props: Props) {
   // await the `params` object before using its properties
-  const { subforum_id } = await props.params;
+  const { subforum_id } =  await props.params;
 
   return (
     <>
