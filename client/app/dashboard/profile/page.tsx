@@ -7,7 +7,7 @@ import { auth } from "@/app/firebase/config";
 import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Forum from "@/app/ui/forum";
-import { updateEmail } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword } from "firebase/auth";
 
 export default function Profile() {
 	const router = useRouter();
@@ -58,8 +58,8 @@ export default function Profile() {
 					if (user?.photoURL) {
 						profile_picture = user?.photoURL;
 					}
-					const email = user.email || "";
-					const userProf = {user_id, username, name, email, zip_code, profile_picture, business_account};
+					const userEmail = user.email || "error";
+					const userProf = {user_id, username, name, email: userEmail, zip_code, profile_picture, business_account};
 					setUserProfile(userProf);
 				}
 				
@@ -249,8 +249,38 @@ export default function Profile() {
 	};
 
 	// TODO: function to change user password.
-	const updateUserPassword = () => {
-		
+	const updateUserPassword = async () => {
+		if (user?.email) {
+			const credential = EmailAuthProvider.credential(
+				user.email,
+				password
+			)
+			if (credential) {
+				try {
+					await reauthenticateWithCredential(user, credential)
+					await updatePassword(user, newPassword);
+					addToast({
+						color: "success",
+						variant: "bordered",
+						title: "Password Change",
+						description: `New password saved successfully!`,
+						timeout: 1000,
+					});	
+				}
+				catch (e) {
+					addToast({
+						color: "danger",
+						variant: "bordered",
+						title: "Password Change",
+						description: `The given password was incorrect. Please try again.`,
+						timeout: 1000,
+					});	
+				}
+			}
+			setPassword("");
+			setNewPassword("");
+			setConfirmPassword("");
+		}
 	}
 
 	// Function to toggle edit state.
@@ -302,11 +332,11 @@ export default function Profile() {
 							{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
 							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onClick={saveZipcode} value="Change">Save</button>}
 						</div>
-						{/*<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
 							<p className="w-[5.5rem]">Password:</p>
 							<p className="font-semibold">*****</p>
 							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl" onClick={passwordModal.onOpen}>Change Password</button>}
-						</div>*/}
+						</div>
 						<button className="shadow-sm border-[1px] mt-3 border-gray-500 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-xl mr-auto px-3 py-0.5" onClick={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</button>
 					</div>
 					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
