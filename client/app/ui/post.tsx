@@ -1,9 +1,5 @@
 import "@/app/globals.css";
 import {
-  HandThumbDownIcon,
-  HandThumbUpIcon,
-  ChatBubbleLeftIcon,
-  ShareIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -64,7 +60,7 @@ export default function Post({
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 mb-4 pt-2">
         <div className="flex items-center gap-2">
           <Avatar size="sm" isBordered className="w-6 h-6" />
           <span className="font-semibold text-sm text-gray-700">
@@ -115,7 +111,7 @@ export default function Post({
       </div>
 
       {/* Post content */}
-      <div className="text-sm text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
+      <div className="text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
         {body}
       </div>
 
