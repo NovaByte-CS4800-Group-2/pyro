@@ -65,7 +65,6 @@ export default function Post({
       .then((url) => {
         setProfileURL(url);
       }).catch((e) => {
-        console.log(e);
         // Do Nothing
       })
   }, [])

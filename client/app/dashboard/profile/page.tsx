@@ -7,6 +7,7 @@ import { auth } from "@/app/firebase/config";
 import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Forum from "@/app/ui/forum";
+import { updateEmail } from "firebase/auth";
 
 export default function Profile() {
 	const router = useRouter();
@@ -52,11 +53,12 @@ export default function Profile() {
 				if (response.ok) {
 					const responseData = await response.json();
 					const { profile } = responseData;
-					const { user_id, username, name, email, zip_code, business_account } = profile;
+					const { user_id, username, name, zip_code, business_account } = profile;
 					let profile_picture = ""
 					if (user?.photoURL) {
 						profile_picture = user?.photoURL;
 					}
+					const email = user.email || "";
 					const userProf = {user_id, username, name, email, zip_code, profile_picture, business_account};
 					setUserProfile(userProf);
 				}
@@ -74,59 +76,18 @@ export default function Profile() {
 	}, [userProfile]);
 
 	const saveEmail = async () => {
-		if (email !== userProfile.email) {
-			const user_id = userProfile.user_id;
-			const response = await fetch(`http://localhost:8080/profile/editEmail`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body:JSON.stringify({ email, user_id }),
-			});
-			if (response.ok) {
-				const promise = verifyBeforeUpdateEmail(email, null);
-				if (emailUpdating) {
-					addToast({
-						color: "primary",
-						variant: "bordered",
-						title: "Email Change",
-						description: "An email has been sent to your current email address. Please open it to confirm your change.",
-					});
-				}
-				const res = await promise;
-				if (res) {
-					userProfile.email = email;
-					addToast({
-						color: "success",
-						variant: "bordered",
-						title: "Email Change",
-						description: "New email saved successfully!",
-						timeout: 1000,
-					});
-				}
-				else {
-					addToast({
-						color: "danger",
-						variant: "bordered",
-						title: "Email Change",
-						description: `FIREBASE ERROR >:( ${emailError}`,
-						timeout: 1000,
-					});
-				}
-			} else if (response.status == 400) {
+		if (email !== userProfile.email && auth.currentUser) {
+			const rep = await verifyBeforeUpdateEmail(email, null);
+			if (rep.valueOf()) {
 				addToast({
-					color: "warning",
+					color: "primary",
 					variant: "bordered",
 					title: "Email Change",
-					description: "An error occurred, please try again.",
-					timeout: 1000,
+					description: "An email has been sent to your new email address. Please open it to confirm your change.",
 				});
-			} else if (response.status == 406) {
-				addToast({
-					color: "warning",
-					variant: "bordered",
-					title: "Email Change",
-					description: `${await response.json()}`,
-					timeout: 1000,
-				});	
+			}
+			else {
+				console.log(emailError?.message);
 			}
 		}
 	};
@@ -331,11 +292,11 @@ export default function Profile() {
 							{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
 							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onClick={saveUsername} value="Change">Save</button>}
 						</div>
-						{/*<div className="flex border-2 border-gray-500 rounded-xl p-2 max-w-[500px]">
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
 							<p className="w-28">Change Email:</p>
-							<input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>
-							<button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onClick={saveEmail} value="Change">Save</button>
-						</div>*/}
+							{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
+							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onClick={saveEmail} value="Change">Save</button>}
+						</div>
 						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
 							<p className="w-[5.5rem]">Zipcode:</p>
 							{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
