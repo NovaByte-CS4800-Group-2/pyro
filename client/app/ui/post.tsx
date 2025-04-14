@@ -60,7 +60,7 @@ export default function Post({
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 mb-4 pt-2">
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 pt-2">
         <div className="flex items-center gap-2">
           <Avatar size="sm" isBordered className="w-6 h-6" />
           <span className="font-semibold text-sm text-gray-700">

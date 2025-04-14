@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 interface VoteProps {
   contentId: number;
-  userId: number;
+  userId?: number | null;
 }
 
 export default function Vote({ contentId, userId }: VoteProps) {
@@ -26,11 +26,11 @@ export default function Vote({ contentId, userId }: VoteProps) {
         const data1 = await res1.json();
         setTotalVotes(data1.totalVotes);  // set the total votes
 
-        const res2 = await fetch(`http://localhost:8080/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
-        const data2 = await res2.json();
-        setUserVote(data2.vote);  // set vote state 
-        console.log("data2.vote: " + data2.vote);
-
+        if (userId) {
+          const res2 = await fetch(`http://localhost:8080/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
+          const data2 = await res2.json();
+          setUserVote(data2.vote);  // set vote state
+        }
       } catch (error) {
         console.error("Failed to load votes:", error);
       }
@@ -39,24 +39,25 @@ export default function Vote({ contentId, userId }: VoteProps) {
   }, [contentId, userId]);
 
   const handleVote = async (value: number) => {
-    if (userVote === value) {  // same icon was clicked, remove vote
+    if (!userId) return;
 
+    if (userVote === value) { // same icon was clicked, remove vote
       await fetch(`http://localhost:8080/remove/vote/${contentId}/${userId}`, {
         method: "DELETE",
       });
-      
+
       setUserVote(null);  // vote was removed, rest value
       if (value === 1) setTotalVotes((prev) => prev - 1);  // update total
       else setTotalVotes((prev) => prev + 1);
     } else {  // send vote
 
-      await fetch("http://localhost:8080/vote", {  
+      await fetch("http://localhost:8080/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content_id: contentId,
           user_id: userId,
-          value: value,
+          value,
         }),
       });
 
@@ -75,36 +76,44 @@ export default function Vote({ contentId, userId }: VoteProps) {
   };
 
   return ( // display vote total and iconsfilled if theres a vote, outline otherwise
-    <div className="flex items-center space-x-2"> 
-      {userVote === 1 ? (
+    <div className="flex flex-col items-start space-y-1">
+      {userId ? (
+        <div className="flex items-center space-x-2">
+          {userVote === 1 ? (
 
-        // upvotes ,filled if theres a vote, outline otherwise
-        <UpFilled
-          className="w-5 h-5 text-emerald-700 cursor-pointer"
-          onClick={() => handleVote(1)}
-        />
+            // upvotes ,filled if theres a vote, outline otherwise
+            <UpFilled
+              className="w-5 h-5 text-emerald-700 cursor-pointer"
+              onClick={() => handleVote(1)}
+            />
+          ) : (
+            <HandThumbUpIcon
+              className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer"
+              onClick={() => handleVote(1)}
+            />
+          )}
+
+          <span className="text-sm font-medium text-gray-700">
+            {totalVotes}
+          </span>
+
+                {/* down votes */}
+          {userVote === 0 ? (
+            <DownFilled
+              className="w-5 h-5 text-red-800 cursor-pointer"
+              onClick={() => handleVote(0)}
+            />
+          ) : (
+            <HandThumbDownIcon
+              className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer"
+              onClick={() => handleVote(0)}
+            />
+          )}
+        </div>
       ) : (
-        <HandThumbUpIcon
-          className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer"
-          onClick={() => handleVote(1)}
-        />
-      )}
-
-      <span className="text-sm font-medium text-gray-700">
-        {totalVotes}
-      </span>
-
-      {/* down votes */}
-      {userVote === 0 ? (
-        <DownFilled
-          className="w-5 h-5 text-red-800 cursor-pointer"
-          onClick={() => handleVote(0)}
-        />
-      ) : (
-        <HandThumbDownIcon
-          className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer"
-          onClick={() => handleVote(0)}
-        />
+        <>
+          <p className="text-xs text-gray-500 italic">Please log in/register to vote.</p>
+        </>
       )}
     </div>
   );
