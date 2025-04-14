@@ -1,9 +1,5 @@
 import "@/app/globals.css";
 import {
-  HandThumbDownIcon,
-  HandThumbUpIcon,
-  ChatBubbleLeftIcon,
-  ShareIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -15,8 +11,8 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
-import { useEffect, useState } from "react";
-import Vote from './vote'
+import React, { useEffect, useState } from "react";
+import Comments from "./comments";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 interface PostProps {
@@ -82,7 +78,7 @@ export default function Post({
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 mb-4 pt-2">
         <div className="flex items-center gap-2">
           <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL}/>
           <span className="font-semibold text-sm text-gray-700">
@@ -90,7 +86,9 @@ export default function Post({
           </span>
           <span className="text-gray-400">•</span>
           <span>
-            {formattedEditDate ? `Edited ${formattedEditDate}` : `Posted ${formattedDate}`}
+            {formattedEditDate
+              ? `Edited ${formattedEditDate}`
+              : `Posted ${formattedDate}`}
           </span>
         </div>
       </div>
@@ -99,57 +97,46 @@ export default function Post({
       <div className="flex flex-col flex-grow text-xs relative">
         {/* Three Dots Menu */}
         {isOwner && isVerified && (
-        <div className="absolute bottom-2 right-2">
-          <EllipsisVerticalIcon
-            className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          />
-          {isMenuOpen && (
-            <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
-              <button
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsEditModalOpen(true);
-                }}
-              >
-                Edit
-              </button>
-              <button
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsDeleteModalOpen(true);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        </div>
+          <div className="absolute bottom-2 right-2">
+            <EllipsisVerticalIcon
+              className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsEditModalOpen(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsDeleteModalOpen(true);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
       {/* Post content */}
-      <div className="text-sm text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
+      <div className="text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
         {body}
       </div>
 
-      {/* Interaction bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
-      <Vote contentId={contentId} userId={userId} />
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
-            <ChatBubbleLeftIcon className="w-4 h-4" />
-            <span>Comment</span>
-          </div>
-          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
-            <ShareIcon className="w-4 h-4" />
-            <span>Share</span>
-          </div>
-        </div>
+      {/*Leave a comment*/}
+      <Comments contentId={contentId} />
 
-      </div>
+
 
       {/* Delete Modal */}
       {isDeleteModalOpen && (
