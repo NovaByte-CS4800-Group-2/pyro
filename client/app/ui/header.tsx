@@ -1,31 +1,20 @@
 'use client'
 
-import { FireIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import "@/app/globals.css";
-import { usePathname } from "next/navigation";
+import { BellIcon, FireIcon } from "@heroicons/react/24/outline";
+import { Avatar, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import Link from "next/link";
 import Button from "./button";
+import { usePathname } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Avatar } from "@heroui/react";
+import { useState } from "react";
+import Notifications from "./notifications";
 
 export default function Header() {
   const pathname = usePathname();
   const [user] = useAuthState(auth);
-  const router = useRouter();
-
-  let userSession = null;
-  if (typeof window !== "undefined" && window.sessionStorage) {
-    userSession = sessionStorage.getItem("user");
-  }
-
-  useEffect(() => {
-    if (!user && !userSession) {
-      router.push("/");
-    }
-  }, [user, userSession, router]);
+  const [isOpen, setIsOpen] = useState(false);
 
   let navContent = <></>;
 
@@ -35,7 +24,7 @@ export default function Header() {
         <Button label="Back" link="/" />
       </div>
     );
-  } else if (!user && !userSession) {
+  } else if (!user) {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button link="/log-in" label="Log In" />
@@ -54,6 +43,17 @@ export default function Header() {
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
         <Button label="Create Post" link="/dashboard/createpost" />
         <Button label="Logout" link="/logout" />
+        
+        <Popover offset={20} placement="bottom-end" isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+        <PopoverTrigger>
+          <BellIcon className="w-10 mx-1 hover:text-[--deep-moss] focus:text-[--deep-moss]" tabIndex={0} ></BellIcon>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="px-1 py-2 max-h-[300px] min-w-[300px] overflow-y-auto">
+            <Notifications></Notifications>
+          </div>
+        </PopoverContent>
+      </Popover>
         <Link href="/dashboard/profile">
           <Avatar className="w-10 h-10" isBordered src={user?.photoURL || undefined} />
         </Link>

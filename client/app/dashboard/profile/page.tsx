@@ -1,11 +1,13 @@
 "use client"
 import {addToast, Avatar, Button, Card, CardHeader, CardBody, CircularProgress, Input, 
-		Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@heroui/react";
+		Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tabs, Tab } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
 import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Forum from "@/app/ui/forum";
+import { EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword } from "firebase/auth";
 
 export default function Profile() {
 	const router = useRouter();
@@ -51,12 +53,13 @@ export default function Profile() {
 				if (response.ok) {
 					const responseData = await response.json();
 					const { profile } = responseData;
-					const { user_id, username, name, email, zip_code, business_account } = profile;
+					const { user_id, username, name, zip_code, business_account } = profile;
 					let profile_picture = ""
 					if (user?.photoURL) {
 						profile_picture = user?.photoURL;
 					}
-					const userProf = {user_id, username, name, email, zip_code, profile_picture, business_account};
+					const userEmail = user.email || "error";
+					const userProf = {user_id, username, name, email: userEmail, zip_code, profile_picture, business_account};
 					setUserProfile(userProf);
 				}
 				
@@ -73,59 +76,18 @@ export default function Profile() {
 	}, [userProfile]);
 
 	const saveEmail = async () => {
-		if (email !== userProfile.email) {
-			const user_id = userProfile.user_id;
-			const response = await fetch(`http://localhost:8080/profile/editEmail`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body:JSON.stringify({ email, user_id }),
-			});
-			if (response.ok) {
-				const promise = verifyBeforeUpdateEmail(email, null);
-				if (emailUpdating) {
-					addToast({
-						color: "primary",
-						variant: "bordered",
-						title: "Email Change",
-						description: "An email has been sent to your current email address. Please open it to confirm your change.",
-					});
-				}
-				const res = await promise;
-				if (res) {
-					userProfile.email = email;
-					addToast({
-						color: "success",
-						variant: "bordered",
-						title: "Email Change",
-						description: "New email saved successfully!",
-						timeout: 1000,
-					});
-				}
-				else {
-					addToast({
-						color: "danger",
-						variant: "bordered",
-						title: "Email Change",
-						description: `FIREBASE ERROR >:( ${emailError}`,
-						timeout: 1000,
-					});
-				}
-			} else if (response.status == 400) {
+		if (email !== userProfile.email && auth.currentUser) {
+			const rep = await verifyBeforeUpdateEmail(email, null);
+			if (rep.valueOf()) {
 				addToast({
-					color: "warning",
+					color: "primary",
 					variant: "bordered",
 					title: "Email Change",
-					description: "An error occurred, please try again.",
-					timeout: 1000,
+					description: "An email has been sent to your new email address. Please open it to confirm your change.",
 				});
-			} else if (response.status == 406) {
-				addToast({
-					color: "warning",
-					variant: "bordered",
-					title: "Email Change",
-					description: `${await response.json()}`,
-					timeout: 1000,
-				});	
+			}
+			else {
+				console.log(emailError?.message);
 			}
 		}
 	};
@@ -287,8 +249,38 @@ export default function Profile() {
 	};
 
 	// TODO: function to change user password.
-	const updateUserPassword = () => {
-		
+	const updateUserPassword = async () => {
+		if (user?.email) {
+			const credential = EmailAuthProvider.credential(
+				user.email,
+				password
+			)
+			if (credential) {
+				try {
+					await reauthenticateWithCredential(user, credential)
+					await updatePassword(user, newPassword);
+					addToast({
+						color: "success",
+						variant: "bordered",
+						title: "Password Change",
+						description: `New password saved successfully!`,
+						timeout: 1000,
+					});	
+				}
+				catch (e) {
+					addToast({
+						color: "danger",
+						variant: "bordered",
+						title: "Password Change",
+						description: `The given password was incorrect. Please try again.`,
+						timeout: 1000,
+					});	
+				}
+			}
+			setPassword("");
+			setNewPassword("");
+			setConfirmPassword("");
+		}
 	}
 
 	// Function to toggle edit state.
@@ -312,111 +304,126 @@ export default function Profile() {
 	}
 	else {
 		return (
-			<div className="m-6 flex flex-col flex-grow gap-y-5">
-				<Card shadow="lg" className="shadow-lg p-4 border-2 rounded-3xl w-fit h-fit">
-					<CardHeader className="py-2 px-6 flex-col items-start max-w-60">
-						<h3 className="font-bold text-3xl line-clamp-1 hover:line-clamp-none">{userProfile.username}</h3>
-						<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
-					</CardHeader>
-					<CardBody className="pt-2">
-						<Avatar className="w-40 h-40 hover:cursor-pointer" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
-					</CardBody>
-				</Card>
-				<div className="flex flex-col gap-y-3 border-2 border-gray-500 rounded-xl p-3 max-w-[500px]">
-					<p className="ml-2 mt-1 font-semibold">Personal Info</p>
-					<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-						<p className="w-[5.5rem]">Username:</p>
-						{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
-						{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onClick={saveUsername} value="Change">Save</button>}
+			<div className="flex-grow flex max-lg:flex-col m-6 gap-y-10 gap-x-[15%]">
+				<div className="flex flex-col gap-y-5 min-w-[40%]">
+					<Card shadow="lg" className="shadow-lg p-4 border-2 rounded-3xl w-fit h-fit">
+						<CardHeader className="py-2 px-6 flex-col items-start max-w-60">
+							<h3 className="font-bold text-3xl line-clamp-1 hover:line-clamp-none">{userProfile.username}</h3>
+							<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
+						</CardHeader>
+						<CardBody className="pt-2">
+							<Avatar className="w-40 h-40 hover:cursor-pointer" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
+						</CardBody>
+					</Card>
+					<div className="flex flex-col gap-y-3 border-2 border-gray-500 rounded-xl p-3 max-w-[500px]">
+						<p className="ml-2 mt-1 font-semibold">Personal Info</p>
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
+							<p className="w-[5.5rem]">Username:</p>
+							{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
+							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onClick={saveUsername} value="Change">Save</button>}
+						</div>
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
+							<p className="w-28">Change Email:</p>
+							{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
+							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onClick={saveEmail} value="Change">Save</button>}
+						</div>
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
+							<p className="w-[5.5rem]">Zipcode:</p>
+							{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
+							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onClick={saveZipcode} value="Change">Save</button>}
+						</div>
+						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
+							<p className="w-[5.5rem]">Password:</p>
+							<p className="font-semibold">*****</p>
+							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl" onClick={passwordModal.onOpen}>Change Password</button>}
+						</div>
+						<button className="shadow-sm border-[1px] mt-3 border-gray-500 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-xl mr-auto px-3 py-0.5" onClick={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</button>
 					</div>
-					{/*<div className="flex border-2 border-gray-500 rounded-xl p-2 max-w-[500px]">
-						<p className="w-28">Change Email:</p>
-						<input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>
-						<button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onClick={saveEmail} value="Change">Save</button>
-					</div>*/}
-					<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-						<p className="w-[5.5rem]">Zipcode:</p>
-						{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
-						{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onClick={saveZipcode} value="Change">Save</button>}
-					</div>
-					{/*<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-						<p className="w-[5.5rem]">Password:</p>
-						<p className="font-semibold">*****</p>
-						{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl" onClick={passwordModal.onOpen}>Change Password</button>}
-					</div>*/}
-					<button className="shadow-sm border-[1px] mt-3 border-gray-500 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-xl mr-auto px-3 py-0.5" onClick={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</button>
+					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
+						<ModalContent>
+						{(onClose) => (
+							<>
+								<ModalHeader className="flex flex-col gap-1">Change Profile Picture</ModalHeader>
+								<ModalBody>
+									<Input type="file" accept=".jpg, .jpeg, .png" onChange={onImageChange}></Input>
+									<img className="aspect-square max-w-[300px] object-cover rounded-full self-center" alt={profileURL ? "Profile Picture" : ""} src={profileURL ? profileURL : undefined}></img>
+								</ModalBody>
+								<ModalFooter>
+									<Button color="danger" variant="light" onPress={onClose}>
+									Close
+									</Button>
+									<Button color="primary" onPress={() => {onClose(); updateProfilePic();}}>
+									Save
+									</Button>
+								</ModalFooter>
+							</>
+						)}
+						</ModalContent>
+					</Modal>
+					<Modal isOpen={passwordModal.isOpen} onOpenChange={passwordModal.onOpenChange}>
+						<ModalContent>
+						{(onClose) => (
+							<>
+								<ModalHeader className="flex flex-col gap-1">Change Password</ModalHeader>
+								<ModalBody>
+									<Input
+										required
+										type="password"
+										label="Enter Old Password"
+										placeholder="••••••••"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										labelPlacement="outside"
+										className="w-full"
+									/>
+									<Input
+										required
+										type="password"
+										label="Enter New Password"
+										placeholder="••••••••"
+										value={newPassword}
+										onChange={(e) => setNewPassword(e.target.value)}
+										labelPlacement="outside"
+										className="w-full"
+									/>
+									<Input
+										required
+										type="password"
+										label="Confirm Password"
+										placeholder="••••••••"
+										value={confirmPassword}
+										onChange={(e) => setConfirmPassword(e.target.value)}
+										labelPlacement="outside"
+										className="w-full"
+									/>
+									{confirmPassword != "" && confirmPassword != newPassword ? <p className="text-red-400 text-sm">Passwords do not match.</p> : <></>}
+								</ModalBody>
+								<ModalFooter>
+									<Button color="danger" variant="light" onPress={onClose}>
+									Close
+									</Button>
+									<Button color="primary" onPress={() => {onClose(); updateUserPassword();}}>
+									Save
+									</Button>
+								</ModalFooter>
+							</>
+						)}
+						</ModalContent>
+					</Modal>
 				</div>
-				<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
-					<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">Change Profile Picture</ModalHeader>
-							<ModalBody>
-								<Input type="file" accept=".jpg, .jpeg, .png" onChange={onImageChange}></Input>
-								<img className="aspect-square max-w-[300px] object-cover rounded-full self-center" alt={profileURL ? "Profile Picture" : ""} src={profileURL ? profileURL : undefined}></img>
-							</ModalBody>
-							<ModalFooter>
-								<Button color="danger" variant="light" onPress={onClose}>
-								Close
-								</Button>
-								<Button color="primary" onPress={() => {onClose(); updateProfilePic();}}>
-								Save
-								</Button>
-							</ModalFooter>
-						</>
-					)}
-					</ModalContent>
-				</Modal>
-				<Modal isOpen={passwordModal.isOpen} onOpenChange={passwordModal.onOpenChange}>
-					<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">Change Password</ModalHeader>
-							<ModalBody>
-								<Input
-									required
-									type="password"
-									label="Enter Old Password"
-									placeholder="••••••••"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									labelPlacement="outside"
-									className="w-full"
-								/>
-								<Input
-									required
-									type="password"
-									label="Enter New Password"
-									placeholder="••••••••"
-									value={newPassword}
-									onChange={(e) => setNewPassword(e.target.value)}
-									labelPlacement="outside"
-									className="w-full"
-								/>
-								<Input
-									required
-									type="password"
-									label="Confirm Password"
-									placeholder="••••••••"
-									value={confirmPassword}
-									onChange={(e) => setConfirmPassword(e.target.value)}
-									labelPlacement="outside"
-									className="w-full"
-								/>
-								{confirmPassword != "" && confirmPassword != newPassword ? <p className="text-red-400 text-sm">Passwords do not match.</p> : <></>}
-							</ModalBody>
-							<ModalFooter>
-								<Button color="danger" variant="light" onPress={onClose}>
-								Close
-								</Button>
-								<Button color="primary" onPress={() => {onClose(); updateUserPassword();}}>
-								Save
-								</Button>
-							</ModalFooter>
-						</>
-					)}
-					</ModalContent>
-				</Modal>
+				<div className="flex flex-col flex-grow gap-y-5">
+					<Card>
+						<CardBody>
+							<Tabs>
+								<Tab key="posts" title="Posts">
+									<Forum userID={String(userProfile.user_id)}></Forum>
+								</Tab>
+								{/*<Tab key="comments" title="Comments">
+								</Tab>*/}
+							</Tabs>
+						</CardBody>
+					</Card>
+				</div>
 			</div>
 		);
 	}

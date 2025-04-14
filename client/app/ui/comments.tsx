@@ -16,7 +16,7 @@ const smallThumbsStyle = `
 
 interface Comment {
   content_id: number;
-  user_id: number;
+  user_id: string;
   body: string;
   post_date: string;
   last_edit_date?: string;  // Added this field for edit date
@@ -33,7 +33,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState({
-    user_id: 0,
+    user_id: "",
     username: "",
     city: "",
     business_account: 0,

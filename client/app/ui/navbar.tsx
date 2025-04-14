@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
-
+  console.log("Pathname", pathname)
   const navLinks = [
     { href: "/dashboard", label: "Forum" },
     { href: "/dashboard/fundraiser", label: "Fundraisers" },
@@ -19,12 +19,18 @@ export default function Navbar() {
         Navigation
       </h2>
       {navLinks.map((link) => {
+        // const isActive =
+        //   (link.href === "/dashboard" && pathname.startsWith("/dashboard")) &&
+        //   !pathname.startsWith("/dashboard/fundraiser") &&
+        //   !pathname.startsWith("/dashboard/resources") &&
+        //   !pathname.startsWith("/dashboard/matching") ||
+        //   pathname === link.href;
         const isActive =
-          (link.href === "/dashboard" && pathname.startsWith("/dashboard")) &&
-          !pathname.startsWith("/dashboard/fundraiser") &&
-          !pathname.startsWith("/dashboard/resources") &&
-          !pathname.startsWith("/dashboard/matching") ||
-          pathname === link.href;
+        pathname && // Ensure pathname is not null or undefined
+        link.href === "/dashboard" && pathname.startsWith("/dashboard") &&
+        !pathname.startsWith("/dashboard/fundraiser") &&
+        !pathname.startsWith("/dashboard/resources") &&
+        !pathname.startsWith("/dashboard/matching");
 
         return (
           <Link
