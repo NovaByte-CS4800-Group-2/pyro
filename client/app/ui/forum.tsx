@@ -155,11 +155,9 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   useEffect(() => {
-    if (loggedInUserId != null) {
     fetchPosts();
-    }
-  }, [subforumID, loggedInUserId]);
-
+  }, [subforumID]);
+  
   const parsedContent = parse(html, {
     transform: (reactNode: React.ReactNode, domNode: DOMNode) => {
       // Correctly type the domNode as Element
