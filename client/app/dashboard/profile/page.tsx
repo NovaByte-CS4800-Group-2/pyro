@@ -418,8 +418,8 @@ export default function Profile() {
 								<Tab key="posts" title="Posts">
 									<Forum userID={String(userProfile.user_id)}></Forum>
 								</Tab>
-								<Tab key="comments" title="Comments">
-								</Tab>
+								{/*<Tab key="comments" title="Comments">
+								</Tab>*/}
 							</Tabs>
 						</CardBody>
 					</Card>
