@@ -1,29 +1,14 @@
 import pool from './pool.js'
-import {hash} from './sha256.js'
 import Register from './register_functions.js'
 
-class Profile {
-
-    static async addImage(file, user_id)
-    { // where should i add the update image section
-        try {
-            await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
-            return true;
-        } catch(error){
-            console.error("Error in addImage:", error);
-            return false;
-        }
-    }
-
-    static async updateImage(file, user_id){
-        try {
-            await pool.query("UPDATE users SET profile_picture = ? WHERE user_id = ?", [file, user_id]);
-            return true;
-        } catch (error) {
-            console.error("Error in editImage:", error);
-        }
-    }
-
+class Profile 
+{
+    /**
+     * Changes a user's username if it's not taken.
+     * @param {string} newUsername - The new username the user wants to change to
+     * @param {number} user_id - User id for the user
+     * @returns {boolean} - Return true if username is valid, false otherwise
+     */
     static async editUsername(newUsername, user_id)
     {
         try{
@@ -38,6 +23,11 @@ class Profile {
         }
     }
 
+    /**
+     * Gets a user's current username.
+     * @param {number} user_id - User id for the user
+     * @returns {string|null} - Returns the username if it exists, null if undefined
+     */
     static async getUsername(user_id)
     {
         try{
@@ -49,6 +39,44 @@ class Profile {
             return null;
           }
     }
+
+    /**
+     * Updates the user's ZIP code if valid.
+     * @param {string} newZipcode - The updated zipcode of the user
+     * @param {number} user_id - User id for the user
+     * @returns {boolean} - Return true if zipcode is valid, false otherwise
+     */
+    static async editZipcode(newZipcode, user_id)
+    {
+        try {
+            if(!Register.validateZipCode(newZipcode)) return false;
+
+            await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
+            return true;
+        } catch (error){
+            console.log("Error in editZipcode:", error)
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves a user's full profile by username.
+     * @param {string} username - The username of the user
+     * @returns {Object|null} -  Return the profile if it exists, null otherwise
+     */
+    static async getProfile(username)
+    {
+        try{
+            const [rows] = await pool.query("SELECT * from users where username = ?", [username])
+            return rows.length > 0 ? rows[0] : null;
+        }
+        catch (error) {
+            console.error("Error in getProfile:", error);
+            return null;
+        }
+    }
+
+//--------------------------------- EVENTUALLY TAKE OUT ---------------------------------
 
     static async editEmail(newEmail, user_id){
         try {
@@ -80,35 +108,6 @@ class Profile {
         }
     }
 
-    static async editZipcode(newZipcode, user_id){
-        try {
-            if(!Register.validateZipCode(newZipcode)) return false;
-
-            await pool.query("UPDATE users SET zip_code = ? WHERE user_id = ?", [newZipcode, user_id])
-            return true;
-        } catch (error){
-            console.log("Error in editZipcode:", error)
-            return false;
-        }
-    }
-
-    static async getProfile(username)
-    {
-        try{
-            const [rows] = await pool.query("SELECT * from users where username = ?", [username])
-            return rows.length > 0 ? rows[0] : null;
-        }
-        catch (error) {
-            console.error("Error in getProfile:", error);
-            return null;
-        }
-    }
-
 }
 
-// const check = await Profile.editUsername("natalie", 1);
-// if(!check)
-// {
-//     console.log("correctly denied")
-// }
 export default Profile;

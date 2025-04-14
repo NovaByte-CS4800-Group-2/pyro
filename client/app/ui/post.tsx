@@ -16,8 +16,10 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { useState } from "react";
+import Vote from './vote'
 
 interface PostProps {
+  userId: number;
   username: string;
   date: string;
   editeddate: string;
@@ -30,6 +32,7 @@ interface PostProps {
 }
 
 export default function Post({
+  userId = 0,
   username = "Default User",
   date = "",
   editeddate = "",
@@ -117,12 +120,7 @@ export default function Post({
 
       {/* Interaction bar */}
       <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
-        <div className="flex items-center space-x-2">
-          <HandThumbUpIcon className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer" />
-          <span className="text-sm font-medium text-gray-700">123</span> {/* Replace with real vote count */}
-          <HandThumbDownIcon className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer" />
-        </div>
-
+      <Vote contentId={contentId} userId={userId} />
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ChatBubbleLeftIcon className="w-4 h-4" />

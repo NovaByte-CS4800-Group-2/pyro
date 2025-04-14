@@ -1,7 +1,29 @@
 import pool from './pool.js'
 
+/**
+ * Class for managing wildfire evacuation housing match requests.
+ * Handles form creation, retrieval, deletion, and matching logic.
+ */
 class Matching
 {
+
+  /**
+   * Creates a new matching form for a user if one doesn't already exist.
+   *
+   * @param {number} user_id - ID of the user submitting the form.
+   * @param {string} type - Type of form ("offering" or "requesting").
+   * @param {number} num_rooms - Number of rooms available or needed.
+   * @param {number} num_people - Number of people to accommodate or needing accommodation.
+   * @param {number} young_children - Number of young children.
+   * @param {number} adolescent_children - Number of adolescent children.
+   * @param {number} teenage_children - Number of teenage children.
+   * @param {number} elderly - Number of elderly individuals.
+   * @param {number} small_dog - Number of small dogs.
+   * @param {number} large_dog - Number of large dogs.
+   * @param {number} cat - Number of cats.
+   * @param {number} other_pets - Number of other pets.
+   * @returns {Promise<number|boolean>} - The ID of the newly created form, or `false` if the form already exists or an error occurred.
+   */
   static async createForm(user_id, type, num_rooms, num_people, young_children, adolescent_children, 
                           teenage_children, elderly, small_dog, large_dog, cat, other_pets)
   {
@@ -11,7 +33,7 @@ class Matching
 
       if(exists) return false;
 
-      const fullDate = new Date();
+      const fullDate = new Date();  // generate current date
       const date = fullDate.toISOString().split('T')[0];
 
       const [result] = await pool.query(`INSERT INTO matching_request_forms (user_id, type, num_rooms, num_people, date, young_children,
@@ -27,12 +49,18 @@ class Matching
     }
   }
 
+  /**
+   * Checks if a user already has a form submitted.
+   *
+   * @param {number} user_id - ID of the user.
+   * @returns {Promise<boolean|null>} - `true` if the form exists, `false` otherwise, or `null` if error.
+   */
   static async formExists(user_id)
   {
     try{
       const [result] = await pool.query("SELECT form_id FROM matching_request_forms WHERE user_id = ?", [user_id]);
 
-      return result.length;  // true if the user already submitted the form
+      return result.length; 
 
     }catch(error){
       console.error("Error in createForm:", error);
@@ -40,10 +68,16 @@ class Matching
     }
   }
 
-  static async getForms(type) // returns forms that are going to be used to match
+  /**
+   * Retrieves all forms of the opposite type for potential matches.
+   *
+   * @param {string} type - The type of the current user's form ("offering" or "requesting").
+   * @returns {Promise<Array<Object>|boolean>} - Array of matching form data, or `false` if none found or error.
+   */
+  static async getForms(type)
   {
     try{
-      let newType = "requesting";
+      let newType = "requesting";  // decide whch types of forms we are searching through
       if(type === "requesting") 
         newType = "offering";
 
@@ -60,13 +94,19 @@ class Matching
     }
   }
 
-  static async getForm(form_id)  // returns the form that is going to be used to find a match
+  /**
+   * Retrieves a specific form by its ID.
+   *
+   * @param {number} form_id - The ID of the form to retrieve.
+   * @returns {Promise<Object|boolean>} - The form data object, or `false` if not found or error.
+   */
+  static async getForm(form_id)
   {
     try{
 
       const [rows] = await pool.query(`SELECT form_id, num_rooms, num_people, young_children, adolescent_children, 
         teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
-        WHERE form_id = ?`, [form_id]);
+        WHERE form_id = ?`, [form_id]);  // only retrieve relevant info
 
       if(!rows.length) return false; // no form existis with that id
       return rows[0];
@@ -76,7 +116,14 @@ class Matching
     }
   }
 
-  static async match(form_id, type) // gets all the forms that are matches
+  /**
+   * Finds potential matching forms based on compatibility scoring.
+   *
+   * @param {number} form_id - The ID of the form to match.
+   * @param {string} type - The type of the original form ("offering" or "requesting").
+   * @returns {Promise<Array<Object>|boolean>} - Array of matched forms, or `false` if none found or error.
+   */
+  static async match(form_id, type)
   {
     try{
       const match_form = await this.getForm(form_id);  // form that needs to be matched
@@ -85,19 +132,19 @@ class Matching
 
       const matches = [];
 
-      for (const form of forms) 
+      for (const form of forms) // goes through each form
       {
         let score = 0;
-        for(const key in form)
+        for(const key in form)  // goes through values in each form
         {
           if(key != "form_id")
             if(form[key] >= match_form[key]) 
               score ++;
         }
-        if(score > 7)
+        if(score > 7)  // threshold for the match
           matches.push(form);
       }
-      if(matches.length === 0) return false;
+      if(matches.length === 0) return false;  // no matches were found
       return matches;
 
     }catch(error){
@@ -106,7 +153,13 @@ class Matching
     }
   }
 
-  static async deleteForm(form_id)  // deleting a single form
+  /**
+   * Deletes a specific form by ID.
+   *
+   * @param {number} form_id - ID of the form to delete.
+   * @returns {Promise<boolean>} - `true` if deletion was successful, `false` otherwise.
+   */
+  static async deleteForm(form_id)
   {
     try{
       const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id = ?", [form_id])
@@ -117,7 +170,13 @@ class Matching
     }
   }
 
-  static async deleteForms(form_ids)  // deleting multiple forms
+  /**
+   * Deletes multiple forms by their IDs.
+   *
+   * @param {Array<number>} form_ids - Array of form IDs to delete.
+   * @returns {Promise<boolean>} - `true` if deletion was successful, `false` otherwise.
+   */
+  static async deleteForms(form_ids) 
   {
     try{
       const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id IN (?)", [form_ids])
@@ -128,7 +187,5 @@ class Matching
     }
   }
 }
-
-// console.log(await Matching.match(1, "requesting"));
 
 export default Matching;
