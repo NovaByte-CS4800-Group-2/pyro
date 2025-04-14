@@ -112,7 +112,7 @@ export default function Vote({ contentId, userId }: VoteProps) {
         </div>
       ) : (
         <>
-          <p className="text-xs text-gray-500 italic">Please log in/register to vote.</p>
+          <p className="text-xs text-gray-500 italic">Please log in/register to interact with post.</p>
         </>
       )}
     </div>

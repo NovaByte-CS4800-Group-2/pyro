@@ -123,10 +123,8 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   };
 
   useEffect(() => {
-    if (user?.uid != null) {
     fetchPosts();
-    }
-  }, [subforumID, user?.uid]);
+  }, [subforumID, user?.uid]);  
 
   const parsedContent = parse(html, {
     transform: (reactNode: React.ReactNode, domNode: DOMNode) => {

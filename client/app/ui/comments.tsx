@@ -302,12 +302,13 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
       <style>{smallThumbsStyle}</style>
       {/* Post Interaction Bar - This clearly belongs to the post */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
-        <Vote contentId={contentId} userId={userData.user_id} />
+      <Vote contentId={contentId} userId={Number(userData.user_id)} />
         <div className="flex items-center space-x-6">
-          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+          {user && (
+            <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ChatBubbleLeftIcon className="w-4 h-4" />
             <span>Comments</span>
-          </div>
+            </div>)}
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ShareIcon className="w-4 h-4" />
             <span>Share</span>
@@ -367,7 +368,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
                 
                 {/* Comment voting - clearly belongs to the comment */}
                 <div className="flex justify-start items-center text-xs text-gray-500 mt-1 small-thumbs-vote">
-                  <Vote contentId={comment.content_id} userId={userData.user_id} />
+                <Vote contentId={comment.content_id} userId={Number(userData.user_id)} />
                 </div>
               </div>
             ))}
