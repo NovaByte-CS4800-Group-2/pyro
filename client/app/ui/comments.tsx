@@ -63,7 +63,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
         console.log("Fetching user data for username:", user.displayName);
 
         const userResponse = await fetch(
-          `http://localhost:8080/profile/${user.displayName}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     try {
       setIsLoading(true);
       const res = await fetch(
-        `http://localhost:8080/comments/for/post/${contentId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
       );
 
       if (!res.ok) {
@@ -120,7 +120,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
         data.comments.map(async (comment: Comment) => {
           try {
             const response = await fetch(
-              `http://localhost:8080/username/${comment.user_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${comment.user_id}`
             );
 
             if (!response.ok) {
@@ -171,7 +171,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     try {
       console.log("Posting comment as:", userData.username);
 
-      const res = await fetch(`http://localhost:8080/createComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/createComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -199,7 +199,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     if (!currentCommentId) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/deleteComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/deleteComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -224,7 +224,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     if (!currentCommentId || !editedBody.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/editComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/editComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -17,7 +17,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   const [user] = useAuthState(auth);
 
   const getUser = async (user_id: String) => {
-    const fetchString = `http://localhost:8080/username/${user_id}`;
+    const fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${user_id}`;
 
     const response = await fetch(fetchString, {
       method: "GET",
@@ -37,7 +37,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   const deletePost = async (contentId: number) => {
     console.log("Deleting post with contentId:", contentId); // Debug log
     try {
-      const response = await fetch("http://localhost:8080/post/delete", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/delete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content_id: contentId }),
@@ -63,7 +63,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
       newBody
     ); // Debug log
     try {
-      const response = await fetch("http://localhost:8080/post/edit", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/edit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content_id: contentId, newBody: newBody }),
@@ -82,10 +82,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   };
 
   const fetchPosts = async () => {
-    let fetchString = `http://localhost:8080/post/${subforumID}`;
+    let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${subforumID}`;
 
     if (userID !== "-1") {
-      fetchString =  `http://localhost:8080/userPosts/${userID}`;
+      fetchString =  `${process.env.NEXT_PUBLIC_BACKEND_URL}/userPosts/${userID}`;
     }
 
     const response = await fetch(fetchString, {
