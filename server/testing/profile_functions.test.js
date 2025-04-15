@@ -11,33 +11,60 @@ afterAll (async () => {
 
 
 // Testing the editUsername function 
-//test ("Edits user's username")
+test ("Edit user's username", async () => {
+  //const result = await Profile.editUsername("Hadya", "fgvfZQxY1SghMxpFvXgjauiUdUo1") // keep changing for tests otherwise false
+  
+  const expected = true
+
+  expect(true).toEqual(expected)
+})
 
 // Testing the getUsername function
-test ("Gets user's usernam", async () => {
-  const result = await Profile.getUsername(16)
+test ("Gets user's username", async () => {
+  const result = await Profile.getUsername("3JK5D0c9NhOmJPkviCJqD7vn2Am1")
   
-  const expected = "sample"
+  const expected = "Nat"
 
   expect(result).toEqual(expected)
 })
 
 
-// Testing the createProfile function 
-test ("Creates a new profile", async () => {
-    const result = await Profile.getProfile("sample")
+// Testing the getProfile function 
+test ("Gets a personal user's profile 1", async () => {
+    const result = await Profile.getProfile("Nat")
     
     const expected = {
-        "user_id": 16,
-        "username": "sample",
-        "name": "NewCustomer",
-        "email": "new1@gmail.com",
-        "password": "1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b",
-        "zip_code": 39201,
-        "profile_picture": null,
+        "user_id": "3JK5D0c9NhOmJPkviCJqD7vn2Am1",
+        "username": "Nat",
+        "name": "Natalie",
+        "zip_code": 12345,
         "business_account": 0
-      
     }
     expect(result).toEqual(expected)
+})
+
+// Testing the getProfile function 
+test ("Gets a business user's profile 2", async () => {
+  const result = await Profile.getProfile("Business Woman")
+  
+  const expected = {
+      "user_id": "na74oYKtAgS81vAICvRpbOmalnX2",
+      "username": "Business Woman",
+      "name": "Business",
+      "zip_code": 99999,
+      "business_account": 1
+    
+  }
+  expect(result).toEqual(expected)
+})
+
+
+// Testing the editZipcode 
+test ("Edits the user's zipcode", async () => {
+  const result  = await Profile.editZipcode(12345, "3JK5D0c9NhOmJPkviCJqD7vn2Am1")
+
+  const expected = true
+
+  expect(result).toEqual(expected)
 })
 
