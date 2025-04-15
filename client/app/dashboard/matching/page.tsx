@@ -23,7 +23,7 @@ export default function Matching() {
 					</CardBody>
 				</Card>
 			</Link>
-			<div className="flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm ml-auto">
+			<div className="flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm ml-auto">
 				<h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-200">
 					Application Status
 				</h2>
