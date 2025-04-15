@@ -78,3 +78,5 @@ class Profile
 }
 
 export default Profile;
+
+console.log(await Profile.getProfile("sample"))
