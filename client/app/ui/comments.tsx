@@ -16,7 +16,7 @@ const smallThumbsStyle = `
 
 interface Comment {
   content_id: number;
-  user_id: number;
+  user_id: string;
   body: string;
   post_date: string;
   last_edit_date?: string;  // Added this field for edit date
@@ -33,7 +33,6 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState({
-    user_id: 0,
     username: "",
     city: "",
     business_account: 0,
@@ -64,7 +63,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
         console.log("Fetching user data for username:", user.displayName);
 
         const userResponse = await fetch(
-          `http://localhost:8080/profile/${user.displayName}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -100,7 +99,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     try {
       setIsLoading(true);
       const res = await fetch(
-        `http://localhost:8080/comments/for/post/${contentId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
       );
 
       if (!res.ok) {
@@ -121,7 +120,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
         data.comments.map(async (comment: Comment) => {
           try {
             const response = await fetch(
-              `http://localhost:8080/username/${comment.user_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${comment.user_id}`
             );
 
             if (!response.ok) {
@@ -172,7 +171,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     try {
       console.log("Posting comment as:", userData.username);
 
-      const res = await fetch(`http://localhost:8080/createComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/createComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -200,7 +199,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     if (!currentCommentId) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/deleteComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/deleteComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -225,7 +224,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     if (!currentCommentId || !editedBody.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/editComment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/editComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -302,7 +301,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
       <style>{smallThumbsStyle}</style>
       {/* Post Interaction Bar - This clearly belongs to the post */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
-        <Vote contentId={contentId} userId={userData.user_id} />
+        <Vote contentId={contentId} userId={user?.uid || ""} />
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-1 hover:text-black cursor-pointer">
             <ChatBubbleLeftIcon className="w-4 h-4" />
@@ -335,7 +334,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
                   </div>
                   
                   {/* Comment Menu (visible only to the comment owner) */}
-                  {userData.user_id === comment.user_id && (
+                  {user?.uid === comment.user_id && (
                     <div className="relative">
                       <EllipsisVerticalIcon
                         className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
@@ -367,7 +366,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
                 
                 {/* Comment voting - clearly belongs to the comment */}
                 <div className="flex justify-start items-center text-xs text-gray-500 mt-1 small-thumbs-vote">
-                  <Vote contentId={comment.content_id} userId={userData.user_id} />
+                  <Vote contentId={comment.content_id} userId={user?.uid || ""} />
                 </div>
               </div>
             ))}

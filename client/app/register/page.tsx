@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useUpdateProfile } from 'react-firebase-hooks/auth';
@@ -19,8 +19,8 @@ export default function Register() {
   const [accountType, setAccountType] = useState("personalAccount");
 
   // Create Account function
-  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-  const [updateProfile, updating, error] = useUpdateProfile(auth);
+  const [createUserWithEmailAndPassword, firebaseCredential, firebaseLoading, firebaseError] = useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile] = useUpdateProfile(auth);
 
   // Error Validation State
   const [errors, setErrors] = useState({
@@ -28,7 +28,7 @@ export default function Register() {
     email: "",
     username: "",
     zipCode: "",
-    password: [""],
+    password: "",
     confirmPassword: "",
     form: "",
   });
@@ -36,12 +36,53 @@ export default function Register() {
   // Router to redirect the user.
   const router = useRouter();
 
+  // Display firebase registration errors.
+  useEffect(() => {
+    if (firebaseError) {
+      switch(firebaseError.code) {
+        case "auth/email-already-in-use":
+          setErrors({
+            name: "",
+            email: "This email is already registered to an account. Please use a different one.",
+            username: "",
+            zipCode: "",
+            password: "",
+            confirmPassword: "",
+            form: "",
+          });
+          break;
+        case "auth/password-does-not-meet-requirements":
+          setErrors({
+            name: "",
+            email: "",
+            username: "",
+            zipCode: "",
+            password: "Your password must be at least 8 characters long and contain an uppercase letter, a symbol, and a number.",
+            confirmPassword: "",
+            form: "",
+          });
+          break; 
+        default:
+          setErrors({
+            name: "",
+            email: "",
+            username: "",
+            zipCode: "",
+            password: "",
+            confirmPassword: "",
+            form: firebaseError.code,
+          });
+      }
+    }
+  }, [firebaseError]);
+
   // Sign Up function
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
+  
     let formData = {
+      user_id: "",
       name,
-      email,
       username,
       zipCode,
       password,
@@ -50,52 +91,62 @@ export default function Register() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        await createUserWithEmailAndPassword(email, password);
-        await updateProfile({displayName: username});
-        router.push("/dashboard");
-      } else {
-        if (response.status === 400) {
+      const userCredential = await createUserWithEmailAndPassword(email, password);
+      if (userCredential && userCredential.user) {
+        await updateProfile({ displayName: username });
+  
+        formData.user_id = userCredential.user.uid;
+        console.log(formData);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+    
+        if (!response.ok) {
+          await userCredential.user.delete();
           const responseData = await response.json();
-          let errors = {
+    
+          const newErrors = {
             name: "",
             email: "",
             username: "",
             zipCode: "",
-            password: [""],
+            password: "",
             confirmPassword: "",
             form: "",
           };
-          responseData.errors.forEach((error: String) => {
-            if (error.includes("email")) errors.email += error + " ";
-            else if (error.includes("Username")) errors.username += error + " ";
-            else if (error.includes("Zipcode")) errors.zipCode += error + " ";
-            else if (error.includes("Password")) errors.password.push(String(error));
-            else errors.form += error + " ";
+    
+          responseData.errors.forEach((err: string) => {
+            if (err.toLowerCase().includes("email")) newErrors.email += err + " ";
+            else if (err.toLowerCase().includes("username")) newErrors.username += err + " ";
+            else if (err.toLowerCase().includes("zipcode")) newErrors.zipCode += err + " ";
+            else if (err.toLowerCase().includes("password")) newErrors.password += err + " ";
+            else newErrors.form += err + " ";
           });
-          setErrors(errors);
+    
+          setErrors(newErrors);
+          return;
         } else {
-          setErrors({
-            name: "",
-            email: "",
-            username: "",
-            zipCode: "",
-            password: [""],
-            confirmPassword: "",
-            form: "Please make sure all the fields are filled out.",
-          });
+          router.push("/dashboard");
         }
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
+    
+      } 
+    } 
+    catch (err) {
+      console.error("Sign-up error:", err);
+      setErrors({
+        name: "",
+        email: "",
+        username: "",
+        zipCode: "",
+        password: "",
+        confirmPassword: "",
+        form: "An unexpected error occurred. Please try again.",
+      });
     }
   };
+  
 
   // Return html
   return (
@@ -203,7 +254,7 @@ export default function Register() {
             className="w-full"
           />
           {errors.password.length > 1 && (
-            <p className="text-sm text-red-500">{errors.password.join(" ")}</p>
+            <p className="text-sm text-red-500">{errors.password}</p>
           )}
 
           <Input

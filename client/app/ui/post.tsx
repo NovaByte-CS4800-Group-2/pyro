@@ -11,11 +11,13 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Comments from "./comments";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 interface PostProps {
-  userId: number;
+  userId: string;
+  posterId: string;
   username: string;
   date: string;
   editeddate: string;
@@ -28,6 +30,8 @@ interface PostProps {
 }
 
 export default function Post({
+  userId = "",
+  posterId = "",
   username = "Default User",
   date = "",
   editeddate = "",
@@ -47,6 +51,20 @@ export default function Post({
   const formattedEditDate =
     editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", "");
 
+  const storage = getStorage();
+  const [profileURL, setProfileURL] = useState("");
+
+  // Get user profile pic url.
+  useEffect(() => {
+    const storageRef = ref(storage, 'profilePics/' + posterId);
+      getDownloadURL(storageRef)
+      .then((url) => {
+        setProfileURL(url);
+      }).catch((e) => {
+        // Do Nothing
+      })
+  }, [])
+
   const handleDelete = () => {
     onDeletePost(contentId);
     setIsDeleteModalOpen(false);
@@ -60,9 +78,9 @@ export default function Post({
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 mb-4 pt-2">
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
         <div className="flex items-center gap-2">
-          <Avatar size="sm" isBordered className="w-6 h-6" />
+          <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL}/>
           <span className="font-semibold text-sm text-gray-700">
             {username}
           </span>

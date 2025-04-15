@@ -9,52 +9,15 @@ import { getServerSideProps } from "next/dist/build/templates/pages";
 
 interface ForumProps {
   subforumID?: string;
+  userID?: string;
 }
 
-const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
+const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   const [html, setHtml] = useState<string>("");
-  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const [user] = useAuthState(auth);
 
-  // Function to fetch the logged-in user's ID
-  const fetchLoggedInUserId = async (username: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/profile/${username}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch user ID");
-      }
-
-      const data = await response.json();
-      const { profile } = data;
-
-      if (profile && profile.user_id) {
-        setLoggedInUserId(profile.user_id);
-      } else {
-        throw new Error("Invalid user data received");
-      }
-    } catch (error) {
-      console.error("Error fetching logged-in user ID:", error);
-    }
-  };
-
-  // Fetch the logged-in user's ID when the component mounts
-  useEffect(() => {
-    if (user && user.displayName) {
-      fetchLoggedInUserId(user.displayName);
-    }
-  }, [user]);
-
   const getUser = async (user_id: String) => {
-    const fetchString = `http://localhost:8080/username/${user_id}`;
+    const fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${user_id}`;
 
     const response = await fetch(fetchString, {
       method: "GET",
@@ -74,7 +37,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   const deletePost = async (contentId: number) => {
     console.log("Deleting post with contentId:", contentId); // Debug log
     try {
-      const response = await fetch("http://localhost:8080/post/delete", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/delete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content_id: contentId }),
@@ -100,7 +63,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
       newBody
     ); // Debug log
     try {
-      const response = await fetch("http://localhost:8080/post/edit", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/edit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content_id: contentId, newBody: newBody }),
@@ -119,7 +82,11 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   const fetchPosts = async () => {
-    const fetchString = `http://localhost:8080/post/${subforumID}`;
+    let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${subforumID}`;
+
+    if (userID !== "-1") {
+      fetchString =  `${process.env.NEXT_PUBLIC_BACKEND_URL}/userPosts/${userID}`;
+    }
 
     const response = await fetch(fetchString, {
       method: "GET",
@@ -144,10 +111,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
         const username = await getUser(user_id);
 
         // Determine if the logged-in user is the owner of the post
-        const isOwner = user_id === loggedInUserId;
+        const isOwner = user_id === user?.uid;
 
         // Return the HTML content for each post
-        return `<post key=${index} username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
+        return `<post key=${index} posterid="${user_id}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
       })
     );
 
@@ -156,25 +123,25 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1" }) => {
   };
 
   useEffect(() => {
-    if (loggedInUserId != null) {
+    if (user?.uid != null) {
     fetchPosts();
     }
-  }, [subforumID, loggedInUserId]);
+  }, [subforumID, user?.uid]);
 
   const parsedContent = parse(html, {
     transform: (reactNode: React.ReactNode, domNode: DOMNode) => {
       // Correctly type the domNode as Element
       if (domNode.type === "tag" && (domNode as Element).name === "post") {
         const attribs = (domNode as any).attribs || {};
-        //console.log("Post attributes:", attribs); // Debug log
-        const { date, editeddate, body, username, contentid } = attribs;
-
-        //console.log("Parse content_Id:", contentid); // Debug log
+        // console.log("Post attributes:", attribs); // Debug log
+        const { date, editeddate, body, username, contentid, posterid } = attribs;
+        
+        // console.log("Parse content_Id:", contentid); // Debug log
         const parsedContentId = parseInt(contentid);
-
         return (
           <Post
-            userId={loggedInUserId ?? 0}
+            userId={user?.uid ?? ""}
+            posterId = {posterid}
             key={parsedContentId}
             username={username}
             date={date}

@@ -43,25 +43,6 @@ router.get('/profile/:username', async (req, res) => {
 })
 
 /**
- * @route GET /userProfile/:id
- * @description Get a user's profile by their user ID
- * @param {string} req.params.user_id - User ID
- * @returns {Object} 200 - Profile object
- * @returns {Object} 400 - Missing user ID
- * @returns {Object} 406 - Error retrieving profile
- */
-router.get('/userProfile/:id', async (req, res) => {
-  const { user_id } = req.params; // read user_id from req params 
-
-  if(!user_id) return res.status(400).json({ error: "Missing user ID" });
-
-  const profile = await Profile.getProfile(user_id);
-  if(!profile) return res.status(406).json({ error : "problem getting the profile information"});
-
-  return res.status(200).json({ profile : profile});
-})
-
-/**
  * @route POST /profile/editZipcode
  * @description Edit the zipcode of a user's profile
  * @param {string} req.body.zipcode - New zipcode
@@ -101,32 +82,6 @@ router.post('/profile/editUsername', async (req, res) => {
   if(!result) return res.status(406).json({ error : "Username already exists"});
   
   return res.status(200).json({msg:"Username updated successfully"});
-})
-
-//--------------------------------- EVENTUALLY TAKE OUT ---------------------------------
-
-router.post('/profile/editEmail', async (req, res) => {
-  const {email, user_id} = req.body; // read user_id from req params 
-
-  if(!email) return res.status(400).json({ error: "Missing email" });
-  if(!user_id) return res.status(400).json({ error: "Missing userID" });
-
-  const result = await Profile.editEmail(email, user_id)
-  if(result != "") return res.status(406).json({ error : result});
-  
-  return res.status(200).json({msg: "Email updated successfully"});
-})
-
-router.post('/profile/editPassword', async (req, res) => {
-  const {password, user_id} = req.body; // read user_id from req body 
-
-  if(!password) return res.status(400).json({ error: "Missing password" });
-  if(!user_id) return res.status(400).json({ error: "Missing userID" });
-
-  const result = await Profile.editPassword(password, user_id)
-  if(result.length != 0) return res.status(406).json({ error : result});
-  
-  return res.status(200).json({msg:"Password updated successfully"});
 })
 
 export default router;
