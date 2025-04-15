@@ -4,7 +4,7 @@ import Comment from "../functions/comment_functions.js";
 const router = new Router(); 
 
 /**
- * @route POST /createComment
+ * @route POST /comment
  * @description Create a new comment under a specific post
  * @param {string} req.body.city - The city/subforum where the comment is posted
  * @param {string} req.body.username - The username of the comment creator
@@ -14,7 +14,7 @@ const router = new Router();
  * @returns {Object} 400 - Missing information
  * @returns {Object} 406 - Error creating comment
  */
-router.post('/createComment', async (req, res) => {
+router.post('/comment', async (req, res) => {
     const { city, username, body, post_id } = req.body; 
   
     if(!city || !username || !body || !post_id) return res.status(400).json({ error: "Missing information" });
@@ -26,7 +26,7 @@ router.post('/createComment', async (req, res) => {
 })
 
 /**
- * @route POST /editComment
+ * @route POST /comment/edit
  * @description Edit the body of an existing comment
  * @param {number} req.body.content_id - The ID of the comment to edit
  * @param {string} req.body.newBody - The new text content of the comment
@@ -34,7 +34,7 @@ router.post('/createComment', async (req, res) => {
  * @returns {Object} 400 - Missing information
  * @returns {Object} 406 - Error editing comment
  */
-router.post('/editComment', async (req, res) => {
+router.post('/comment/edit', async (req, res) => {
   const { content_id, newBody } = req.body; 
 
   if(!content_id || !newBody) return res.status(400).json({ error: "Missing information" });
@@ -46,19 +46,19 @@ router.post('/editComment', async (req, res) => {
 })
 
 /**
- * @route POST /deleteComment
+ * @route DELETE /comment/delete/:id
  * @description Delete a comment by its ID
- * @param {number} req.body.comment_id - The ID of the comment to delete
+ * @param {number} req.param.id - The ID of the comment to delete
  * @returns {Object} 200 - Success message
  * @returns {Object} 400 - Missing comment ID
  * @returns {Object} 406 - Error deleting comment
  */
-router.post('/deleteComment', async (req, res) => {
-  const { comment_id } = req.body; 
+router.delete('/comment/delete/:id', async (req, res) => {
+  const { id } = req.params; 
 
-  if(!comment_id) return res.status(400).json({ error: "Missing comment_id" });
+  if(!id) return res.status(400).json({ error: "Missing id" });
 
-  const result = await Comment.deleteComment(comment_id);
+  const result = await Comment.deleteComment(id);
   if(!result) return res.status(406).json({ error : "problem deleting comment"});
 
   return res.status(200).json({ msg: "Comment successfully deleted!"});
