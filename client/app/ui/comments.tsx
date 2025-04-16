@@ -403,36 +403,34 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
         )}
 
         {/* Leave a Comment */}
-        {user ? (
-          <form onSubmit={postComment} className="mt-6 relative">
-            <div className="relative">
-              <textarea
-                name="comment"
-                className="w-full border rounded-md p-1 text-sm pr-12"
-                placeholder="Leave a comment..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <Button
-                type="submit"
-                className="absolute right-1 top-2 text-xs p-0 leading-none"
-                style={{
-                  backgroundColor: "grey",
-                  color: "white",
-                  padding: "0 2px",
-                  lineHeight: "1rem",
-                  height: "2rem",
-                  minHeight: "2rem",
-                }}
-                disabled={!userData.username}
-              >
-                {userData.username ? "Submit" : "Loading..."}
-              </Button>
-            </div>
-          </form>
-        ) : (
-          <p className="text-sm text-gray-500 mt-4">Please log in to comment.</p>
-        )}
+        {user && (
+        <form onSubmit={postComment} className="mt-6 relative">
+          <div className="relative">
+            <textarea
+              name="comment"
+              className="w-full border rounded-md p-1 text-sm pr-12"
+              placeholder="Leave a comment..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <Button
+              type="submit"
+              className="absolute right-1 top-2 text-xs p-0 leading-none"
+              style={{
+                backgroundColor: "grey",
+                color: "white",
+                padding: "0 2px",
+                lineHeight: "1rem",
+                height: "2rem",
+                minHeight: "2rem",
+              }}
+              disabled={!userData.username}
+            >
+              {userData.username ? "Submit" : "Loading..."}
+            </Button>
+          </div>
+        </form>
+      )}
       </div>
 
       {/* Edit Comment Modal */}
