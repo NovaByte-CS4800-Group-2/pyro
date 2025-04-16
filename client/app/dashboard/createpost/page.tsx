@@ -29,7 +29,7 @@ export default function CreatePost() {
   useEffect(() => {
     const fetchSubforums = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/subforums`);
+        const response = await fetch("http://localhost:8080/subforums");
         const data = await response.json();
         console.log("Fetched subforums:", data.rows);
         setSubforums(data.rows); // Store subforums in state
@@ -55,7 +55,7 @@ export default function CreatePost() {
         console.log("Fetching user data for username:", user.displayName);
 
         const userResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
+          `http://localhost:8080/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -137,7 +137,7 @@ export default function CreatePost() {
       };
       console.log("Request body:", requestBody);
 
-      const postResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post`, {
+      const postResponse = await fetch("http://localhost:8080/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -153,7 +153,7 @@ export default function CreatePost() {
       const postData = await postResponse.json();
       console.log("Post submitted successfully:", postData);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/subforum/${city}`);
+      const res = await fetch(`http://localhost:8080/get/subforum/${city}`);
       const data = await res.json();
 
       router.push(`/dashboard/subforum/${data.subforumId}`);
@@ -190,7 +190,7 @@ export default function CreatePost() {
       };
       console.log("Request body:", requestBody);
 
-      const postResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post`, {
+      const postResponse = await fetch("http://localhost:8080/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -220,7 +220,7 @@ export default function CreatePost() {
       router.push("/dashboard/fundraiser");
     } else 
     {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/subforum/${city}`);
+      const res = await fetch(`http://localhost:8080/get/subforum/${city}`);
       const data = await res.json();
       
       router.push(`/dashboard/subforum/${data.subforumId}`);

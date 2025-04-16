@@ -22,15 +22,15 @@ export default function Vote({ contentId, userId }: VoteProps) {
   useEffect(() => {
     const fetchVotes = async () => {
       try {
-        const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
+        const res1 = await fetch(`http://localhost:8080/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
         const data1 = await res1.json();
         setTotalVotes(data1.totalVotes);  // set the total votes
 
-        const res2 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
-        const data2 = await res2.json();
-        setUserVote(data2.vote);  // set vote state 
-        console.log("data2.vote: " + data2.vote);
-
+        if (userId) {
+          const res2 = await fetch(`http://localhost:8080/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
+          const data2 = await res2.json();
+          setUserVote(data2.vote);  // set vote state
+        }
       } catch (error) {
         console.error("Failed to load votes:", error);
       }
@@ -42,7 +42,7 @@ export default function Vote({ contentId, userId }: VoteProps) {
     if (!userId) return;
 
     if (userVote === value) { // same icon was clicked, remove vote
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/vote/${contentId}/${userId}`, {
+      await fetch(`http://localhost:8080/remove/vote/${contentId}/${userId}`, {
         method: "DELETE",
       });
 
@@ -51,7 +51,7 @@ export default function Vote({ contentId, userId }: VoteProps) {
       else setTotalVotes((prev) => prev + 1);
     } else {  // send vote
 
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vote`, {  
+      await fetch("http://localhost:8080/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

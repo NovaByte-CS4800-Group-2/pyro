@@ -1,0 +1,23 @@
+import { Router } from "express";  // create an instance of an express router
+import Login from "../functions/login_functions.js";
+
+const router = Router();  // groups together requests
+const login = new Login();
+
+router.post('/login', async (req, res) => {  // does authentication
+  const {email, password} = req.body;
+
+  if (!email || !password) return res.status(400).json({ error: "Missing email or password" });
+
+  login.updateInfo(email, password);
+
+  const user = await login.getProfile(); // getting the profile
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const isValid = await login.checkCredentials();  // checking if username and password match
+  if(!isValid) return res.status(401).json({ error: "Invalid credentials" });  // no existing profile
+
+  return res.status(200).json(user);
+})
+  
+export default router;
