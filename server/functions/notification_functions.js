@@ -5,7 +5,7 @@ class Notification
   static async createNotif(user_id, content_id, type)
   {
     try{
-      const [result] = await pool.query("INSERT INTO notifications (user_id, content_id, type) VALUES (?, ?, ?)", [user_id, content_id, type]);
+      const [result] = await pool.query("INSERT INTO notifications (user_id, content_id, type, read) VALUES (?, ?, ?, 0)", [user_id, content_id, type]);
       const notification_id = result.insertId;  // Extract and return the notification_id that is generated
       return notification_id;
 

@@ -24,42 +24,6 @@ router.post('/post', async (req, res) => {
 })
 
 /**
- * @route POST /post/edit
- * @description Edit the body of a post
- * @param {number} req.body.content_id - ID of the post to edit
- * @param {string} req.body.newBody - New body content
- * @returns {Object} 201 - Success message
- * @returns {Object} 400 - Missing values
- * @returns {Object} 406 - Problem editing post
- */
-router.post('/post/edit', async (req, res) => {
-  const {content_id, newBody} = req.body;
-
-  if(!newBody || !content_id) return res.status(400).json({ error: "Missing value" });
-
-  const result = await Post.editPost(content_id, newBody);
-  if(!result) return res.status(406).json({ error : "problem editing post"});
-
-  return res.status(201).json({msg: "Succesfully edited post"});
-})
-
-/**
- * @route DELETE /post/delete
- * @description Delete a post by ID
- * @param {number} req.params.content_id - ID of the post to delete
- * @returns {Object} 201 - Success message
- * @returns {Object} 400 - Missing content ID
- */
-router.delete('/post/delete/:id', async (req, res) => {
-  const {id} = req.params;
-
-  if(!id) return res.status(400).json({ error: "Missing content_id" });
-
-  await Post.deletePost(id);
-  return res.status(201).json({msg: "Succesfully deleted post"});
-})
-
-/**
  * @route GET /get/post/:id
  * @description Retrieve a single post by its ID
  * @param {string} req.params.id - The ID of the post to retrieve
@@ -101,6 +65,42 @@ router.get('/userPosts/:id', async (req, res) => {  // get all user posts
 
   if(!posts || posts.length === 0) return res.status(406).json({ error : "problem getting the posts"});
   return res.status(200).json({posts});
+})
+
+/**
+ * @route POST /post/edit
+ * @description Edit the body of a post
+ * @param {number} req.body.content_id - ID of the post to edit
+ * @param {string} req.body.newBody - New body content
+ * @returns {Object} 201 - Success message
+ * @returns {Object} 400 - Missing values
+ * @returns {Object} 406 - Problem editing post
+ */
+router.post('/post/edit', async (req, res) => {
+  const {content_id, newBody} = req.body;
+
+  if(!newBody || !content_id) return res.status(400).json({ error: "Missing value" });
+
+  const result = await Post.editPost(content_id, newBody);
+  if(!result) return res.status(406).json({ error : "problem editing post"});
+
+  return res.status(201).json({msg: "Succesfully edited post"});
+})
+
+/**
+ * @route POST /post/delete
+ * @description Delete a post by ID
+ * @param {number} req.body.content_id - ID of the post to delete
+ * @returns {Object} 201 - Success message
+ * @returns {Object} 400 - Missing content ID
+ */
+router.post('/post/delete', async (req, res) => {
+  const {content_id} = req.body;
+
+  if(!content_id) return res.status(400).json({ error: "Missing content_id" });
+
+  await Post.deletePost(content_id);
+  return res.status(201).json({msg: "Succesfully deleted post"});
 })
 
 export default router;

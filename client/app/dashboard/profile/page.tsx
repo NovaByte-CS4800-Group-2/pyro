@@ -46,7 +46,7 @@ export default function Profile() {
 				router.push("/");
 			}
 			else {
-				const response = await fetch(`http://localhost:8080/profile/${user.displayName}`, {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`, {
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
 				});
@@ -96,7 +96,7 @@ export default function Profile() {
 	const saveUsername = async () => {
 		if (username !== userProfile.username) {
 			const user_id = userProfile.user_id;
-			const response = await fetch(`http://localhost:8080/profile/editUsername`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/editUsername`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body:JSON.stringify({ username, user_id }),
@@ -147,7 +147,7 @@ export default function Profile() {
 		const zipcodeNum = parseInt(zipcode);
 		if (zipcodeNum !== userProfile.zip_code) {
 			const user_id = userProfile.user_id;
-			const response = await fetch(`http://localhost:8080/profile/editZipcode`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/editZipcode`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body:JSON.stringify({ zipcode, user_id }),
