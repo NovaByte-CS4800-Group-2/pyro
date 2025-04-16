@@ -288,7 +288,7 @@ export default function CreatePost() {
                           key={subforum.subforum_id} // Use subforum ID as the key
                           value={subforum.name} // Use subforum name as the value
                         >
-                          {subforum.name} // Display subforum name
+                          {subforum.name}  {/*Display subforum name */}
                         </option>
                       );
                     }
