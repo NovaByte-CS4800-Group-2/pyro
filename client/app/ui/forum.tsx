@@ -85,51 +85,55 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
 
   const fetchPosts = async () => {
     let fetchString = `http://localhost:8080/post/${subforumID}`;
-
+  
     if (userID !== "-1") {
       fetchString =  `http://localhost:8080/userPosts/${userID}`;
     }
-
+  
     const response = await fetch(fetchString, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
-
+  
     if (!response.ok) {
       setHtml("<p>Error loading posts :(</p>");
       return;
     }
-
+  
     const contentData = await response.json();
     //console.log("Fetched posts from backend:", contentData.posts); // Debug log
-
+    const searchLower = search.toLowerCase();
+  
     // Use map to handle async operations
     const posts = await Promise.all(
       contentData.posts.map(async (post: any, index: any) => {
         const { post_date, last_edit_date, body, user_id, content_id } = post;
         //console.log("Post content_id:", content_id); // Debug log
         const username = await getUser(user_id);
-
+  
         // Determine if the logged-in user is the owner of the post
         const isOwner = user_id === user?.uid;
 
+        // Filter posts that do not match the search in either username or body
+        const bodyMatch = body.toLowerCase().includes(searchLower);
+        const userMatch = username.toLowerCase().includes(searchLower);
+  
+        if (!bodyMatch && !userMatch) return null; // Skip this post if no match
+  
         // Return the HTML content for each post
         return `<post key=${index} posterid="${user_id}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
       })
     );
-
-    // Combine all post HTML content into one string
-    const filteredPosts = posts.filter((html) =>
-      html.toLowerCase().includes(search.toLowerCase())
-    );
-    setHtml(filteredPosts.join(""));    
+  
+    // Combine all post HTML content into one string, filtering out nulls
+    setHtml(posts.filter(Boolean).join(""));
   };
 
   useEffect(() => {
     fetchPosts();
-  }, [subforumID, user?.uid]);  
+  }, [subforumID, user?.uid, search]); 
 
   const parsedContent = parse(html, {
     transform: (reactNode: React.ReactNode, domNode: DOMNode) => {
@@ -150,6 +154,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
             date={date}
             editeddate={editeddate}
             body={body}
+            search={search}
             contentId={parsedContentId}
             isVerified={true}
             isOwner={attribs.isowner === "true"}

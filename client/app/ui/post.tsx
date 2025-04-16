@@ -27,6 +27,7 @@ interface PostProps {
   isOwner: boolean;
   onDeletePost: (contentId: number) => void;
   onEditPost: (contentId: number, newBody: string) => void;
+  search?: string;
 }
 
 export default function Post({
@@ -41,6 +42,7 @@ export default function Post({
   isOwner = false,
   onDeletePost,
   onEditPost,
+  search = "",
 }: PostProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -75,6 +77,18 @@ export default function Post({
     setIsEditModalOpen(false);
   };
 
+  const highlightMatch = (text: string, keyword: string | undefined) => {
+    if (!keyword) return text;
+    const regex = new RegExp(`(${keyword})`, "gi");
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? (
+        <mark key={i} className="bg-[--deep-moss] text-white px-1 rounded">{part}</mark>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
@@ -82,7 +96,7 @@ export default function Post({
         <div className="flex items-center gap-2">
           <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL}/>
           <span className="font-semibold text-sm text-gray-700">
-            {username}
+          {highlightMatch(username, search)}
           </span>
           <span className="text-gray-400">•</span>
           <span>
@@ -130,7 +144,7 @@ export default function Post({
 
       {/* Post content */}
       <div className="text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
-        {body}
+        {highlightMatch(body, search)}
       </div>
 
       {/*Leave a comment*/}
