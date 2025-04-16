@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; // Import React and hooks
 
-interface Notification {
+interface Notification { // Define the Notification type
   content_id: number;
   date: string;
   type: string;
@@ -10,13 +10,13 @@ interface Notification {
 	username: string;
 }
 
-interface NotificationsProps {
+interface NotificationsProps { // Define the props for the Notifications component
   userId: string;
 }
 
-export default function Notifications({ userId }: NotificationsProps) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function Notifications({ userId }: NotificationsProps) { // Define the Notifications component
+  const [notifications, setNotifications] = useState<Notification[]>([]); // State to manage notifications
+  const [loading, setLoading] = useState(true); // State to manage loading state
 
   // Fetch notifications and mark unread ones as read
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Notifications({ userId }: NotificationsProps) {
           body: JSON.stringify({ user_id: userId }),
         });
       }
-      setLoading(false);
+      setLoading(false); // Set loading to false after fetching
     };
 
     fetchAndMarkNotifications();
@@ -45,7 +45,6 @@ export default function Notifications({ userId }: NotificationsProps) {
     setNotifications((prev) =>
       prev.filter((notif) => !(notif.content_id === content_id && notif.type === type))
     );
-
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${content_id}/${type}`, {
       method: 'DELETE',
     });
@@ -53,6 +52,7 @@ export default function Notifications({ userId }: NotificationsProps) {
 
   if (loading) return <div>Loading notifications...</div>;
 
+  // render the notifications component
   return (
     <div className="space-y-2">
       <h3 className="text-lg font-bold">Notifications</h3>
@@ -75,8 +75,8 @@ export default function Notifications({ userId }: NotificationsProps) {
 
             <p className="text-sm">
               {notif.username} sent you a new <span className="font-medium">{notif.type}</span> (ID: {notif.content_id})
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
+            </p> 
+            <p className="text-xs text-gray-500 mt-1"> 
               Received on {new Date(notif.date).toLocaleDateString()}
             </p>
           </div>
