@@ -25,9 +25,10 @@ interface Comment {
 
 interface CommentsProps {
   contentId: number;
+  subforumId?: string; // Optional subforum ID prop
 }
 
-const Comments: React.FC<CommentsProps> = ({ contentId }) => {
+const Comments: React.FC<CommentsProps> = ({ contentId, subforumId}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -153,6 +154,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
     }
   };
 
+
   // Fetch comments initially
   useEffect(() => {
     if (contentId) {
@@ -167,15 +169,15 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
       console.error("Comment cannot be empty or user is not logged in");
       return;
     }
+    
 
     try {
       console.log("Posting comment as:", userData.username);
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/createComment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          city: "Burbank",
+          city: subforumId,
           username: userData.username,
           body: comment,
           post_id: contentId,

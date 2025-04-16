@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react"; // Import React and hooks
 import Comments from "./comments"; // Import Comments component
 import { getDownloadURL, getStorage, ref } from "firebase/storage"; // Import Firebase storage functions
 import Vote from "./vote"; // Import Vote component
+import SubforumPage from "../dashboard/subforum/[subforum_id]/page";
 
 interface PostProps {
   // Define the props for the Post component
@@ -159,7 +160,7 @@ export default function Post({
         </div>
       </div>
       {/*Leave a comment*/}
-      <Comments contentId={contentId} /> {/* Render the Comments component */}
+      <Comments contentId={contentId} subforumId={"General"}/> {/* Render the Comments component */}
       {/* Delete Modal */}
       {isDeleteModalOpen && (
         <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
