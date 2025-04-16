@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/app/firebase/config";
-import { ChatBubbleLeftIcon, ShareIcon, EllipsisVerticalIcon, ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import Vote from "./vote";
+import React, { useState, useEffect } from "react"; // import React and useState, useEffect hooks
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react"; // Importing UI components from heroui
+import { useAuthState } from "react-firebase-hooks/auth"; // Importing Firebase authentication hooks
+import { auth } from "@/app/firebase/config"; // Importing Firebase configuration
+import { ChatBubbleLeftIcon, ShareIcon, EllipsisVerticalIcon, ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline"; // Importing icons from Heroicons
+import Vote from "./vote"; // Importing Vote component for voting functionality
 
+//style for small thumbs
 const smallThumbsStyle = `
   .small-thumbs-vote svg {
     width: 0.875rem !important;
@@ -14,6 +15,7 @@ const smallThumbsStyle = `
     }
 `;
 
+// Interface for comment structure
 interface Comment {
   content_id: number;
   user_id: string;
@@ -23,10 +25,12 @@ interface Comment {
   username?: string;
 }
 
+// Interface for component props
 interface CommentsProps {
   contentId: number;
 }
 
+// Main Comments component
 const Comments: React.FC<CommentsProps> = ({ contentId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [comment, setComment] = useState("");
@@ -48,7 +52,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
   const [editedBody, setEditedBody] = useState("");
   
-  // Constants
+  // only 2 visible comments at a time
   const DEFAULT_VISIBLE_COMMENTS = 2;
 
   // Fetch current user data
@@ -133,7 +137,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
               ...comment,
               username: userData.username || "User",
             };
-          } catch (error) {
+          } catch (error) { // handle errors when fetching username
             console.error(
               `Error fetching username for comment ${comment.content_id}:`,
               error
@@ -144,9 +148,10 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
       );
 
       setComments(commentsWithUsernames);
+
       // Reset visible comments to default when we get new data
       setVisibleComments(DEFAULT_VISIBLE_COMMENTS);
-    } catch (error) {
+    } catch (error) { // Handle errors
       console.error("Failed to fetch comments:", error);
     } finally {
       setIsLoading(false);
