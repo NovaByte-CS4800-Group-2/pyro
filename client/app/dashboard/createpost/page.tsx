@@ -112,11 +112,6 @@ export default function CreatePost() {
   const handlePersonalSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log("Submitting post...");
-    console.log("Post content:", postContent.body);
-    console.log("City (subforum name):", city);
-    console.log("User data:", userData);
-
     if (!postContent.body.trim()) {
       setErrorMessage("Post cannot be empty.");
     }
