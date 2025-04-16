@@ -13,9 +13,10 @@ import { useEffect, useState } from "react";
 interface VoteProps {
   contentId: number;
   userId: string;
+  username: string;
 }
 
-export default function Vote({ contentId, userId }: VoteProps) {
+export default function Vote({ contentId, userId, username }: VoteProps) {
   const [totalVotes, setTotalVotes] = useState(0);
   const [userVote, setUserVote] = useState<number | null>(null); // 1 = upvote, 0 = downvote, null = no vote
 
@@ -44,6 +45,10 @@ export default function Vote({ contentId, userId }: VoteProps) {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/vote/${contentId}/${userId}`, {
         method: "DELETE",
       });
+
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${contentId}/${"vote"}`, {
+        method: "DELETE",
+      });
       
       setUserVote(null);  // vote was removed, rest value
       if (value === 1) setTotalVotes((prev) => prev - 1);  // update total
@@ -59,6 +64,19 @@ export default function Vote({ contentId, userId }: VoteProps) {
           value: value,
         }),
       });
+      console.log(userVote);
+      if(userVote !== 0 && userVote !== 1)
+      {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content_id: contentId,
+            type: "vote",
+            username: username,
+          }),
+        });
+      }
 
       if(userVote != null)  // updated existing vote for post
       {
