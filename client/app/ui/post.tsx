@@ -17,7 +17,6 @@ import React, { useEffect, useState } from "react"; // Import React and hooks
 import Comments from "./comments"; // Import Comments component
 import { getDownloadURL, getStorage, ref } from "firebase/storage"; // Import Firebase storage functions
 import Vote from "./vote"; // Import Vote component
-import SubforumPage from "../dashboard/subforum/[subforum_id]/page";
 
 interface PostProps {
   // Define the props for the Post component
