@@ -6,6 +6,7 @@ import Post from "./post";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { getServerSideProps } from "next/dist/build/templates/pages";
+import SearchBar from "./searchbar";
 
 interface ForumProps {
   subforumID?: string;
@@ -15,6 +16,7 @@ interface ForumProps {
 const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   const [html, setHtml] = useState<string>("");
   const [user] = useAuthState(auth);
+  const [search, setSearch] = useState("");
 
   const getUser = async (user_id: String) => {
     const fetchString = `http://localhost:8080/username/${user_id}`;
@@ -119,7 +121,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
     );
 
     // Combine all post HTML content into one string
-    setHtml(posts.join(""));
+    const filteredPosts = posts.filter((html) =>
+      html.toLowerCase().includes(search.toLowerCase())
+    );
+    setHtml(filteredPosts.join(""));    
   };
 
   useEffect(() => {
@@ -158,7 +163,12 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
     },
   });
 
-  return <>{parsedContent || <p>No posts available</p>}</>;
+  return (
+    <div className="space-y-4">
+      <SearchBar value={search} onChange={setSearch} placeholder="Search by username or text..." />
+      {parsedContent || <p>No posts available</p>}
+    </div>
+  );  
 };
 
 export default Forum;
