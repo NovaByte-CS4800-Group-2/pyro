@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from "cors"  // a way for browsers and servers to interact
 
-import loginRouter from "./routes/login.js";
 import registerRouter from "./routes/register.js";
 import postRouter from "./routes/posts.js";
 import subforumRouter from './routes/subforum.js';
@@ -23,7 +22,6 @@ app.use(cors({
 }))
 
 // Route handlers
-app.use(loginRouter);
 app.use(registerRouter);
 app.use(postRouter);
 app.use(subforumRouter);
