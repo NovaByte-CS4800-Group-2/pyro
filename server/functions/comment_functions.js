@@ -37,7 +37,7 @@ class Comment
      * @param {string} newBody - The new body of the comment.
      * @returns {boolean} - `true` if the comment was successfully updated, `false` if an error occurred.
      */
-    
+
     static async editComment(content_id, newBody)
     {
         try{
@@ -94,6 +94,7 @@ class Comment
             const deletedVotes = await Vote.removeVotes(commentIds);
             const [deleteCommentResult] = await pool.query("DELETE FROM comments WHERE post_id = ? ", [post_id]);
             const deleteContentResult = await Content.deleteContents(commentIds); 
+            console.log(deleteCommentResult.affectedRows > 0 && deleteContentResult && deletedVotes)
 
             return deleteCommentResult.affectedRows > 0 && deleteContentResult && deletedVotes;
 
