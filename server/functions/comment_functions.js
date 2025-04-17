@@ -37,6 +37,7 @@ class Comment
      * @param {string} newBody - The new body of the comment.
      * @returns {boolean} - `true` if the comment was successfully updated, `false` if an error occurred.
      */
+    
     static async editComment(content_id, newBody)
     {
         try{

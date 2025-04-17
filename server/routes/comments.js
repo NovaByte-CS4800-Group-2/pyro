@@ -102,3 +102,4 @@ router.get('/getComment/:comment_id', async (req, res) => {
   return res.status(200).json({ comment: result});
 })
 export default router;
+

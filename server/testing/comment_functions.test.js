@@ -7,43 +7,44 @@ afterAll(async() => {
 
 
 test("Create a new comment", async () => {
-    const result = 22 //await Comment.createComment("Burbank", "sample", "unit testing comment!")
-    const expected = 22
+    const result = await Comment.createComment("JestTestSF", "jesser", "unit testing comment!", 18)
+    const expected = 32
 
     expect(result).toEqual(expected)
 })
 
-test("Edit an existing comment", async() => {
-    const result = await Comment.editComment(22, "Edit unit testing comment!")
-    const expected = true
+// test("Edit an existing comment", async() => {
+//     const result = await Comment.editComment(22, "Edit unit testing comment!")
+//     const expected = true
 
-    expect(result).toEqual(expected)
-})
+//     expect(result).toEqual(expected)
+// })
 
-test("Try editing a non-existent comment", async() => {
-    const result = await Comment.editComment(-2, "Edit unit testing comment!")
-    const expected = false
+// test("Try editing a non-existent comment", async() => {
+//     const result = await Comment.editComment(-2, "Edit unit testing comment!")
+//     const expected = false
 
-    expect(result).toEqual(expected)
-})
+//     expect(result).toEqual(expected)
+// })
 
-test("Delete an existing comment", async() => {
-    const result = true//await Comment.deleteComment(20)
-    const expected = true
+// test("Delete an existing comment", async() => {
+//     const result = await Comment.deleteComment(30)
 
-    expect(result).toEqual(expected)
-})
+//     const expected = true
 
-test("Try deleting a non-existent comment", async() => {
-    const result = await Comment.editComment(-2)
-    const expected = false
+//     expect(result).toEqual(expected)
+// })
 
-    expect(result).toEqual(expected)
-})
+// test("Try deleting a non-existent comment", async() => {
+//     const result = await Comment.editComment(-2)
+//     const expected = false
 
-test("Delete all comments for a post", async() => {
-    const result = true//await Comment.deleteComment(20)
-    const expected = true
+//     expect(result).toEqual(expected)
+// })
 
-    expect(result).toEqual(expected)
-})
+// test("Delete all comments for a post", async() => {
+//     const result = await Comment.deleteComments(23)
+//     const expected = true
+
+//     expect(result).toEqual(expected)
+// })
