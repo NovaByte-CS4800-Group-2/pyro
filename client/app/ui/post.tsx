@@ -156,7 +156,7 @@ export default function Post({
       {isDeleteModalOpen && (
         <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
           <ModalContent>
-            {(onClose) => (
+          {(onClose: () => void) => (
               <>
                 <ModalHeader>Delete Post</ModalHeader>
                 <ModalBody>
@@ -186,7 +186,8 @@ export default function Post({
       {isEditModalOpen && (
         <Modal isOpen={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <ModalContent>
-            {(onClose) => (
+          {(onClose: () => void) => (
+
               <>
                 <ModalHeader>Edit Post</ModalHeader>
                 <ModalBody>
