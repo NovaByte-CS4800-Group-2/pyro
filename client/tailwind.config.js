@@ -23,10 +23,10 @@ module.exports = {
       light: {
         layout: {}, // light theme layout tokens
         colors: {
-          default: {
+          /*default: {
             foreground: "#ffffff",
             DEFAULT: "#3E3A36",
-          },
+          },*/
           primary: {
             50: "#f3f8ec",
             100: "#dae6ca",
