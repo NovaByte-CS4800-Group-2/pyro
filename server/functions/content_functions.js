@@ -133,6 +133,23 @@ class Content
   }
 
   /**
+     * Retrieves a single content by its content ID.
+     * @param {number} content_id - The content ID
+     * @returns {Object[]|null} - Content row or null on error
+     */
+  static async getContent(content_id)
+  {
+      try {
+          const [rows] = await pool.query("SELECT * FROM content WHERE content_id = ?", [content_id]);
+          return rows[0];
+
+      } catch(error){
+          console.error("Error in getPosts:", error);
+          return null;
+      }
+  }
+
+  /**
    * Extracts and returns an array of `comment_id` values from a list of row objects.
    * 
    * @param {Array<Object>} idRows - An array of objects containing `comment_id` keys.

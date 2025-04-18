@@ -183,6 +183,8 @@ const Comments: React.FC<CommentsProps> = ({ contentId }) => {
       });
 
       const data = await res.json();
+
+      
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
