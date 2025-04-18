@@ -124,7 +124,7 @@ class Post
     {
         try {
             const [rows] = await pool.query("SELECT * FROM content WHERE content_id = ?", [post_id]);
-            return rows.length > 0 ? rows : [];
+            return rows[0];
 
         } catch(error){
             console.error("Error in getPosts:", error);

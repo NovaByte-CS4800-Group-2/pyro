@@ -9,6 +9,7 @@ import commentRouter from './routes/comments.js';
 import voteRouter from './routes/votes.js';
 import matchingRouter from './routes/matching.js';
 import chatbotRouter from './routes/chatbot.js';
+import NotificationRouter from './routes/notifications.js';
 
 const app = express()
 
@@ -30,6 +31,7 @@ app.use(commentRouter);
 app.use(voteRouter);
 app.use(matchingRouter);
 app.use(chatbotRouter);
+app.use(NotificationRouter);
 
 // Catch-all error handler
 app.use((err, req, res, next) => {
