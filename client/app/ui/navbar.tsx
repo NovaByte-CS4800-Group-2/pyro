@@ -2,16 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 
 export default function Navbar() {
   const pathname = usePathname();
   console.log("Pathname", pathname)
-  const navLinks = [
-    { href: "/dashboard", label: "Forum" },
-    { href: "/dashboard/fundraiser", label: "Fundraisers" },
-    { href: "/dashboard/resources", label: "Resources" },
-    { href: "/dashboard/matching", label: "Matching Requests" },
-  ];
+  const [user] = useAuthState(auth);
+
+  const allNavLinks = [
+  { href: "/dashboard", label: "Forum" },
+  { href: "/dashboard/fundraiser", label: "Fundraisers" },
+  { href: "/dashboard/resources", label: "Resources" },
+  { href: "/dashboard/matching", label: "Matching Requests" },
+];
+
+const navLinks = user
+  ? allNavLinks
+  : allNavLinks.filter((link) =>
+      ["/dashboard", "/dashboard/fundraiser"].includes(link.href)
+    );
 
   return (
     <div className="flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm">
