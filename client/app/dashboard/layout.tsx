@@ -24,7 +24,7 @@ export default function RootLayout({
       typeof window !== "undefined" && sessionStorage.getItem("user");
 
     // Allow dashboard even if not logged in
-    if (!user && !userSession && pathname !== "/dashboard") {
+    if (!user && !userSession && !pathname.startsWith("/dashboard")){
       // If user is not signed in and not on dashboard, redirect to home
       return router.push("/");
     } else {
