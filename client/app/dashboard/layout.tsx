@@ -7,17 +7,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@heroui/react";
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   // Router for redirecting the user.
   const router = useRouter();
   // Authentication functions
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [authenticating, setAuthenticating] = useState<Boolean>(true);
 
   // Function to check if user is signed in.
   useEffect(() => {
     /* Check session */
-    if (!user) {
+    if (!user && !loading) {
       return router.push("/");
     }
     else {

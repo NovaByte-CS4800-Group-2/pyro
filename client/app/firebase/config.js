@@ -20,5 +20,6 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize auth with session persistence (log-out on close).
-const auth = initializeAuth(app, { persistence: browserSessionPersistence}); //now expose this to application 
+const auth = initializeAuth(app, { persistence: browserSessionPersistence});
+//const auth = getAuth(app); //now expose this to application 
 export {app, auth};
