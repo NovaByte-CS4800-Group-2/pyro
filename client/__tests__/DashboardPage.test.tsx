@@ -3,8 +3,9 @@ import Dashboard from "@/app/dashboard/page";
 import "@testing-library/jest-dom";
 import "whatwg-fetch";
 
-it("renders the dashboard page", async () => {
-  render(<Dashboard />);
+
+it("renders the dashboard page", async () => { // Test for the dashboard page
+  render(<Dashboard />); // Render the Dashboard component
   await waitFor(() => {
     // Check if the Forum component is rendered
     const forumElement = screen.getByText(/forum/i); // Adjust the text match if needed

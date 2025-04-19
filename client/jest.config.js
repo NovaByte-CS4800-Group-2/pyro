@@ -14,7 +14,7 @@ const config = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   preset: 'ts-jest',
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/client/$1', // Map @/ to client/ explicitly
+    '^@/(.*)$': '<rootDir>/$1', // Map @/ to client/ explicitly
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Optional: Mock CSS imports
   },
  
