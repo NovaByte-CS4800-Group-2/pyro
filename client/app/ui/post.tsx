@@ -29,8 +29,9 @@ interface PostProps {
   contentId: number;
   isVerified: boolean;
   isOwner: boolean;
-  onDeletePost: (contentId: number) => void; // Function to handle post deletion
-  onEditPost: (contentId: number, newBody: string) => void; // Function to handle post editing
+  onDeletePost: (contentId: number) => void;
+  onEditPost: (contentId: number, newBody: string) => void;
+  search?: string;
 }
 
 export default function Post({
@@ -46,6 +47,7 @@ export default function Post({
   isOwner = false,
   onDeletePost,
   onEditPost,
+  search = "",
 }: PostProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage the visibility of the menu
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State to manage the visibility of the delete modal
@@ -83,15 +85,27 @@ export default function Post({
     setIsEditModalOpen(false); // Close the edit modal
   };
 
+  const highlightMatch = (text: string, keyword: string | undefined) => {
+    if (!keyword) return text;
+    const regex = new RegExp(`(${keyword})`, "gi");
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? (
+        <mark key={i} className="bg-[--deep-moss] text-white px-1 rounded">{part}</mark>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     // Render the Post component
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 pt-2">
         <div className="flex items-center gap-2">
           <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL} />
           <span className="font-semibold text-sm text-gray-700">
-            {username} {/* Display the username */}
+          {highlightMatch(username, search)}
           </span>
           <span className="text-gray-400">•</span>
           <span>
@@ -138,7 +152,7 @@ export default function Post({
       </div>
       {/* Post content */}
       <div className="text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
-        {body}
+        {highlightMatch(body, search)}
       </div>
       {/* Post Interaction Bar - This clearly belongs to the post */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
@@ -164,7 +178,7 @@ export default function Post({
       {isDeleteModalOpen && (
         <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
           <ModalContent>
-            {(onClose) => (
+          {(onClose: () => void) => (
               <>
                 <ModalHeader>Delete Post</ModalHeader>
                 <ModalBody>
@@ -193,7 +207,8 @@ export default function Post({
       {isEditModalOpen && (
         <Modal isOpen={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <ModalContent>
-            {(onClose) => (
+          {(onClose: () => void) => (
+
               <>
                 <ModalHeader>Edit Post</ModalHeader>
                 <ModalBody>

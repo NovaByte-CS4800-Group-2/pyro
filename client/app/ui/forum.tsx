@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Import React and hooks
-import parse, { DOMNode, Element } from "html-react-parser"; // Import html-react-parser for parsing HTML strings
-import Post from "./post"; // Import Post component
-import { useAuthState } from "react-firebase-hooks/auth"; // Import Firebase authentication hooks
-import { auth } from "@/app/firebase/config"; // Import Firebase configuration
+import React, { useState, useEffect } from "react";
+import parse, { DOMNode, Element } from "html-react-parser";
+import Post from "./post";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
+import { getServerSideProps } from "next/dist/build/templates/pages";
+import SearchBar from "./searchbar";
 
 interface ForumProps {
   // Define the props for the Forum component
@@ -16,6 +18,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
   //// Define the Forum component
   const [html, setHtml] = useState<string>(""); // State to manage the HTML content
   const [user] = useAuthState(auth); // Get the current authenticated user
+  const [search, setSearch] = useState("");
 
   const getUser = async (user_id: String) => {
     // Function to fetch the username based on user ID
@@ -106,7 +109,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
       // If userID is provided, fetch posts for that user
       fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/userPosts/${userID}`;
     }
-
+  
     const response = await fetch(fetchString, {
       // Fetch posts from the backend
       method: "GET",
@@ -114,40 +117,44 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
         "Content-Type": "application/json",
       },
     });
-
-    // if response not okay, set error message
+  
     if (!response.ok) {
       setHtml("<p>Error loading posts :(</p>");
       return;
     }
-
-    // Parse the response data
+  
     const contentData = await response.json();
-
+    //console.log("Fetched posts from backend:", contentData.posts); // Debug log
+    const searchLower = search.toLowerCase();
+  
     // Use map to handle async operations
     const posts = await Promise.all(
       contentData.posts.map(async (post: any, index: any) => {
-        // Map through the posts
-        const { post_date, last_edit_date, body, user_id, content_id } = post; // Destructure post data
-        const username = await getUser(user_id); // Fetch the username based on user ID
-
+        const { post_date, last_edit_date, body, user_id, content_id } = post;
+        //console.log("Post content_id:", content_id); // Debug log
+        const username = await getUser(user_id);
+  
         // Determine if the logged-in user is the owner of the post
         const isOwner = user_id === user?.uid;
 
+        // Filter posts that do not match the search in either username or body
+        const bodyMatch = body.toLowerCase().includes(searchLower);
+        const userMatch = username.toLowerCase().includes(searchLower);
+  
+        if (!bodyMatch && !userMatch) return null; // Skip this post if no match
+  
         // Return the HTML content for each post
         return `<post key=${index} posterid="${user_id}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
       })
     );
-
-    // Combine all post HTML content into one string
-    setHtml(posts.join(""));
+  
+    // Combine all post HTML content into one string, filtering out nulls
+    setHtml(posts.filter(Boolean).join(""));
   };
 
   useEffect(() => {
-    if (user?.uid != null) {
-      fetchPosts();
-    }
-  }, [subforumID, user?.uid]); // Fetch posts when the component mounts or when subforumID or user ID changes
+    fetchPosts();
+  }, [subforumID, user?.uid, search]); 
 
   const parsedContent = parse(html, {
     // Parse the HTML string
@@ -171,6 +178,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
             date={date}
             editeddate={editeddate}
             body={body}
+            search={search}
             contentId={parsedContentId}
             isVerified={true}
             isOwner={attribs.isowner === "true"}
@@ -184,7 +192,12 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
     },
   });
 
-  return <>{parsedContent || <p>No posts available</p>}</>; // Render the parsed content or a message if no posts are available
+  return (
+    <div className="space-y-4">
+      <SearchBar value={search} onChange={setSearch} placeholder="Search by username or text..." />
+      {parsedContent || <p>No posts available</p>}
+    </div>
+  );  
 };
 
 export default Forum;
