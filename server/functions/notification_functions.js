@@ -21,6 +21,9 @@ class Notification
       const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [contentid]);
       const user_id = useridObj[0].user_id;
 
+      const sameUser = await this.sameUser(user_id, username);
+      if(sameUser) return -1;
+
       const [result] = await pool.query("INSERT INTO notifications (user_id, username, content_id, date, type, `read`) VALUES (?, ?, ?, ?, ?, 0)", [user_id, username, content_id, date, type]);
       const notification_id = result.insertId;  // Extract and return the notification_id that is generated
       return notification_id;
@@ -114,7 +117,14 @@ class Notification
     if(userId === user_id) return true;
     return false;
   }
+
+  static async unreadNotifications(user_id)
+  {
+    const [unread] = await pool.query("SELECT `read` FROM notifications WHERE `read` = 0 AND user_id = ? LIMIT 1", [user_id]);
+    return unread.length > 0;
+  }
 } 
 
-// await Notification.createNotif(1, "comment");
+// console.log(await Notification.unreadNotifications("SRr7aWBvUFYU6WK5k50vO655LsN2"));
+
 export default Notification;

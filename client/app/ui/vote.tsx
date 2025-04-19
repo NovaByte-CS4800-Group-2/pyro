@@ -70,22 +70,15 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
       console.log(userVote);
       if(userVote !== 0 && userVote !== 1) // send notification to database
       {
-
-        const postRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/is/same/user/${username}/${userId}`);
-        const postData = await postRes.json();
-        const sameUser = postData.sameUser;
-
-        if (!sameUser) {
-          await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              content_id: contentId,
-              type: "vote",
-              username: username,
-            }),
-          })
-        }
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content_id: contentId,
+            type: "vote",
+            username: username,
+          }),
+        })
       }
 
       if(userVote != null)  // updated existing vote for post

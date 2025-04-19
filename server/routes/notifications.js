@@ -51,13 +51,11 @@ router.post('/get/notification/content', async (req, res) => {
   }
 });
 
-router.get('/is/same/user/:username/:user_id', async (req, res) => { 
-  const { username, user_id } = req.params;
+router.get('/unread/notifications/:id', async (req, res) => { 
+  const { id } = req.params;
 
-    const sameUser = await Notification.sameUser(user_id, username);
-    res.status(200).json({ sameUser:sameUser });
-
+  const unread = await Notification.unreadNotifications(id); // returns true if there are unread notifications, false otherwise
+  res.status(200).json({ unread:unread });
 });
-
 
 export default router;

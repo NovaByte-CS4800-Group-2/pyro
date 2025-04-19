@@ -118,7 +118,7 @@ class Comment
             const commentIds = Content.getIds(commentIdsRows);  // extract comment_id's
             const [contentRows] = await pool.query("SELECT * FROM content WHERE content_id IN (?)", [commentIds]);
 
-            return contentRows;
+            return contentRows.reverse();
 
         } catch(error){
             console.error("Error in getComments:", error);

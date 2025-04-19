@@ -88,7 +88,8 @@ class Post
             const [rows] = 
             await pool.query("SELECT c.* FROM content c JOIN posts p ON c.content_id = p.post_id WHERE c.subforum_id = ?",
                 [subforum_id]);  // query into 2 tables instead of having two seperate statements
-            return rows.length > 0 ? rows : [];
+            if(rows.length === 0) return [];
+            return rows.reverse();
 
         } catch(error){
             console.error("Error in getPosts:", error);
@@ -107,7 +108,8 @@ class Post
             const [rows] = 
             await pool.query("SELECT c.* FROM content c JOIN posts p ON c.content_id = p.post_id WHERE c.user_id = ?", 
                 [user_id]);
-            return rows.length > 0 ? rows : [];
+            if(rows.length === 0) return [];
+            return rows.reverse();
 
         } catch(error){
             console.error("Error in getPosts:", error);
