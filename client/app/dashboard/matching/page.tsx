@@ -1,6 +1,7 @@
 "use client"
 
-import { Card, CardBody, Link } from "@heroui/react";
+import { Card, CardBody } from "@heroui/react";
+import Link from "next/link";
 
 export default function Matching() {
 	return (

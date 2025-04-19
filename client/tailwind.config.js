@@ -23,21 +23,29 @@ module.exports = {
       light: {
         layout: {}, // light theme layout tokens
         colors: {
-          /*type ColorScale = {
-            50: string,
-            100: string,
-            200: string,
-            300: string,
-            400: string,
-            500: string,
-            600: string,
-            700: string,
-            800: string,
-            900: string,
-            foreground: string, // contrast color
-            DEFAULT: string,
+          /*default: {
+            foreground: "#ffffff",
+            DEFAULT: "#3E3A36",
+          },*/
+          primary: {
+            50: "#f3f8ec",
+            100: "#dae6ca",
+            200: "#c1d6a6",
+            300: "#a8c682",
+            400: "#8fb65e",
+            500: "#76a63a",
+            600: "#61872f",
+            700: "#4c6a25",
+            800: "#374d1b",
+            900: "#223011",
+            foreground: "#ffffff", // contrast color
+            DEFAULT: "#4F5A3D",
           },
-          type BaseColors = {
+          secondary: {
+            foreground: "#ffffff",
+            DEFAULT: "#B56B44"
+          },
+          /* type BaseColors = {
             background: ColorScale, // the page background color
             foreground: ColorScale, // the page text color
             divider: ColorScale, // used for divider and single line border
