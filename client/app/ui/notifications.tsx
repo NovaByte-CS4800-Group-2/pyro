@@ -10,7 +10,7 @@ import {
   HandThumbUpIcon as UpFilled,
 } from "@heroicons/react/24/solid";
 
-interface Notification {
+interface Notification { // Define the Notification type
   content_id: number;
   date: string;
   type: string;
@@ -31,7 +31,7 @@ interface FullNotification extends Notification {
   content: Content | null;
 }
 
-interface NotificationsProps {
+interface NotificationsProps { // Define the props for the Notifications component
   userId: string;
 }
 
@@ -81,7 +81,6 @@ export default function Notifications({ userId }: NotificationsProps) {
     setNotifications((prev) =>
       prev.filter((notif) => !(notif.content_id === content_id && notif.type === type))
     );
-
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${content_id}/${type}`, {
       method: 'DELETE',
     });
@@ -89,6 +88,7 @@ export default function Notifications({ userId }: NotificationsProps) {
 
   if (loading) return <div>Loading notifications...</div>;
 
+  // render the notifications component
   return (
     <div className="space-y-2 max-w-sm max-h-[60vh] overflow-y-auto p-2 bg-white rounded shadow border border-gray-200">
       <h3 className="text-base font-bold">Notifications</h3>

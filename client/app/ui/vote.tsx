@@ -3,25 +3,25 @@
 import {
   HandThumbDownIcon,
   HandThumbUpIcon,
-} from "@heroicons/react/24/outline";
+} from "@heroicons/react/24/outline";  // Importing outline icons from Heroicons
 import {
   HandThumbDownIcon as DownFilled,
   HandThumbUpIcon as UpFilled,
-} from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+} from "@heroicons/react/24/solid"; // Importing filled icons from Heroicons
+import { useEffect, useState } from "react"; // Importing React hooks
 
-interface VoteProps {
+interface VoteProps { // Defining the props for the Vote component
   contentId: number;
   userId: string;
   username: string;
 }
 
-export default function Vote({ contentId, userId, username }: VoteProps) {
+export default function Vote({ contentId, userId, username }: VoteProps) { // Defining the Vote component
   const [totalVotes, setTotalVotes] = useState(0);
   const [userVote, setUserVote] = useState<number | null>(null); // 1 = upvote, 0 = downvote, null = no vote
 
   useEffect(() => {
-    const fetchVotes = async () => {
+    const fetchVotes = async () => { 
       try {
         const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
         const data1 = await res1.json();
@@ -32,20 +32,22 @@ export default function Vote({ contentId, userId, username }: VoteProps) {
         setUserVote(data2.vote);  // set vote state 
         console.log("data2.vote: " + data2.vote);
 
-      } catch (error) {
+      } catch (error) { // handle error
         console.error("Failed to load votes:", error);
       }
     };
     fetchVotes();
-  }, [contentId, userId]);
+  }, [contentId, userId]); 
 
-  const handleVote = async (value: number) => {
+  const handleVote = async (value: number) => { // function to handle vote
     if (userVote === value) {  // same icon was clicked, remove vote
 
+      // remove vote from database
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/vote/${contentId}/${userId}`, {
         method: "DELETE",
       });
 
+      // remove notification from database
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${contentId}/${"vote"}`, {
         method: "DELETE",
       });
@@ -55,17 +57,18 @@ export default function Vote({ contentId, userId, username }: VoteProps) {
       else setTotalVotes((prev) => prev + 1);
     } else {  // send vote
 
+      // send vote to database
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vote`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          content_id: contentId,
+          content_id: contentId, 
           user_id: userId,
           value: value,
         }),
       });
       console.log(userVote);
-      if(userVote !== 0 && userVote !== 1)
+      if(userVote !== 0 && userVote !== 1) // send notification to database
       {
 
         const postRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/is/same/user/${username}/${userId}`);

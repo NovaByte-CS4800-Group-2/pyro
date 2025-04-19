@@ -1,7 +1,9 @@
-import "@/app/globals.css";
+import "@/app/globals.css"; // Import global styles
 import {
   EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline";
+  ChatBubbleLeftIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline"; // Import icons from Heroicons
 import {
   Avatar,
   Button,
@@ -10,12 +12,14 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@heroui/react";
-import React, { useEffect, useState } from "react";
-import Comments from "./comments";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
+} from "@heroui/react"; // Import UI components from HeroUI
+import React, { useEffect, useState } from "react"; // Import React and hooks
+import Comments from "./comments"; // Import Comments component
+import { getDownloadURL, getStorage, ref } from "firebase/storage"; // Import Firebase storage functions
+import Vote from "./vote"; // Import Vote component
 
 interface PostProps {
+  // Define the props for the Post component
   userId: string;
   posterId: string;
   username: string;
@@ -25,11 +29,12 @@ interface PostProps {
   contentId: number;
   isVerified: boolean;
   isOwner: boolean;
-  onDeletePost: (contentId: number) => void;
-  onEditPost: (contentId: number, newBody: string) => void;
+  onDeletePost: (contentId: number) => void; // Function to handle post deletion
+  onEditPost: (contentId: number, newBody: string) => void; // Function to handle post editing
 }
 
 export default function Post({
+  // define the Post component
   userId = "",
   posterId = "",
   username = "Default User",
@@ -42,57 +47,61 @@ export default function Post({
   onDeletePost,
   onEditPost,
 }: PostProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editedBody, setEditedBody] = useState(body);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage the visibility of the menu
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State to manage the visibility of the delete modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to manage the visibility of the edit modal
+  const [editedBody, setEditedBody] = useState(body); // State to manage the edited body of the post
 
-  const formattedDate = date.replace("T07:00:00.000Z", "");
+  const formattedDate = date.replace("T07:00:00.000Z", ""); // Format the date
   const formattedEditDate =
-    editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", "");
+    editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", ""); // Format the edited date
 
-  const storage = getStorage();
-  const [profileURL, setProfileURL] = useState("");
+  const storage = getStorage(); // Initialize Firebase storage
+  const [profileURL, setProfileURL] = useState(""); // State to manage the profile picture URL
 
   // Get user profile pic url.
   useEffect(() => {
-    const storageRef = ref(storage, 'profilePics/' + posterId);
-      getDownloadURL(storageRef)
+    const storageRef = ref(storage, "profilePics/" + posterId); // Create a reference to the profile picture in Firebase storage
+    getDownloadURL(storageRef) // Get the download URL for the profile picture
       .then((url) => {
-        setProfileURL(url);
-      }).catch((e) => {
-        // Do Nothing
+        setProfileURL(url); // Set the profile picture URL in state
       })
-  }, [])
+      .catch((e) => {
+        // Do Nothing
+      });
+  }, []);
 
   const handleDelete = () => {
-    onDeletePost(contentId);
-    setIsDeleteModalOpen(false);
+    // Function to handle post deletion
+    onDeletePost(contentId); // Call the onDeletePost function passed as a prop
+    setIsDeleteModalOpen(false); // Close the delete modal
   };
 
   const handleEdit = () => {
-    onEditPost(contentId, editedBody);
-    setIsEditModalOpen(false);
+    // Function to handle post editing
+    onEditPost(contentId, editedBody); // Call the onEditPost function passed as a prop
+    setIsEditModalOpen(false); // Close the edit modal
   };
 
   return (
+    // Render the Post component
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       {/* Top bar */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
         <div className="flex items-center gap-2">
-          <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL}/>
+          <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL} />
           <span className="font-semibold text-sm text-gray-700">
-            {username}
+            {username} {/* Display the username */}
           </span>
           <span className="text-gray-400">•</span>
           <span>
             {formattedEditDate
-              ? `Edited ${formattedEditDate}`
-              : `Posted ${formattedDate}`}
+              ? `Edited ${formattedEditDate}` // Display the edited date if available
+              : `Posted ${formattedDate}`}{" "}
+            {/* Display the formatted date */}
           </span>
         </div>
       </div>
-
       {/* Post Content Section */}
       <div className="flex flex-col flex-grow text-xs relative">
         {/* Three Dots Menu */}
@@ -107,8 +116,8 @@ export default function Post({
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsEditModalOpen(true);
+                    setIsMenuOpen(false); // Close the menu
+                    setIsEditModalOpen(true); // Open the edit modal
                   }}
                 >
                   Edit
@@ -116,8 +125,8 @@ export default function Post({
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
                   onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsDeleteModalOpen(true);
+                    setIsMenuOpen(false); // Close the menu
+                    setIsDeleteModalOpen(true); // Open the delete modal
                   }}
                 >
                   Delete
@@ -127,17 +136,30 @@ export default function Post({
           </div>
         )}
       </div>
-
       {/* Post content */}
       <div className="text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap">
         {body}
       </div>
-
+      {/* Post Interaction Bar - This clearly belongs to the post */}
+      <div className="flex justify-between items-center text-xs text-gray-500 mb-4 pt-2">
+        <Vote
+          contentId={contentId} // Pass the contentId to the Vote component
+          userId={userId || ""} // Pass the userId to the Vote component
+          username={username || ""} // Pass the username to the Vote component
+        />
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+            <ChatBubbleLeftIcon className="w-4 h-4" />
+            <span>Comments</span>
+          </div>
+          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+            <ShareIcon className="w-4 h-4" />
+            <span>Share</span>
+          </div>
+        </div>
+      </div>
       {/*Leave a comment*/}
-      <Comments contentId={contentId} />
-
-
-
+      <Comments contentId={contentId} subforumId={"General"}/> {/* Render the Comments component */}
       {/* Delete Modal */}
       {isDeleteModalOpen && (
         <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
@@ -152,7 +174,7 @@ export default function Post({
                   <Button
                     color="danger"
                     onPress={() => {
-                      handleDelete();
+                      handleDelete(); // Call the handleDelete function
                       onClose();
                     }}
                   >
@@ -167,7 +189,6 @@ export default function Post({
           </ModalContent>
         </Modal>
       )}
-
       {/* Edit Modal */}
       {isEditModalOpen && (
         <Modal isOpen={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
@@ -186,7 +207,7 @@ export default function Post({
                   <Button
                     color="primary"
                     onPress={() => {
-                      handleEdit();
+                      handleEdit(); // Call the handleEdit function
                       onClose();
                     }}
                   >
