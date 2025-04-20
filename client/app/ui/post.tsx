@@ -1,4 +1,6 @@
 import "@/app/globals.css"; // Import global styles
+import { useAuthState } from "react-firebase-hooks/auth"; //import aut state
+import { auth } from "@/app/firebase/config";
 
 import {
   EllipsisVerticalIcon,
@@ -64,6 +66,8 @@ export default function Post({
 
   const storage = getStorage(); // Initialize Firebase storage
   const [profileURL, setProfileURL] = useState(""); // State to manage the profile picture URL
+
+  const [user] = useAuthState(auth);
 
   // Get user profile pic url.
   useEffect(() => {
@@ -166,10 +170,13 @@ export default function Post({
           username={username || ""} // Pass the username to the Vote component
         />
         <div className="flex items-center space-x-6">
-          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
-            <ChatBubbleLeftIcon className="w-4 h-4" />
-            <span>Comments</span>
-          </div>
+        {user && (
+        <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+          <ChatBubbleLeftIcon className="w-4 h-4" />
+          <span>Comments</span>
+        </div>
+        )}
+
           <div
             className="flex items-center gap-1 hover:text-black cursor-pointer"
             onClick={() => {
