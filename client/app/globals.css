@@ -1,22 +1,21 @@
-/* ===== Font Imports ===== */
+/* Font Imports*/
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-
-/* ===== Professional Earthy Color Variables ===== */
+/* Color Variables */
 :root {
-  --porcelain: #F8F8F6;
-  --olive-stone: #6F7D5C;
-  --greige-mist: #E2E0DC;
-  --bark: #3E3A36;
-  --ash-olive: #9BA189;
-  --clay-beige: #CFC8BB;
-  --deep-moss: #4F5A3D;
-  --muted-terracotta: #D9A173;
-  --deep-terracotta: #B56B44;
-  
+  --porcelain: #f8f8f6;
+  --olive-stone: #6f7d5c;
+  --greige-mist: #e2e0dc;
+  --bark: #3e3a36;
+  --ash-olive: #9ba189;
+  --clay-beige: #cfc8bb;
+  --deep-moss: #4f5a3d;
+  --muted-terracotta: #d9a173;
+  --deep-terracotta: #b56b44;
+
   --accessible-beige: #d0c5b8;
   --classic-gray: #e3e0db;
   --agreeable-gray: #d1c9c0;
@@ -27,7 +26,6 @@
   --balboa-mist: #d8d5cf;
   --repose-gray: #d5d1cc;
   --edgecomb-gray: #d8d1c5;
-
 
   /* Global usage */
   --bg-color: var(--porcelain);
@@ -42,24 +40,24 @@
   --font-normal: "Barlow", sans-serif;
 }
 
-/* ===== Dark Mode Support ===== */
+/* Dark Mode */
 .dark {
-  --bg-color: #1C1C1A;
-  --text-color: #F0F0ED;
-  --input-bg: #2A2A28;
-  --input-border: #74816D;
-  --button-bg: #4A5840;
-  --button-hover: #B8734D;
+  --bg-color: #1c1c1a;
+  --text-color: #f0f0ed;
+  --input-bg: #2a2a28;
+  --input-border: #74816d;
+  --button-bg: #4a5840;
+  --button-hover: #b8734d;
 }
 
-/* ===== Base Styles ===== */
+/* Base Styles */
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: var(--font-normal);
 }
 
-/* ===== Typography Utilities ===== */
+/* Typography Utilities */
 .font-display {
   font-family: var(--font-display);
 }
@@ -68,7 +66,7 @@ body {
   font-family: var(--font-normal);
 }
 
-/* ===== Button Styling ===== */
+/* Button Styling */
 .button {
   font-family: var(--font-display);
   background-color: var(--bark);
@@ -82,7 +80,7 @@ body {
   background-color: var(--deep-moss);
 }
 
-/* ===== Carousel Styles (Embla) ===== */
+/* Carousel Styles (Embla) */
 .embla__viewport {
   overflow: hidden;
 }
@@ -93,7 +91,6 @@ body {
   flex: 0 0 100%;
   min-width: 0;
 }
-
 
 /* Imports Nova Byte fonts from Google Fonts */
 /*@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
@@ -159,6 +156,3 @@ Button Styling
   flex: 0 0 100%;
   min-width: 0;
 }*/
-
-
-

@@ -21,7 +21,7 @@ export default function Subforumbar({ className }: SubforumbarProps) { // Define
   useEffect(() => { // Fetch subforums from the backend
     const fetchSubforums = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/subforums`);
+        const res = await fetch("http://localhost:8080/subforums");
         const data = await res.json();
         setSubforums(data.rows); // Set the fetched subforums to state
       } catch (error) { // handle error
