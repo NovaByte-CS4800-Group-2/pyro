@@ -172,13 +172,14 @@ class Matching
   /**
    * Deletes multiple forms by their IDs.
    *
-   * @param {Array<number>} form_ids - Array of form IDs to delete.
+   * @param {number} form_id1 - form ID to delete.
+   * @param {number} form_id2 - form ID to delete.
    * @returns {Promise<boolean>} - `true` if deletion was successful, `false` otherwise.
    */
-  static async deleteForms(form_ids) 
+  static async deleteForms(form_id1, form_id2) 
   {
     try{
-      const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id IN (?)", [form_ids])
+      const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id = ? OR form_id = ?", [form_id1, form_id2])
             return result.affectedRows > 0;
     }catch(error){
       console.log("error in deleteForms:", error);

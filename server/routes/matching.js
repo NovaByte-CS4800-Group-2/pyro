@@ -56,39 +56,61 @@ router.get('/get/match/:id/:type', async(req, res) => {
 })
 
 /**
- * @route DELETE /delete/single/form/:id
- * @description Delete a single matching form by ID
+ * @route GET /get/match/:id/:type
+ * @description Retrieve match results for a user form
+ * @param {number} req.params.id - ID of the form to match against
+ * @param {string} req.params.type - Type of form ("giver" or "receiver")
+ * @returns {Object} 200 - Array of matched forms
+ * @returns {Object} 204 - No matches found
+ * @returns {Object} 400 - Missing parameters
+ */
+router.get('/get/match/:id/:type', async(req, res) => {
+  const {id, type} = req.params;
+
+  if(!id || !type) return res.status(400).json({ error: "missing paramters"});
+
+  const matches = await Matching.match(id, type);
+
+  if(!matches) return res.status(204).json({ msg: "there were no matches found"});
+
+  return res.status(200).json({ matches: matches })
+})
+
+/**
+ * @route GET /get/form/:id
+ * @description Return a single matching form by ID
  * @param {number} req.params.id - ID of the form to delete
  * @returns {Object} 200 - Success message
+ * @returns {Object} 204 - No form with ID
  * @returns {Object} 400 - Missing ID
- * @returns {Object} 406 - Deletion failed
  */
-router.delete('/delete/single/form/:id', async(req, res) => {
+router.get('/geet/form/:id', async(req, res) => {
   const {id} = req.params;
 
   if(!id) return res.status(400).json({ error: "missing id"});
 
-  const deleted = await Matching.deleteForm(id);
+  const form = await Matching.getForm(id);
 
-  if(!deleted) return res.status(406).json({ errror: "Unable to delete form"});
+  if(!form) return res.status(204).json({ msg: "No from matching the id"});
 
-  return res.status(200).json({ msg: "form succesfully deleted" })
+  return res.status(200).json({ form: form })
 })
 
 /**
  * @route DELETE /delete/multiple/forms
  * @description Delete multiple matching forms (e.g., after matching)
- * @param {Array<number>} req.body.ids - Array of form IDs to delete
+ * @param {number} req.parm.id1 - the form IDs to delete
+ * @param {number} req.parm.id2 - the form IDs to delete
  * @returns {Object} 200 - Success message
  * @returns {Object} 400 - Missing IDs
  * @returns {Object} 406 - Deletion failed
  */
-router.delete('/delete/multiple/forms', async(req, res) => {  // for when forms are matched
-  const {ids} = req.body;
+router.delete('/delete/matched/forms/:id1/:id2', async(req, res) => {  // for when forms are matched
+  const {id1, id2} = req.params;
 
-  if(!ids) return res.status(400).json({ error: "missing ids"});
+  if(!id1 || !id2) return res.status(400).json({ error: "missing ids"});
 
-  const deleted = await Matching.deleteForms(ids);
+  const deleted = await Matching.deleteForms(id1, id2);
 
   if(!deleted) return res.status(406).json({ errror: "Unable to delete fors"});
 

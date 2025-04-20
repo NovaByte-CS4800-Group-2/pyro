@@ -127,6 +127,26 @@ class Comment
     }
 
     /**
+     * Retrieves all comments (not posts) made by a specific user.
+     * @param {string} user_id - ID of the user
+     * @returns {Array|null} - Array of comment rows or null on error
+     */
+    static async getUserComments(user_id)
+    {
+        try {
+            const [rows] = 
+            await pool.query("SELECT c.* FROM content c JOIN comments p ON c.content_id = p.comment_id WHERE c.user_id = ?", 
+                [user_id]);
+            if(rows.length === 0) return [];
+            return rows.reverse();
+
+        } catch(error){
+            console.error("Error in getPosts:", error);
+            return null;
+        }
+    }
+
+    /**
      * Retrieve a single comment by its ID.
      * 
      * @param {number} comment_id - The ID of the comment to retrieve.
@@ -145,6 +165,4 @@ class Comment
     }
 }
 
-
-//console.log(await Comment.createComment("General", "jess", "new comment!", 57))
 export default Comment;
