@@ -1,4 +1,5 @@
 import "@/app/globals.css"; // Import global styles
+
 import {
   EllipsisVerticalIcon,
   ChatBubbleLeftIcon,
@@ -49,6 +50,9 @@ export default function Post({
   onEditPost,
   search = "",
 }: PostProps) {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage the visibility of the menu
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State to manage the visibility of the delete modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to manage the visibility of the edit modal
@@ -166,7 +170,13 @@ export default function Post({
             <ChatBubbleLeftIcon className="w-4 h-4" />
             <span>Comments</span>
           </div>
-          <div className="flex items-center gap-1 hover:text-black cursor-pointer">
+          <div
+            className="flex items-center gap-1 hover:text-black cursor-pointer"
+            onClick={() => {
+              setCopied(false);
+              setIsShareModalOpen(true);
+            }}
+            >
             <ShareIcon className="w-4 h-4" />
             <span>Share</span>
           </div>
@@ -230,6 +240,50 @@ export default function Post({
                   </Button>
                   <Button color="default" onPress={onClose}>
                     Cancel
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+
+      {isShareModalOpen && (
+        <Modal isOpen={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader>Share Post</ModalHeader>
+                <ModalBody>
+                  <div className="space-y-3">
+                    <p className="text-sm text-gray-600">Copy and share the link below:</p>
+                    <input
+                      type="text"
+                      readOnly
+                      value={`${window.location.origin}/dashboard/post/${contentId}`}
+                      className="w-full px-3 py-2 border rounded-md text-sm"
+                    />
+                    <Button
+                      className="w-full bg-[--olive-stone] text-white hover:bg-[--deep-moss]"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${window.location.origin}/dashboard/post/${contentId}`
+                        );
+                        setCopied(true);
+                      }}
+                    >
+                      Copy Link
+                    </Button>
+                    {copied && (
+                      <p className="text-sm text-[--muted-terracotta]">
+                        Link copied to clipboard!
+                      </p>
+                    )}
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="default" onPress={onClose}>
+                    Close
                   </Button>
                 </ModalFooter>
               </>
