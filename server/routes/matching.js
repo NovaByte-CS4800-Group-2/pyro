@@ -10,14 +10,14 @@ const router = Router();  // groups together requests
  * @param {string} req.body.type - Type of match (e.g., "giver" or "receiver")
  * @param {number} req.body.num_rooms - Number of rooms available/needed
  * @param {number} req.body.num_people - Number of people in the household
- * @param {boolean} req.body.young_children - Presence of young children
- * @param {boolean} req.body.adolescent_children - Presence of adolescent children
- * @param {boolean} req.body.teenage_children - Presence of teenage children
- * @param {boolean} req.body.elderly - Presence of elderly members
- * @param {boolean} req.body.small_dog - Has/accepts small dogs
- * @param {boolean} req.body.large_dog - Has/accepts large dogs
- * @param {boolean} req.body.cat - Has/accepts cats
- * @param {boolean} req.body.other_pets - Has/accepts other pets
+ * @param {number} req.body.young_children - Number of young children
+ * @param {number} req.body.adolescent_children - Number of adolescent children
+ * @param {number} req.body.teenage_children - Number of teenage children
+ * @param {number} req.body.elderly - Number of elderly members
+ * @param {number} req.body.small_dog - Number of  small dogs
+ * @param {number} req.body.large_dog - Number of  large dogs
+ * @param {number} req.body.cat - Number of cats
+ * @param {number} req.body.other_pets - Number of other pets
  * @returns {Object} 201 - Created form ID
  * @returns {Object} 406 - Unable to create form
  */

@@ -28,7 +28,6 @@ class Matching
                           teenage_children, elderly, small_dog, large_dog, cat, other_pets)
   {
     try{
-
       const exists = await this.formExists(user_id);
 
       if(exists) return false;
