@@ -46,28 +46,7 @@ router.post('/create/matching/form', async(req, res) => {
 router.get('/get/match/:id/:type', async(req, res) => {
   const {id, type} = req.params;
 
-  if(!id || !type) return res.status(400).json({ error: "missing paramters"});
-
-  const matches = await Matching.match(id, type);
-
-  if(!matches) return res.status(204).json({ msg: "there were no matches found"});
-
-  return res.status(200).json({ matches: matches })
-})
-
-/**
- * @route GET /get/match/:id/:type
- * @description Retrieve match results for a user form
- * @param {number} req.params.id - ID of the form to match against
- * @param {string} req.params.type - Type of form ("giver" or "receiver")
- * @returns {Object} 200 - Array of matched forms
- * @returns {Object} 204 - No matches found
- * @returns {Object} 400 - Missing parameters
- */
-router.get('/get/match/:id/:type', async(req, res) => {
-  const {id, type} = req.params;
-
-  if(!id || !type) return res.status(400).json({ error: "missing paramters"});
+  if(!id || !type) return res.status(400).json({ error: "missing paramaters"});
 
   const matches = await Matching.match(id, type);
 
@@ -84,14 +63,34 @@ router.get('/get/match/:id/:type', async(req, res) => {
  * @returns {Object} 204 - No form with ID
  * @returns {Object} 400 - Missing ID
  */
-router.get('/geet/form/:id', async(req, res) => {
+router.get('/get/form/:id', async(req, res) => {
   const {id} = req.params;
 
   if(!id) return res.status(400).json({ error: "missing id"});
 
   const form = await Matching.getForm(id);
 
-  if(!form) return res.status(204).json({ msg: "No from matching the id"});
+  if(!form) return res.status(204).json({ msg: "No form matching the id"});
+
+  return res.status(200).json({ form: form })
+})
+
+/**
+ * @route GET /get/form/:id
+ * @description Return a single matching form by ID
+ * @param {number} req.params.id - user ID associated with the form
+ * @returns {Object} 200 - Success message
+ * @returns {Object} 204 - No form with user ID
+ * @returns {Object} 400 - Missing ID
+ */
+router.get('/get/user/form/:id', async(req, res) => {
+  const {id} = req.params;
+
+  if(!id) return res.status(400).json({ error: "missing id"});
+
+  const form = await Matching.getUserForm(id);
+
+  if(!form) return res.status(204).json({ msg: "No form matching the user id"});
 
   return res.status(200).json({ form: form })
 })
@@ -112,7 +111,7 @@ router.delete('/delete/matched/forms/:id1/:id2', async(req, res) => {  // for wh
 
   const deleted = await Matching.deleteForms(id1, id2);
 
-  if(!deleted) return res.status(406).json({ errror: "Unable to delete fors"});
+  if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
 
   return res.status(200).json({ msg: "forms succesfully deleted" })
 })
