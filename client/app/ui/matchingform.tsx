@@ -130,12 +130,11 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 					},
 				});
 				
-				if (!resUserForm.ok) {
+				if (resUserForm.status == 204) {
 					alert("Your form has already been matched by another user! Please see your notifications for more information.");
 					router.push("/dashboard/matching")
 					return;
 				}
-				
 				const resMatchForm = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/form/${form_id}/`, {
 					method: "GET",
 					headers: {
@@ -143,14 +142,13 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 					},
 				});		
 				
-				if (!resMatchForm.ok) {
+				if (resMatchForm.status == 204) {
 					if (matches.length === 1) {
 						alert("Sorry, this form has already been matched by another user. You will receive a notification when another match is found.")
 						router.push("/dashboard/matching");
 						return;
 					} else {
 						alert("Sorry, this form has already been matched by another user. Please select another one.")
-						const thisMatch = matches[index]; 
 						matches[index] = matches[-1];
 						matches.pop();
 						return;
@@ -173,7 +171,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 				}
 
 				const resDelete = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/matched/forms/${formID}/${form_id}/`, {
-					method: "GET",
+					method: "DELETE",
 					headers: {
 						"Content-Type": "application/json",
 					},
@@ -244,12 +242,12 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 	// Return the matching form component.
 	if (showMatches) {
 		return (
-			<>
+			<div className="flex flex-wrap items-center gap-x-4 gap-y-4 m-10">
 				{matches.map((match, index) => {
 					match.index = index + 1;
 					return React.createElement(Match, match);
 				})}
-			</>
+			</div>
 		);
 	} else {
 		return (

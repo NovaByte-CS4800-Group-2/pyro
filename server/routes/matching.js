@@ -109,7 +109,7 @@ router.delete('/delete/matched/forms/:id1/:id2', async(req, res) => {  // for wh
 
   if(!id1 || !id2) return res.status(400).json({ error: "missing ids"});
 
-  const deleted = await Matching.deleteForms(id1, id2);
+  const deleted = await Matching.deleteForms([id1, id2]);
 
   if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
 

@@ -201,7 +201,7 @@ class Matching
   {
     try{
       const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id IN (?)", [form_ids])
-            return result.affectedRows > 1;
+            return result.affectedRows == form_ids.length;
     }catch(error){
       console.log("error in deleteForms:", error);
       return false;
