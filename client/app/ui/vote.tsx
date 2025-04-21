@@ -71,13 +71,12 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
       console.log(userVote);
       if(userVote !== 0 && userVote !== 1) // send notification to database
       {
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/vote/notification`, {  
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             content_id: contentId,
-            type: "vote",
-            username: username,
+            user_id: userId,
           }),
         })
       }

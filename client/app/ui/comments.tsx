@@ -221,12 +221,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
       const data = await res.json();
 
       
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/comment/notification`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content_id: data.id,
-          type: "comment",
           username: userData.username,
         }),
       });

@@ -155,9 +155,9 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 					}
 				}
 
-				const body = {content_id: formID, type: "matching", username: user?.email };
+				const body = {content_id: formID, email: user?.email };
 
-				const resNotification = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification/`, {
+				const resNotification = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/matching/notification/`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

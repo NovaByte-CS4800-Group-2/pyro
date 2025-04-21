@@ -10,7 +10,7 @@ import {
   HandThumbUpIcon as UpFilled,
 } from "@heroicons/react/24/solid";
 
-interface Notification { // Define the Notification type
+interface Notification {
   content_id: number;
   date: string;
   type: string;
@@ -31,7 +31,7 @@ interface FullNotification extends Notification {
   content: Content | null;
 }
 
-interface NotificationsProps { // Define the props for the Notifications component
+interface NotificationsProps {
   userId: string;
 }
 
@@ -88,7 +88,6 @@ export default function Notifications({ userId }: NotificationsProps) {
 
   if (loading) return <div>Loading notifications...</div>;
 
-  // render the notifications component
   return (
     <div className="space-y-2 max-w-sm max-h-[60vh] overflow-y-auto p-2 bg-white rounded shadow border border-gray-200">
       <h3 className="text-base font-bold">Notifications</h3>
@@ -112,9 +111,15 @@ export default function Notifications({ userId }: NotificationsProps) {
               {new Date(notif.date).toLocaleDateString()}
             </p>
 
-            <p className="mt-2 font-semibold">
-              {notif.username} sent you a new {notif.type}
-            </p>
+            {notif.type === 'matching' ? (
+              <p className="mt-2 font-semibold text-gray-800">
+                You have a new match with <span className="font-bold">{notif.username}</span>! 
+              </p>
+            ) : (
+              <p className="mt-2 font-semibold">
+                {notif.username} sent you a new {notif.type}
+              </p>
+            )}
 
             <div className="mt-2 text-sm whitespace-pre-wrap">
               {notif.type === 'vote' && notif.content ? (
@@ -138,12 +143,16 @@ export default function Notifications({ userId }: NotificationsProps) {
                 <>
                   <div className="rounded border text-gray-800 mb-1 p-3">
                     {notif.content.post}
-										<hr className="my-2 border-gray-300" />
-										<p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
+                    <hr className="my-2 border-gray-300" />
+                    <p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
                   </div>
                 </>
+              ) : notif.type === 'matching' ? (
+                <div className="p-3 rounded border bg-gray-100 text-gray-800">
+                  You matched with <strong>{notif.username}</strong>! Reach out to them to sort out the details. 
+                </div>
               ) : (
-                <div className=" p-2 rounded border text-gray-800">
+                <div className="p-2 rounded border text-gray-800">
                   {notif.content?.body}
                 </div>
               )}
