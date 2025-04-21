@@ -84,6 +84,22 @@ router.get('/comments/for/post/:post_id', async (req, res) => {
 })
 
 /**
+ * @route GET /userComments/:id
+ * @description Retrieve all comments by a specific user
+ * @param {string} req.params.id - The user's ID
+ * @returns {Object} 200 - Array of comments
+ * @returns {Object} 400 - Missing ID
+ */
+router.get('/userComments/:id', async (req, res) => {  // get all user posts
+  const { id } = req.params; // read id from URL parameters
+
+  if(!id) return res.status(400).json({ error: "Missing userId" });
+  const comments = await Comment.getUserComments(id);
+
+  return res.status(200).json({comments});
+})
+
+/**
  * @route GET /getComment/:comment_id
  * @description Retrieve a single comment by its ID
  * @param {number} req.params.comment_id - The ID of the comment
@@ -102,3 +118,4 @@ router.get('/getComment/:comment_id', async (req, res) => {
   return res.status(200).json({ comment: result});
 })
 export default router;
+

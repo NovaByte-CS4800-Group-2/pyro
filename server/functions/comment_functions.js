@@ -37,6 +37,7 @@ class Comment
      * @param {string} newBody - The new body of the comment.
      * @returns {boolean} - `true` if the comment was successfully updated, `false` if an error occurred.
      */
+    
     static async editComment(content_id, newBody)
     {
         try{
@@ -117,10 +118,30 @@ class Comment
             const commentIds = Content.getIds(commentIdsRows);  // extract comment_id's
             const [contentRows] = await pool.query("SELECT * FROM content WHERE content_id IN (?)", [commentIds]);
 
-            return contentRows;
+            return contentRows.reverse();
 
         } catch(error){
             console.error("Error in getComments:", error);
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves all comments (not posts) made by a specific user.
+     * @param {string} user_id - ID of the user
+     * @returns {Array|null} - Array of comment rows or null on error
+     */
+    static async getUserComments(user_id)
+    {
+        try {
+            const [rows] = 
+            await pool.query("SELECT c.* FROM content c JOIN comments p ON c.content_id = p.comment_id WHERE c.user_id = ?", 
+                [user_id]);
+            if(rows.length === 0) return [];
+            return rows.reverse();
+
+        } catch(error){
+            console.error("Error in getPosts:", error);
             return null;
         }
     }
@@ -144,6 +165,4 @@ class Comment
     }
 }
 
-
-//console.log(await Comment.createComment("General", "jess", "new comment!", 57))
 export default Comment;

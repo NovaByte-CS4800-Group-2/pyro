@@ -1,14 +1,15 @@
 'use client'
-import { useState, useEffect, useRef } from "react"; // Import React and hooks
-export default function Chatbot() { // Define the Chatbot component
-  const [isOpen, setIsOpen] = useState(false); // State to manage the visibility of the chatbox
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]); // State to manage the chat messages
-  const [input, setInput] = useState("");   // State to manage the input value
-  const [loading, setLoading] = useState(false); // State to manage loading state
-  const chatboxRef = useRef<HTMLDivElement>(null); // Ref to the chatbox element
-  const bottomRef = useRef<HTMLDivElement>(null); // Ref to the bottom element for scrolling
-  const offset = useRef({ x: 0, y: 0 }); // Ref to manage the offset for dragging
-  const isDragging = useRef(false); // Ref to manage dragging state
+import { useState, useEffect, useRef } from "react";
+export default function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const chatboxRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const offset = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
 
   const handleSend = async () => { // Function to handle sending messages
     if (!input.trim()) return;
@@ -16,11 +17,13 @@ export default function Chatbot() { // Define the Chatbot component
     const userMessage: { role: "user"; content: string } = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; 
+    }
     setLoading(true);
 
     try {
-      // Send the message to the backend and get the response
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chatbot`, {
+      const res = await fetch("http://localhost:8080/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
@@ -122,6 +125,7 @@ export default function Chatbot() { // Define the Chatbot component
           <div className="flex flex-col border-t border-[--bark] px-3 py-2">
           <div className="flex gap-2 items-end">
             <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);

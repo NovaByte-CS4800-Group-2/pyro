@@ -1,47 +1,83 @@
 'use client';
 
-import { useEffect, useState } from 'react'; // Import React and hooks
+import { useEffect, useState } from 'react';
+import {
+  HandThumbDownIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/outline";
+import {
+  HandThumbDownIcon as DownFilled,
+  HandThumbUpIcon as UpFilled,
+} from "@heroicons/react/24/solid";
 
 interface Notification { // Define the Notification type
   content_id: number;
   date: string;
   type: string;
   read: boolean;
-	username: string;
+  username: string;
+}
+
+interface Content {
+  content_id: number;
+  subforum_id: number;
+  user_id: string;
+  body: string;
+  vote?: number;
+  post?: string;
+}
+
+interface FullNotification extends Notification {
+  content: Content | null;
 }
 
 interface NotificationsProps { // Define the props for the Notifications component
   userId: string;
 }
 
-export default function Notifications({ userId }: NotificationsProps) { // Define the Notifications component
-  const [notifications, setNotifications] = useState<Notification[]>([]); // State to manage notifications
-  const [loading, setLoading] = useState(true); // State to manage loading state
+export default function Notifications({ userId }: NotificationsProps) {
+  const [notifications, setNotifications] = useState<FullNotification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch notifications and mark unread ones as read
   useEffect(() => {
     const fetchAndMarkNotifications = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/notifications/${userId}`);
-      if (res.ok) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/notifications/${userId}`);
+        if (!res.ok) throw new Error('Failed to fetch notifications');
         const data = await res.json();
-        setNotifications(data.notifications);
 
-        // Immediately mark all as read
         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/mark/notifcations/read`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userId }),
         });
+
+        const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/notification/content`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notifications: data.notifications }),
+        });
+
+        if (!res1.ok) throw new Error('Failed to fetch content for notifications');
+        const contentData = await res1.json();
+
+        const merged = data.notifications.map((notif: Notification) => ({
+          ...notif,
+          content: contentData.notifications.find((c: Content) => c.content_id === notif.content_id) || null,
+        }));
+
+        setNotifications(merged);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false); // Set loading to false after fetching
     };
 
     fetchAndMarkNotifications();
   }, [userId]);
 
-  // Delete notification from backend and local state
   const deleteNotif = async (content_id: number, type: string) => {
-    // Optimistically remove from state
     setNotifications((prev) =>
       prev.filter((notif) => !(notif.content_id === content_id && notif.type === type))
     );
@@ -54,17 +90,16 @@ export default function Notifications({ userId }: NotificationsProps) { // Defin
 
   // render the notifications component
   return (
-    <div className="space-y-2">
-      <h3 className="text-lg font-bold">Notifications</h3>
+    <div className="space-y-2 max-w-sm max-h-[60vh] overflow-y-auto p-2 bg-white rounded shadow border border-gray-200">
+      <h3 className="text-base font-bold">Notifications</h3>
       {notifications.length === 0 ? (
         <p>No notifications</p>
       ) : (
         notifications.map((notif, index) => (
           <div
-            key={`${notif.content_id}-${notif.type}-${index}`} // fallback key since notification_id is gone
+            key={`${notif.content_id}-${notif.type}-${index}`}
             className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-gray-100' : 'bg-white'}`}
           >
-            {/* Small "x" button to delete */}
             <button
               onClick={() => deleteNotif(notif.content_id, notif.type)}
               className="absolute top-2 right-2 text-sm text-gray-400 hover:text-red-500"
@@ -73,12 +108,46 @@ export default function Notifications({ userId }: NotificationsProps) { // Defin
               ×
             </button>
 
-            <p className="text-sm">
-              {notif.username} sent you a new <span className="font-medium">{notif.type}</span> (ID: {notif.content_id})
-            </p> 
-            <p className="text-xs text-gray-500 mt-1"> 
-              Received on {new Date(notif.date).toLocaleDateString()}
+            <p className="text-xs text-gray-500">
+              {new Date(notif.date).toLocaleDateString()}
             </p>
+
+            <p className="mt-2 font-semibold">
+              {notif.username} sent you a new {notif.type}
+            </p>
+
+            <div className="mt-2 text-sm whitespace-pre-wrap">
+              {notif.type === 'vote' && notif.content ? (
+                <>
+                  <div className="p-2 rounded border text-gray-800 mb-1">
+                    {notif.content.body}
+                  </div>
+                  {notif.content.vote === 1 ? (
+                    <div className="flex items-center gap-2">
+                      <UpFilled className="w-5 h-5 text-emerald-700" />
+                      <HandThumbDownIcon className="w-5 h-5 text-gray-500" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <HandThumbUpIcon className="w-5 h-5 text-gray-500" />
+                      <DownFilled className="w-5 h-5 text-red-800" />
+                    </div>
+                  )}
+                </>
+              ) : notif.type === 'comment' && notif.content ? (
+                <>
+                  <div className="rounded border text-gray-800 mb-1 p-3">
+                    {notif.content.post}
+										<hr className="my-2 border-gray-300" />
+										<p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
+                  </div>
+                </>
+              ) : (
+                <div className=" p-2 rounded border text-gray-800">
+                  {notif.content?.body}
+                </div>
+              )}
+            </div>
           </div>
         ))
       )}

@@ -51,7 +51,7 @@ export default function CreatePost() {
           return;
         }
         const userResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
+          `http://localhost:8080/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },

@@ -75,6 +75,39 @@ class Profile
             return null;
         }
     }
+
+//--------------------------------- EVENTUALLY TAKE OUT ---------------------------------
+
+    static async editEmail(newEmail, user_id){
+        try {
+            const dup = await Register.duplicateEmail(newEmail);
+            const format = Register.validateEmail(newEmail);
+            if(dup) return "An account associated with this email already exists";
+            if(!format) return "Invalid email format";
+
+            await pool.query("UPDATE users SET email = ? WHERE user_id = ?", [newEmail, user_id])
+            return "";
+        } catch (error){
+            console.log("Error in editEmail", error)
+            return false;
+        }
+    }
+
+    static async editPassword(newPassword, user_id){
+        try {
+            const passErrors = Register.validatePassword(newPassword)
+            if(passErrors.length != 0) return passErrors;
+
+            const password = hash(newPassword)
+            await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [password, user_id])
+            return passErrors;
+
+        } catch (error){
+            console.log("Error in editPassword:", error)
+            return false;
+        }
+    }
+
 }
 
 export default Profile;

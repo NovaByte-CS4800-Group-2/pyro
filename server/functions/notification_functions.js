@@ -1,4 +1,7 @@
 import pool from './pool.js'
+import Content from './content_functions.js';
+import Vote from './vote_functions.js';
+import Profile from './profile_functions.js';
 
 class Notification
 {
@@ -8,10 +11,19 @@ class Notification
 
       const fullDate = new Date();  // Get current date
       const date = fullDate.toISOString().split('T')[0];
+      let contentid = content_id;
 
-      const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [content_id]);
+      if (type === "comment"){
+        const [rows] = await pool.query("SELECT post_id FROM comments WHERE comment_id = ?", [content_id]);
+        contentid = rows[0].post_id;
+      }
+    
+      const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [contentid]);
       const user_id = useridObj[0].user_id;
-      // console.log(user_id);
+
+      const sameUser = await this.sameUser(user_id, username);
+      if(sameUser) return -1;
+
       const [result] = await pool.query("INSERT INTO notifications (user_id, username, content_id, date, type, `read`) VALUES (?, ?, ?, ?, ?, 0)", [user_id, username, content_id, date, type]);
       const notification_id = result.insertId;  // Extract and return the notification_id that is generated
       return notification_id;
@@ -27,23 +39,48 @@ class Notification
       const [results] = await pool.query("SELECT * FROM notifications WHERE user_id = ?", [user_id]);
 
       if(results.length === 0) return [];
-      return results;
+      return results.reverse();
 
     }catch(error){
       console.log("Error in getUserNotifs: ", error);
     }
   }
 
-  static async getUserTypeNotifs(user_id, type)
+  static async getNotificationContent(notifications)
   {
+    let contents = [];
     try{
-      const [results] = await pool.query("SELECT content_id FROM notifications WHERE user_id = ? AND type = ?", [user_id, type]);
 
-      if(results.length === 0) return [];
-      return results;
+      for (const notification of notifications) // goes through each notification
+      {
+        const content = await Content.getContent(notification["content_id"]);
+        if(notification["type"] === "vote")
+        {
+          const vote = await Vote.getVote(notification["content_id"], notification["user_id"]);
+          content.vote = vote; // Add vote info as a property
+        }
+        else if(notification["type"] === "comment")
+        {
+          console.log(content);
+          const [rows] = await pool.query("SELECT post_id FROM comments WHERE comment_id = ?", [notification["content_id"]]);
+          if (rows.length > 0) 
+          {
+            const post_id = rows[0].post_id;
+            const post = await Content.getContent(post_id);
+            content.post = post.body;
+            // console.log(post.body);
+          }
+        }
+        contents.push(content);
+      }
+
+      if(contents.length === 0) return [];
+      // console.log(contents);
+      return contents;
 
     }catch(error){
-      console.log("Error in getUserTypeNotifs: ", error);
+      console.log("Error in getNotificationContent: ", error);
+      return [];
     }
   }
 
@@ -71,7 +108,23 @@ class Notification
       return null;
     }
   }
+
+  static async sameUser(user_id, username)
+  {
+    const [rows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [username])
+    const userId = rows[0].user_id;
+
+    if(userId === user_id) return true;
+    return false;
+  }
+
+  static async unreadNotifications(user_id)
+  {
+    const [unread] = await pool.query("SELECT `read` FROM notifications WHERE `read` = 0 AND user_id = ? LIMIT 1", [user_id]);
+    return unread.length > 0;
+  }
 } 
 
-// await Notification.createNotif(1, "comment");
+// console.log(await Notification.unreadNotifications("SRr7aWBvUFYU6WK5k50vO655LsN2"));
+
 export default Notification;

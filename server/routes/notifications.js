@@ -39,12 +39,23 @@ router.get('/get/notifications/:id', async(req, res) => {
   res.status(200).json({ notifications:notifications })
 })
 
-router.get('/contentid/for/notif/:user_id/:type', async(req, res) => { 
-  const { user_id, type } = req.params;
+router.post('/get/notification/content', async (req, res) => { 
+  const { notifications } = req.body;
 
-  if(!user_id || !type) return res.status(400).json( { error: "Missing values" });
-  const content_ids = await Notification.getUserTypeNotifs(user_id, type);
-  res.status(200).json({ content_ids:content_ids })
-})
+  try {
+    const contents = await Notification.getNotificationContent(notifications);
+    res.status(200).json({ notifications: contents });
+  } catch (error) {
+    console.error("Error in route:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get('/unread/notifications/:id', async (req, res) => { 
+  const { id } = req.params;
+
+  const unread = await Notification.unreadNotifications(id); // returns true if there are unread notifications, false otherwise
+  res.status(200).json({ unread:unread });
+});
 
 export default router;

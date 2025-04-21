@@ -77,7 +77,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
 
         // fetch user data from backend
         const userResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
+          `http://localhost:8080/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -219,8 +219,9 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
 
       // parse the response data
       const data = await res.json();
-      // fetch the comment ID from the response to send notification
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {
+
+      
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

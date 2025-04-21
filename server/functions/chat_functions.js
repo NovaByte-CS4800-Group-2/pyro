@@ -48,3 +48,5 @@ export async function getResponse(userInput){
         console.log("Error generating response:", e);
     }
 }
+
+export default getResponse;
