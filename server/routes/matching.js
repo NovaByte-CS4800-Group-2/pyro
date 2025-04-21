@@ -96,7 +96,7 @@ router.get('/get/user/form/:id', async(req, res) => {
 })
 
 /**
- * @route DELETE /delete/multiple/forms
+ * @route DELETE /delete/matched/forms/:id1/id2
  * @description Delete multiple matching forms (e.g., after matching)
  * @param {number} req.parm.id1 - the form IDs to delete
  * @param {number} req.parm.id2 - the form IDs to delete
@@ -114,6 +114,26 @@ router.delete('/delete/matched/forms/:id1/:id2', async(req, res) => {  // for wh
   if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
 
   return res.status(200).json({ msg: "forms succesfully deleted" })
+})
+
+/**
+ * @route DELETE /delete/form/:id
+ * @description Deletes a form (e.g. on user request)
+ * @param {number} req.parm.id - the form ID to delete
+ * @returns {Object} 200 - Success message
+ * @returns {Object} 400 - Missing ID
+ * @returns {Object} 406 - Deletion failed
+ */
+router.delete('/delete/form/:id', async(req, res) => {
+  const {id} = req.params;
+
+  if(!id) return res.status(400).json({ error: "missing id"});
+
+  const deleted = await Matching.deleteForm(id);
+
+  if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
+
+  return res.status(200).json({ msg: "form succesfully deleted" })
 })
 
 export default router;
