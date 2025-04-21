@@ -4,7 +4,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon app.js"
+    "dev": "npx nodemon app.js", 
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    
   },
   "keywords": [],
   "author": "",
