@@ -24,8 +24,14 @@ export default function RootLayout({
       typeof window !== "undefined" && sessionStorage.getItem("user");
 
     // Allow dashboard even if not logged in
-    if (!user && !userSession && !pathname.startsWith("/dashboard")){
-      // If user is not signed in and not on dashboard, redirect to home
+    // if (!user && !userSession && !pathname.startsWith("/dashboard")){
+    //   // If user is not signed in and not on dashboard, redirect to home
+    //   return router.push("/");
+    // } else {
+    //   setAuthenticating(false);
+    // }
+    if ( pathname != null && !user && !userSession && !pathname.startsWith("/dashboard")) 
+    {
       return router.push("/");
     } else {
       setAuthenticating(false);
