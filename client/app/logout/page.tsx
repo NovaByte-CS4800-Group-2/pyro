@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { CircularProgress } from "@heroui/react";
 
