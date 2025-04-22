@@ -169,9 +169,17 @@ export default function Post({
           userId={userId || ""} // Pass the userId to the Vote component
           username={username || ""} // Pass the username to the Vote component
         />
-        <div className="flex items-center gap-1 hover:text-black cursor-pointer">
-          <ShareIcon className="w-4 h-4" />
-          <span>Share</span>
+        <div className="flex items-center space-x-6">
+          <div
+            className="flex items-center gap-1 hover:text-black cursor-pointer"
+            onClick={() => {
+              setCopied(false);
+              setIsShareModalOpen(true);
+            }}
+            >
+            <ShareIcon className="w-4 h-4" />
+            <span>Share</span>
+          </div>
         </div>
       </div>
       {/*Leave a comment*/}
