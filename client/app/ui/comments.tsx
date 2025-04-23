@@ -363,11 +363,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
   // Format comment date for display
   const formatCommentDate = (comment: Comment) => {
     const postDate = comment.post_date // Get post date from comment
-      ? comment.post_date.replace("T07:00:00.000Z", "")
+      ? comment.post_date.replace("T00:00:00.000Z", "")
       : ""; // Format post date
     const editDate = // Get last edit date from comment
       comment.last_edit_date && comment.last_edit_date !== "null"
-        ? comment.last_edit_date.replace("T07:00:00.000Z", "")
+        ? comment.last_edit_date.replace("T00:00:00.000Z", "")
         : ""; // Format edit date
 
     if (editDate) {

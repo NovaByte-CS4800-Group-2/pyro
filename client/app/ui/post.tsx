@@ -60,9 +60,9 @@ export default function Post({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to manage the visibility of the edit modal
   const [editedBody, setEditedBody] = useState(body); // State to manage the edited body of the post
 
-  const formattedDate = date.replace("T07:00:00.000Z", ""); // Format the date
+  const formattedDate = date.replace("T00:00:00.000Z", ""); // Format the date
   const formattedEditDate =
-    editeddate === "null" ? "" : editeddate.replace("T07:00:00.000Z", ""); // Format the edited date
+    editeddate === "null" ? "" : editeddate.replace("T00:00:00.000Z", ""); // Format the edited date
 
   const storage = getStorage(); // Initialize Firebase storage
   const [profileURL, setProfileURL] = useState(""); // State to manage the profile picture URL
