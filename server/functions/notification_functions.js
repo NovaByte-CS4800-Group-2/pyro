@@ -95,7 +95,6 @@ class Notification
   {
     let contents = [];
     try{
-
       for (const notification of notifications) // goes through each notification
       {
         if(notification["type"] === "matching") continue;
@@ -103,7 +102,9 @@ class Notification
         const content = await Content.getContent(notification["content_id"]);
         if(notification["type"] === "vote")
         {
-          const vote = await Vote.getVote(notification["content_id"], notification["user_id"]);
+          const [userRows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [notification["username"]]);
+          const id = userRows[0].user_id;
+          const vote = await Vote.getVote(notification["content_id"], id);
           content.vote = vote; // Add vote info as a property
         }
         else if(notification["type"] === "comment")

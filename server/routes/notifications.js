@@ -18,7 +18,6 @@ router.post('/send/vote/notification', async(req, res) =>{
 
   if(!content_id || !user_id) return res.status(400).json({ error: "Missing value" });
   const notification_id = await Notification.createVoteNotif(content_id, user_id);
-  console.log(notification_id);
   if(!notification_id) return res.status(406).json({ errror: "Unable to create notification_id"});
   res.status(201).json({ notification_id : notification_id })
 })
