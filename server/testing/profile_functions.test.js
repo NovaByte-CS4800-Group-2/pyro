@@ -12,11 +12,11 @@ afterAll (async () => {
 
 // Testing the editUsername function 
 test ("Edit user's username", async () => {
-  //const result = await Profile.editUsername("Hadya", "fgvfZQxY1SghMxpFvXgjauiUdUo1") // keep changing for tests otherwise false
+  const result = await Profile.editUsername("Hadya", "fgvfZQxY1SghMxpFvXgjauiUdUo1") // keep changing for tests otherwise false
   
   const expected = true
 
-  expect(true).toEqual(expected)
+  expect(result).toEqual(expected)
 })
 
 // Testing the getUsername function

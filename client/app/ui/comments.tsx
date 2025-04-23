@@ -77,7 +77,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
 
         // fetch user data from backend
         const userResponse = await fetch(
-          `http://localhost:8080/profile/${user.displayName}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/${user.displayName}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -221,12 +221,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
       const data = await res.json();
 
       
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/comment/notification`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content_id: data.id,
-          type: "comment",
           username: userData.username,
         }),
       });
@@ -364,11 +363,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
   // Format comment date for display
   const formatCommentDate = (comment: Comment) => {
     const postDate = comment.post_date // Get post date from comment
-      ? comment.post_date.replace("T07:00:00.000Z", "")
+      ? comment.post_date.replace("T00:00:00.000Z", "")
       : ""; // Format post date
     const editDate = // Get last edit date from comment
       comment.last_edit_date && comment.last_edit_date !== "null"
-        ? comment.last_edit_date.replace("T07:00:00.000Z", "")
+        ? comment.last_edit_date.replace("T00:00:00.000Z", "")
         : ""; // Format edit date
 
     if (editDate) {

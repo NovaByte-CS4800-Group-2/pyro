@@ -23,12 +23,12 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
   useEffect(() => {
     const fetchVotes = async () => { 
       try {
-        const res1 = await fetch(`http://localhost:8080/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
+        const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
         const data1 = await res1.json();
         setTotalVotes(data1.totalVotes);  // set the total votes
 
         if (userId) {
-          const res2 = await fetch(`http://localhost:8080/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
+          const res2 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/single/vote/${contentId}/${userId}`)  // fetch whether or not user has voted on content
           const data2 = await res2.json();
           setUserVote(data2.vote);  // set vote state
         }
@@ -71,13 +71,12 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
       console.log(userVote);
       if(userVote !== 0 && userVote !== 1) // send notification to database
       {
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/notification`, {  
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/vote/notification`, {  
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             content_id: contentId,
-            type: "vote",
-            username: username,
+            user_id: userId,
           }),
         })
       }

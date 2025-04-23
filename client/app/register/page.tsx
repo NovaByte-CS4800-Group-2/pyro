@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
 import Link from "next/link";
 import { Input } from "@heroui/input";
@@ -97,7 +97,7 @@ export default function Register() {
   
         formData.user_id = userCredential.user.uid;
         console.log(formData);
-        const response = await fetch("http://localhost:8080/register", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),

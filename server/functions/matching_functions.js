@@ -115,6 +115,28 @@ class Matching
     }
   }
 
+    /**
+   * Retrieves a specific form by its user's ID.
+   *
+   * @param {number} user_id - The ID of the user whose form is to be retrieved.
+   * @returns {Promise<Object|boolean>} - The form data object, or `false` if not found or error.
+   */
+    static async getUserForm(user_id)
+    {
+      try{
+  
+        const [rows] = await pool.query(`SELECT user_id, form_id, type, num_rooms, num_people, young_children, adolescent_children, 
+          teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
+          WHERE user_id = ?`, [user_id]);  // only retrieve relevant info
+  
+        if(!rows.length) return false; // no form exists with that id
+        return rows[0];
+  
+      }catch(error){
+        console.log("Error in getUserForm:", error)
+      }
+    }
+
   /**
    * Finds potential matching forms based on compatibility scoring.
    *
@@ -179,7 +201,7 @@ class Matching
   {
     try{
       const [result] = await pool.query("DELETE FROM matching_request_forms WHERE form_id IN (?)", [form_ids])
-            return result.affectedRows > 0;
+            return result.affectedRows == form_ids.length;
     }catch(error){
       console.log("error in deleteForms:", error);
       return false;

@@ -15,12 +15,18 @@ const app = express()
 
 app.use(express.json()); // any json.body will be accepted and passed through req.body
 
-const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000', 'https://pyro-6fwb.onrender.com', 'localhost:3000'] 
+const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000', 'https://pyro-6fwb.onrender.com'] 
 
 app.use(cors({
-  origin: allowedOrigins,  // Adjust this to your frontend URL,
-  credentials: true  // Allow sending cookies across origins
-}))
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
+  credentials: true
+}));
 
 // Route handlers
 app.use(registerRouter);
@@ -40,7 +46,7 @@ app.use((err, req, res, next) => {
 })
 
 // Start the server
-const port = 8080;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log('Server is running on port ' + port)
 })

@@ -61,6 +61,13 @@ export default function Login() {
     }
   }, [firebaseError])
 
+  // Function to reroute to dashboard if user is logged in.
+  useEffect(() => {
+    if (firebaseUser != undefined) {
+      router.push("/dashboard");
+    }
+  }, [firebaseUser]);
+
   // Function to validate form and show errors for empty fields.
   const validateForm = () => {
     let errors = {
@@ -84,11 +91,8 @@ export default function Login() {
 
     // Errors handled in useEffect for firebaseError.
     signInWithEmailAndPassword(email, password)
-      .then(() => {
-        if (firebaseUser != undefined) {
-          router.push("/dashboard");
-        }
-      })
+
+    // Pushing to dashboard handled in useEffect for firebaseUser.
   };
 
   // Return html

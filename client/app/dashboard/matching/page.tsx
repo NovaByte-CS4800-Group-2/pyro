@@ -1,33 +1,124 @@
 "use client"
 
-import { Card, CardBody } from "@heroui/react";
+import { auth } from "@/app/firebase/config";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Matching() {
+	const [form, setForm] = useState({ user_id: "",
+		type: "",
+		form_id: 0, 
+		num_rooms: 0,
+		num_people: 0,
+		young_children: 0, 
+		adolescent_children: 0, 
+		teenage_children: 0,
+		elderly: 0, 
+		small_dog: 0, 
+		large_dog: 0,
+		cat: 0, 
+		other_pets: 0
+	});
+	const [user] = useAuthState(auth);
+
+	useEffect(() => {
+		const getApplication = async () => {
+			const resApp = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/user/form/${user?.uid}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			console.log(resApp);
+			if (resApp.status == 200) {
+				const body = await resApp.json();
+				console.log(body);
+				setForm(body.form);
+			}
+		}	
+		getApplication();
+	}, [user]);
+
+	const deleteForm = async () => {
+		const resDelete = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/form/${form.form_id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});	
+		if (!resDelete.ok) {
+			alert("Error deleting your form. Please try again later.");
+			return;
+		}
+		setForm({ user_id: "",
+			type: "",
+			form_id: 0, 
+			num_rooms: 0,
+			num_people: 0,
+			young_children: 0, 
+			adolescent_children: 0, 
+			teenage_children: 0,
+			elderly: 0, 
+			small_dog: 0, 
+			large_dog: 0,
+			cat: 0, 
+			other_pets: 0
+		});
+	}
+	
 	return (
 		<div className="flex-grow flex">
-			<Link className="max-h-[300px] h-full aspect-square m-10" href="/dashboard/matching/host">
-				<Card className="h-full w-full">
-					<CardBody>
-						<div className="flex justify-center items-center h-full">
-							<p className="text-3xl">Apply to Host</p>
-						</div>
-					</CardBody>
-				</Card>
-			</Link>
-			<Link className="max-h-[300px] h-full aspect-square m-10" href="/dashboard/matching/housing">
-				<Card className="h-full w-full">
-					<CardBody>
-						<div className="flex justify-center items-center h-full">
-							<p className="text-3xl">Apply for Housing</p>
-						</div>
-					</CardBody>
-				</Card>
-			</Link>
-			<div className="flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm ml-auto">
-				<h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-200">
+			<div className="flex flex-col flex-grow items-center m-5">
+				<h2 className="font-semibold text-3xl text-center mb-3">Welcome to the Matching Page!</h2>
+				<p className="max-w-xl text-lg">Here you can apply to host those in need of housing or request housing for you and your loved ones. Keep in mind that you can only have one active application at a time. In order to change the details of your application, you must delete the previous one and reapply.</p>
+				<div className="flex flex-grow flex-wrap mt-10 gap-y-10">
+					<Link className={"max-h-[300px] h-full aspect-square mx-10" + (form.user_id === "" ? "" : " pointer-events-none")} tabIndex={form.user_id === "" ? -1 : 0} aria-disabled={form.user_id === ""} href="/dashboard/matching/host">
+						<Card className="h-full w-full">
+							<CardBody>
+								<div className="flex justify-center items-center h-full">
+									<p className={"text-3xl" + (form.user_id === "" ? "" : " text-stone-400")}>Apply to Host</p>
+								</div>
+							</CardBody>
+						</Card>
+					</Link>
+					<Link className={"max-h-[300px] h-full aspect-square mx-10" + (form.user_id === "" ? "" : " pointer-events-none")} tabIndex={form.user_id === "" ? -1 : 0} aria-disabled={form.user_id === ""}  href="/dashboard/matching/housing">
+						<Card className="h-full w-full">
+							<CardBody>
+								<div className="flex justify-center items-center h-full">
+									<p className={"text-3xl" + (form.user_id === "" ? "" : " text-stone-400")}>Apply for Housing</p>
+								</div>
+							</CardBody>
+						</Card>
+					</Link>
+				</div>
+			</div>			
+			<div className="flex flex-col items-center min-w-[215px] bg-stone-100 border-l border-stone-300 shadow-sm ml-auto">
+				<h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b-2 border-stone-200">
 					Application Status
 				</h2>
+				{ form.user_id ?  
+					( <div className="border-1 border-neutral-200 shadow-md py-2 px-3 rounded-lg mt-4 flex-col flex">
+						<p className="text-lg font-semibold text-center">{form.type === "offering" ? "Hosting" : "Housing"} Form</p>
+						<div className="flex mb-1 items-center gap-x-1"><InformationCircleIcon className="text-yellow-600" width={20} height={20}></InformationCircleIcon> <p> Waiting for a match!</p></div>
+						<p>Bedrooms: {form.num_rooms}</p>
+						<p>Guests: {form.num_people}</p>
+						<p>Young Children: {form.young_children}</p>
+						<p>Adolescent Children: {form.adolescent_children}</p>
+						<p>Teenage Children: {form.teenage_children}</p>
+						<p>Elderly: {form.elderly}</p>
+						<p>Small Dogs: {form.small_dog}</p>
+						<p>Large Dogs: {form.large_dog}</p>
+						<p>Cats: {form.cat}</p>
+						<p>Other Pets: {form.other_pets}</p>
+						<Button onPress={deleteForm} color="secondary" className="self-center mt-2 text-md">Delete</Button>
+					</div> ) :
+					(
+						<p className="mt-4 max-w-[215px] px-3"> After you create a form you will be able to see its status here! Already submitted one but it's not here? Check your notifications to see if you have a match!</p>
+					)
+				}
 			</div>
 		</div>
 	);

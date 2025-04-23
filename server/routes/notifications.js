@@ -3,12 +3,31 @@ import Notification from "../functions/notification_functions.js";
 
 const router = Router();  // groups together requests
 
-router.post('/send/notification', async(req, res) =>{
-  const {content_id, type, username} = req.body;
+router.post('/send/comment/notification', async(req, res) =>{
+  const {content_id, username} = req.body;
 
-  if(!content_id || !type) return res.status(400).json({ error: "Missing value" });
+  if(!content_id || !username) return res.status(400).json({ error: "Missing value" });
 
-  const notification_id = await Notification.createNotif(content_id, type, username);
+  const notification_id = await Notification.createCommentNotif(content_id, username);
+  if(!notification_id) return res.status(406).json({ errror: "Unable to create notification_id"});
+  res.status(201).json({ notification_id : notification_id })
+})
+
+router.post('/send/vote/notification', async(req, res) =>{
+  const {content_id, user_id} = req.body;
+
+  if(!content_id || !user_id) return res.status(400).json({ error: "Missing value" });
+  const notification_id = await Notification.createVoteNotif(content_id, user_id);
+  if(!notification_id) return res.status(406).json({ errror: "Unable to create notification_id"});
+  res.status(201).json({ notification_id : notification_id })
+})
+
+router.post('/send/matching/notification', async(req, res) =>{
+  const {content_id, email} = req.body;
+
+  if(!content_id || !email) return res.status(400).json({ error: "Missing value" });
+
+  const notification_id = await Notification.createMatchingNotif(content_id, email);
   if(!notification_id) return res.status(406).json({ errror: "Unable to create notification_id"});
   res.status(201).json({ notification_id : notification_id })
 })

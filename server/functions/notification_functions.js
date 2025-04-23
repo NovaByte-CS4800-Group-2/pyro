@@ -1,28 +1,15 @@
 import pool from './pool.js'
 import Content from './content_functions.js';
 import Vote from './vote_functions.js';
-import Profile from './profile_functions.js';
 
 class Notification
 {
-  static async createNotif(content_id, type, username)
+  static async createNotif(user_id, type, username, content_id)
   {
     try{
 
       const fullDate = new Date();  // Get current date
       const date = fullDate.toISOString().split('T')[0];
-      let contentid = content_id;
-
-      if (type === "comment"){
-        const [rows] = await pool.query("SELECT post_id FROM comments WHERE comment_id = ?", [content_id]);
-        contentid = rows[0].post_id;
-      }
-    
-      const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [contentid]);
-      const user_id = useridObj[0].user_id;
-
-      const sameUser = await this.sameUser(user_id, username);
-      if(sameUser) return -1;
 
       const [result] = await pool.query("INSERT INTO notifications (user_id, username, content_id, date, type, `read`) VALUES (?, ?, ?, ?, ?, 0)", [user_id, username, content_id, date, type]);
       const notification_id = result.insertId;  // Extract and return the notification_id that is generated
@@ -30,6 +17,64 @@ class Notification
 
     }catch(error){
       console.log("Error in createNotif: ", error);
+    }
+  }
+
+  static async createMatchingNotif(form_id, email)
+  {
+    try{
+      // find user_id from the form_id
+      const [useridObj] = await pool.query("SELECT user_id FROM matching_request_forms WHERE form_id = ?", [form_id]);
+      const user_id = useridObj[0].user_id;
+
+      const notification_id = await this.createNotif(user_id, "matching", email, form_id);
+      return notification_id;
+
+    }catch(error){
+      console.log("Error in createMatchingNotif: ", error);
+    }
+  }
+
+  static async createVoteNotif(content_id, user_id)
+  {
+    try{
+      // find user_id from the content_id
+      const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [content_id]);
+      const userId = useridObj[0].user_id;
+
+      if(user_id === userId) return -1;
+
+      const [usernameObj] = await pool.query("SELECT username FROM users WHERE user_id = ?", [user_id]);
+      const username = usernameObj[0].username;
+
+      const notification_id = await this.createNotif(userId, "vote", username, content_id);
+      return notification_id;
+
+    }catch(error){
+      console.log("Error in createVoteNotif: ", error);
+    }
+  }
+
+  static async createCommentNotif(comment_id, username)
+  {
+    try{
+
+      // find the post id that the comment belongs to
+      const [rows] = await pool.query("SELECT post_id FROM comments WHERE comment_id = ?", [comment_id]);
+      const content_id = rows[0].post_id;
+    
+      // from there find the user_id for the post
+      const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [content_id]);
+      const user_id = useridObj[0].user_id;
+      console.log("user_id", user_id)
+      const sameUser = await this.sameUser(user_id, username);
+      if(sameUser) return -1;
+
+      const notification_id = await this.createNotif(user_id, "comment", username, comment_id);
+      return notification_id;
+
+    }catch(error){
+      console.log("Error in createCommentNotif: ", error);
     }
   }
 
@@ -50,13 +95,16 @@ class Notification
   {
     let contents = [];
     try{
-
       for (const notification of notifications) // goes through each notification
       {
+        if(notification["type"] === "matching") continue;
+        
         const content = await Content.getContent(notification["content_id"]);
         if(notification["type"] === "vote")
         {
-          const vote = await Vote.getVote(notification["content_id"], notification["user_id"]);
+          const [userRows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [notification["username"]]);
+          const id = userRows[0].user_id;
+          const vote = await Vote.getVote(notification["content_id"], id);
           content.vote = vote; // Add vote info as a property
         }
         else if(notification["type"] === "comment")
@@ -125,6 +173,8 @@ class Notification
   }
 } 
 
-// console.log(await Notification.unreadNotifications("SRr7aWBvUFYU6WK5k50vO655LsN2"));
+// console.log(await Notification.createMatchingNotif(1, "jess@gmail.com"));
+// console.log(await Notification.createCommentNotif(30, "Ananas"));
+// console.log(await Notification.createVoteNotif(5, "Ananas"));
 
 export default Notification;

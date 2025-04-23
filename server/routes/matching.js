@@ -46,7 +46,7 @@ router.post('/create/matching/form', async(req, res) => {
 router.get('/get/match/:id/:type', async(req, res) => {
   const {id, type} = req.params;
 
-  if(!id || !type) return res.status(400).json({ error: "missing paramters"});
+  if(!id || !type) return res.status(400).json({ error: "missing paramaters"});
 
   const matches = await Matching.match(id, type);
 
@@ -56,43 +56,84 @@ router.get('/get/match/:id/:type', async(req, res) => {
 })
 
 /**
- * @route DELETE /delete/single/form/:id
- * @description Delete a single matching form by ID
+ * @route GET /get/form/:id
+ * @description Return a single matching form by ID
  * @param {number} req.params.id - ID of the form to delete
+ * @returns {Object} 200 - Success message
+ * @returns {Object} 204 - No form with ID
+ * @returns {Object} 400 - Missing ID
+ */
+router.get('/get/form/:id', async(req, res) => {
+  const {id} = req.params;
+
+  if(!id) return res.status(400).json({ error: "missing id"});
+
+  const form = await Matching.getForm(id);
+
+  if(!form) return res.status(204).json({ msg: "No form matching the id"});
+
+  return res.status(200).json({ form: form })
+})
+
+/**
+ * @route GET /get/form/:id
+ * @description Return a single matching form by ID
+ * @param {number} req.params.id - user ID associated with the form
+ * @returns {Object} 200 - Success message
+ * @returns {Object} 204 - No form with user ID
+ * @returns {Object} 400 - Missing ID
+ */
+router.get('/get/user/form/:id', async(req, res) => {
+  const {id} = req.params;
+
+  if(!id) return res.status(400).json({ error: "missing id"});
+
+  const form = await Matching.getUserForm(id);
+
+  if(!form) return res.status(204).json({ msg: "No form matching the user id"});
+
+  return res.status(200).json({ form: form })
+})
+
+/**
+ * @route DELETE /delete/matched/forms/:id1/id2
+ * @description Delete multiple matching forms (e.g., after matching)
+ * @param {number} req.parm.id1 - the form IDs to delete
+ * @param {number} req.parm.id2 - the form IDs to delete
+ * @returns {Object} 200 - Success message
+ * @returns {Object} 400 - Missing IDs
+ * @returns {Object} 406 - Deletion failed
+ */
+router.delete('/delete/matched/forms/:id1/:id2', async(req, res) => {  // for when forms are matched
+  const {id1, id2} = req.params;
+
+  if(!id1 || !id2) return res.status(400).json({ error: "missing ids"});
+
+  const deleted = await Matching.deleteForms([id1, id2]);
+
+  if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
+
+  return res.status(200).json({ msg: "forms succesfully deleted" })
+})
+
+/**
+ * @route DELETE /delete/form/:id
+ * @description Deletes a form (e.g. on user request)
+ * @param {number} req.parm.id - the form ID to delete
  * @returns {Object} 200 - Success message
  * @returns {Object} 400 - Missing ID
  * @returns {Object} 406 - Deletion failed
  */
-router.delete('/delete/single/form/:id', async(req, res) => {
+router.delete('/delete/form/:id', async(req, res) => {
   const {id} = req.params;
 
   if(!id) return res.status(400).json({ error: "missing id"});
 
   const deleted = await Matching.deleteForm(id);
 
-  if(!deleted) return res.status(406).json({ errror: "Unable to delete form"});
+  if(!deleted) return res.status(406).json({ error: "Unable to delete form"});
 
   return res.status(200).json({ msg: "form succesfully deleted" })
-})
-
-/**
- * @route DELETE /delete/multiple/forms
- * @description Delete multiple matching forms (e.g., after matching)
- * @param {Array<number>} req.body.ids - Array of form IDs to delete
- * @returns {Object} 200 - Success message
- * @returns {Object} 400 - Missing IDs
- * @returns {Object} 406 - Deletion failed
- */
-router.delete('/delete/multiple/forms', async(req, res) => {  // for when forms are matched
-  const {ids} = req.body;
-
-  if(!ids) return res.status(400).json({ error: "missing ids"});
-
-  const deleted = await Matching.deleteForms(ids);
-
-  if(!deleted) return res.status(406).json({ errror: "Unable to delete fors"});
-
-  return res.status(200).json({ msg: "forms succesfully deleted" })
 })
 
 export default router;
