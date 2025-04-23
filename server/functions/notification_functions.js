@@ -20,6 +20,25 @@ class Notification
     }
   }
 
+  static async createCalloutNotif(content_id, calledOuts, username)
+  {
+    try{
+      console.log(calledOuts);
+      for(const calledOut of calledOuts)
+      {
+        if (calledOut === username) continue; // Skip if they @'ed themselves
+        const [rows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [calledOut]);
+        if (rows.length === 0) continue; // Skip if user doesn't exist
+        const user_id = rows[0].user_id;
+
+        await this.createNotif(user_id, "callout", username, content_id);
+      }
+
+    }catch(error){
+      console.log("Error in createMatchingNotif: ", error);
+    }
+  }
+
   static async createMatchingNotif(form_id, email)
   {
     try{
@@ -176,5 +195,6 @@ class Notification
 // console.log(await Notification.createMatchingNotif(1, "jess@gmail.com"));
 // console.log(await Notification.createCommentNotif(30, "Ananas"));
 // console.log(await Notification.createVoteNotif(5, "Ananas"));
+// console.log(await Notification.createCalloutNotif(1, [ 'HaHa' ], "Jesster"));
 
 export default Notification;

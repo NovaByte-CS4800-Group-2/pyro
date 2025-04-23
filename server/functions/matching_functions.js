@@ -158,7 +158,11 @@ class Matching
         let score = 0;
         for(const key in form)  // goes through values in each form
         {
-          if(key != "form_id")
+          if(key != "form_id" && type === "offering")
+            if(form[key] <= match_form[key]) 
+              score ++;
+          
+          else if(key != "form_id" && type === "requesting")
             if(form[key] >= match_form[key]) 
               score ++;
         }

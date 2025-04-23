@@ -82,7 +82,7 @@ export default function Header() {
           </PopoverTrigger>
           <PopoverContent>
             <div className="px-1 py-2 max-h-[300px] min-w-[300px] overflow-y-auto">
-              {user && <Notifications userId={user.uid} />}
+              {user && <Notifications userId={user.uid} username={user.displayName ?? 'Unknown'} />}
             </div>
           </PopoverContent>
         </Popover>

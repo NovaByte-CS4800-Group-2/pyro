@@ -120,6 +120,7 @@ export default function CreatePost() {
 
     // create a request body for the post submission to send to backend
     try { 
+
       const requestBody = {
         city: city, // Use the selected subforum name as city
         username: userData.username, // Use the username from user data
@@ -149,6 +150,28 @@ export default function CreatePost() {
       // Parse the response data
       const postData = await postResponse.json();
       console.log("Post submitted successfully:", postData);
+
+      const str = postContent.body;
+      const regex = /@([\w.-]+)/g; // regex to search for the @'s
+      const matches = [...str.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
+
+      if(matches.length !== 0)
+      {
+        const requestBody = {
+          content_id: postData.id, 
+          calledOuts: matches,
+          username: userData.username,
+        };
+
+        await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/send/callout/notification`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+          }
+        );
+      }
 
       // Fetch the subforum ID based on the selected city (subforum name)
       const res = await fetch(

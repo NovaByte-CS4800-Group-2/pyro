@@ -33,9 +33,10 @@ interface FullNotification extends Notification {
 
 interface NotificationsProps {
   userId: string;
+  username: string;
 }
 
-export default function Notifications({ userId }: NotificationsProps) {
+export default function Notifications({ userId, username }: NotificationsProps) {
   const [notifications, setNotifications] = useState<FullNotification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -97,7 +98,7 @@ export default function Notifications({ userId }: NotificationsProps) {
         notifications.map((notif, index) => (
           <div
             key={`${notif.content_id}-${notif.type}-${index}`}
-            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-gray-100' : 'bg-white'}`}
+            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-stone-100' : 'bg-white'}`}
           >
             <button
               onClick={() => deleteNotif(notif.content_id, notif.type)}
@@ -114,6 +115,10 @@ export default function Notifications({ userId }: NotificationsProps) {
             {notif.type === 'matching' ? (
               <p className="mt-2 font-semibold text-gray-800">
                 You have a new match with <span className="font-bold">{notif.username}</span>! 
+              </p>
+            ) : notif.type === 'callout' ? (
+              <p className="mt-2 font-semibold text-gray-800">
+                {notif.username} mentioned
               </p>
             ) : (
               <p className="mt-2 font-semibold">
@@ -150,6 +155,16 @@ export default function Notifications({ userId }: NotificationsProps) {
               ) : notif.type === 'matching' ? (
                 <div className="p-3 rounded border bg-gray-100 text-gray-800">
                   You matched with <strong>{notif.username}</strong>! Reach out to them to sort out the details. 
+                </div>
+              ) : notif.type === 'callout' && notif.content ? (
+                <div className="p-2 rounded border text-gray-800">
+                  {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
+                    part === `@${username}` ? (
+                      <span key={i} className="text-blue-600 font-semibold">{part}</span>
+                    ) : (
+                      <span key={i}>{part}</span>
+                    )
+                  )}
                 </div>
               ) : (
                 <div className="p-2 rounded border text-gray-800">

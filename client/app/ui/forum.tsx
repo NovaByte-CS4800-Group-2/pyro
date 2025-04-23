@@ -54,6 +54,10 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
         }
       );
 
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${contentId}/${"callout"}`, {
+        method: "DELETE",
+      });
+
       if (!response.ok) {
         // if response not okay, throw an error
         const errorData = await response.json();

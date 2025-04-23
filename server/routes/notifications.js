@@ -3,6 +3,15 @@ import Notification from "../functions/notification_functions.js";
 
 const router = Router();  // groups together requests
 
+router.post('/send/callout/notification', async(req, res) =>{
+  const {content_id, calledOuts, username} = req.body;
+
+  if(!content_id || !username) return res.status(400).json({ error: "Missing value" });
+
+  await Notification.createCalloutNotif(content_id, calledOuts, username);
+  res.status(201).json({ success : "SUCCESS" })
+})
+
 router.post('/send/comment/notification', async(req, res) =>{
   const {content_id, username} = req.body;
 

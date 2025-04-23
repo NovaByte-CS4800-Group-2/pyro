@@ -37,10 +37,12 @@ const navLinks = user
         //   pathname === link.href;
         const isActive =
         pathname && // Ensure pathname is not null or undefined
+        pathname !== "/dashboard/profile" &&
         link.href === "/dashboard" && pathname.startsWith("/dashboard") &&
         !pathname.startsWith("/dashboard/fundraiser") &&
         !pathname.startsWith("/dashboard/resources") &&
-        !pathname.startsWith("/dashboard/matching");
+        !pathname.startsWith("/dashboard/matching") ||
+        pathname === link.href;
 
         return (
           <Link
