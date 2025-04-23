@@ -20,7 +20,7 @@ export default function Navbar() {
 const navLinks = user
   ? allNavLinks
   : allNavLinks.filter((link) =>
-      ["/dashboard", "/dashboard/fundraiser"].includes(link.href)
+      ["/dashboard", "/dashboard/fundraiser", "/dashboard/resources"].includes(link.href)
     );
 
   return (
