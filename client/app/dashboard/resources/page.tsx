@@ -3,8 +3,7 @@
 export default function Dashboard() {
 	return (
 		<div className="flex flex-col text-center gap-y-5 mx-6 w-full h-fullpt-1">
-			<h1 className = "text-3xl mt-5">Looking for guidance?</h1>
-			<h2 className="text-left text-2xl">Wildfire Preparedness</h2>
+			<h2 className="text-left text-2xl mt-8">Wildfire Preparedness</h2>
 			<div className="flex flex-wrap gap-x-10 gap-y-10"> 
 				{/* Resource Card */}
 				<div className="max-w-xs text-left bg-white rounded-2xl shadow-md">
