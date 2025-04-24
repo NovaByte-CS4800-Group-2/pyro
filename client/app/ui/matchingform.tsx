@@ -46,6 +46,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 		}
 		data.user_id = user?.uid || "";
 		data.type = type ? "offering" : "requesting" ;
+		data.email = user?.email || "";
 		// Check if a user requesting housing has made an error in the number of people in their party.
 		if (!type) {
 			const youngerChildren = Number(data["young_children"]) + Number(data["adolescent_children"]);
@@ -105,7 +106,8 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 	interface MatchProps {
 		// Define the props for the MatchingForm component
 		index: number,
-		form_id: number, 
+		form_id: number,
+		email: string,
 		num_rooms?: number,
 		num_people?: number,
 		young_children?: number, 
@@ -118,7 +120,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 		other_pets?: number,
 	}
 	
-	const Match: React.FC<MatchProps> = ({ index, form_id, num_rooms, num_people, young_children, adolescent_children, 
+	const Match: React.FC<MatchProps> = ({ index, form_id, email, num_rooms, num_people, young_children, adolescent_children, 
 		teenage_children, elderly, small_dog, large_dog, cat, other_pets }) => {
 
 			const accept = async (e: FormEvent) => {
@@ -155,8 +157,8 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 					}
 				}
 
-				const body = {content_id: formID, email: user?.email };
-
+				let body = {content_id: formID, email: email };
+				console.log(body);
 				const resNotification = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/matching/notification/`, {
 					method: "POST",
 					headers: {
@@ -165,8 +167,22 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 					body: JSON.stringify(body),
 				});	
 
+				body = {content_id: form_id, email: user?.email || ""};
+				console.log(body);
 				if (!resNotification.ok) {
-					alert("SYSTEM ERROR: Form matching not completed (notification not sent), please try again.")
+					alert("SYSTEM ERROR: Form matching not completed (notification not sent), please try again.");
+					return;
+				}
+				const resNotification2 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/matching/notification/`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(body),
+				});	
+
+				if (!resNotification2.ok) {
+					alert("SYSTEM ERROR: Form matching not completed (notification not sent), please try again.");
 					return;
 				}
 
