@@ -159,12 +159,15 @@ class Matching
         for(const key in form)  // goes through values in each form
         {
           if(key != "form_id" && type === "offering")
-            if(form[key] <= match_form[key]) 
-              score ++;
-          
+          {
+            if(form[key] <= match_form[key]) score ++;
+          } 
           else if(key != "form_id" && type === "requesting")
-            if(form[key] >= match_form[key]) 
-              score ++;
+          {
+            if(form[key] >= match_form[key]) score ++;
+          }
+            
+              
         }
         if(score > 7)  // threshold for the match
           matches.push(form);
