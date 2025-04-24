@@ -34,7 +34,7 @@ router.post('/createComment', async (req, res) => {
  * @returns {Object} 400 - Missing information
  * @returns {Object} 406 - Error editing comment
  */
-router.post('/editComment', async (req, res) => {
+router.post('/edit/comment', async (req, res) => {
   const { content_id, newBody } = req.body; 
 
   if(!content_id || !newBody) return res.status(400).json({ error: "Missing information" });
@@ -53,7 +53,7 @@ router.post('/editComment', async (req, res) => {
  * @returns {Object} 400 - Missing comment ID
  * @returns {Object} 406 - Error deleting comment
  */
-router.post('/deleteComment', async (req, res) => {
+router.post('/delete/comment', async (req, res) => {
   const { comment_id } = req.body; 
 
   if(!comment_id) return res.status(400).json({ error: "Missing comment_id" });
