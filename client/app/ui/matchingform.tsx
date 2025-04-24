@@ -4,7 +4,7 @@ import { Input } from "@heroui/input";
 import { Button, Checkbox, Form, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, NumberInput, useDisclosure } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase/config";
 import React from "react";
@@ -12,10 +12,12 @@ import React from "react";
 interface MatchingFormProps {
 	// Define the props for the MatchingForm component
 	type?: number;
+	found_matches?: any[];
+	form_id?: number;
 }
 
-// Type refers to offering or requesting Offering is designated as 1, requesting is designated as 0.
-const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
+// Type refers to offering or requesting offering is designated as 1, requesting is designated as 0.
+const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_id }) => {
 
 	const [zipcode, setZipcode] = useState("");
 	const router = useRouter();
@@ -25,6 +27,14 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type }) => {
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const [matches, setMatches] = useState<any[]>([]);
 	const [showMatches, setShowMatches] = useState(false);
+
+	useEffect(() => {
+		if (found_matches) {
+			setFormID(form_id || 0);
+			setMatches(found_matches);
+			setShowMatches(true);
+		}
+	}, []); 
 
 	// Function to strip all non numeric characters from the zipcode string.
 	const validateZipcode = (e: ChangeEvent<HTMLInputElement>) => {
