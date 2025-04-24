@@ -24,7 +24,7 @@ class Matching
    * @param {number} other_pets - Number of other pets.
    * @returns {Promise<number|boolean>} - The ID of the newly created form, or `false` if the form already exists or an error occurred.
    */
-  static async createForm(user_id, type, num_rooms, num_people, young_children, adolescent_children, 
+  static async createForm(user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
                           teenage_children, elderly, small_dog, large_dog, cat, other_pets)
   {
     try{
@@ -35,9 +35,9 @@ class Matching
       const fullDate = new Date();  // generate current date
       const date = fullDate.toISOString().split('T')[0];
 
-      const [result] = await pool.query(`INSERT INTO matching_request_forms (user_id, type, num_rooms, num_people, date, young_children,
+      const [result] = await pool.query(`INSERT INTO matching_request_forms (user_id, email, type, num_rooms, num_people, date, young_children,
                                          adolescent_children, teenage_children, elderly, small_dog, large_dog, cat, other_pets) VALUES (?, ?, 
-                                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [user_id, type, num_rooms, num_people, date, young_children, 
+                                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [user_id, email, type, num_rooms, num_people, date, young_children, 
                                          adolescent_children, teenage_children, elderly, small_dog, large_dog, cat, other_pets])
       const form_id = result.insertId;
       return form_id;                            
@@ -80,7 +80,7 @@ class Matching
       if(type === "requesting") 
         newType = "offering";
 
-      const [rows] = await pool.query(`SELECT form_id, num_rooms, num_people, young_children, adolescent_children, 
+      const [rows] = await pool.query(`SELECT form_id, email, user_id, num_rooms, num_people, young_children, adolescent_children, 
         teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
         WHERE type = ?`, [newType]);
 
@@ -103,7 +103,7 @@ class Matching
   {
     try{
 
-      const [rows] = await pool.query(`SELECT form_id, num_rooms, num_people, young_children, adolescent_children, 
+      const [rows] = await pool.query(`SELECT form_id, email, num_rooms, num_people, young_children, adolescent_children, 
         teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
         WHERE form_id = ?`, [form_id]);  // only retrieve relevant info
 
