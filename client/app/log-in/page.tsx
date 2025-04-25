@@ -64,7 +64,15 @@ export default function Login() {
   // Function to reroute to dashboard if user is logged in.
   useEffect(() => {
     if (firebaseUser != undefined) {
-      router.push("/dashboard");
+      if (firebaseUser.user.emailVerified) {
+        router.push("/dashboard");
+      } else {
+        setErrors({
+          email: "",
+          password: "",
+          form: "Please follow the link in your verification email before logging in!",
+        });     
+      }
     }
   }, [firebaseUser]);
 
@@ -88,7 +96,6 @@ export default function Login() {
   // Function to sign the user in with Firebase.
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
-
     // Errors handled in useEffect for firebaseError.
     signInWithEmailAndPassword(email, password)
 
