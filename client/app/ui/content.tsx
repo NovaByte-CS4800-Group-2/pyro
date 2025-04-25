@@ -91,6 +91,7 @@ export default function Content({
         })
         .catch((e) => {
           // Silent fail - no profile pic available
+          console.log("Not added!!!")
         });
     }
   }, [contentType, posterId]);
