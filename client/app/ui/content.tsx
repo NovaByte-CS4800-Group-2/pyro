@@ -112,9 +112,15 @@ export default function Content({
       await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
-        }/remove/notification/${contentId}/${
-          contentType === "post" ? "callout" : "comment"
-        }`,
+        }/remove/notification/${contentId}/callout`,
+        {
+          method: "DELETE",
+        }
+      );
+      await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/remove/notification/${contentId}/comment`,
         {
           method: "DELETE",
         }
