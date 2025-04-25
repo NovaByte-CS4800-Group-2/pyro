@@ -114,11 +114,11 @@ export default function Notifications({ userId, username }: NotificationsProps) 
 
             {notif.type === 'matching' ? (
               <p className="mt-2 font-semibold text-gray-800">
-                You have a new match with <span className="font-bold">{notif.username}</span>! 
+                You’ve got a match!
               </p>
             ) : notif.type === 'callout' ? (
               <p className="mt-2 font-semibold text-gray-800">
-                {notif.username} mentioned
+                {notif.username} mentioned you
               </p>
             ) : (
               <p className="mt-2 font-semibold">
@@ -149,12 +149,37 @@ export default function Notifications({ userId, username }: NotificationsProps) 
                   <div className="rounded border text-gray-800 mb-1 p-3">
                     {notif.content.post}
                     <hr className="my-2 border-gray-300" />
-                    <p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
+                    <p className="ml-4 italic text-gray-700">
+                      “
+                      {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
+                        part === `@${username}` ? (
+                          <span key={i} className="text-blue-600 font-semibold">{part}</span>
+                        ) : (
+                          <span key={i}>{part}</span>
+                        )
+                      )}
+                      ”
+                    </p>
                   </div>
+
+
+                  {/* <div className="rounded border text-gray-800 mb-1 p-3">
+                    {notif.content.post}
+                    <hr className="my-2 border-gray-300" />
+                    <p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
+                  </div> */}
                 </>
               ) : notif.type === 'matching' ? (
-                <div className="p-3 rounded border bg-gray-100 text-gray-800">
-                  You matched with <strong>{notif.username}</strong>! Reach out to them to sort out the details. 
+                <div className="p-3 rounded border text-gray-800 space-y-2">
+                  <p>
+                    You’ve been paired with <strong>{notif.username}</strong>!
+                  </p>
+                  <p>
+                    Reach out to them via email to coordinate details and finalize plans.
+                  </p>
+                  <p>
+                    Let us know if you need any help along the way — happy connecting!
+                  </p>
                 </div>
               ) : notif.type === 'callout' && notif.content ? (
                 <div className="p-2 rounded border text-gray-800">

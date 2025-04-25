@@ -23,10 +23,13 @@ class Notification
   static async createCalloutNotif(content_id, calledOuts, username)
   {
     try{
-      console.log(calledOuts);
       for(const calledOut of calledOuts)
       {
         if (calledOut === username) continue; // Skip if they @'ed themselves
+
+        const [content] = await pool.query("SELECT notification_id FROM notifications WHERE content_id = ?", [content_id]);
+        if(content.length > 0) continue; // each content id should only recieve one notification
+
         const [rows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [calledOut]);
         if (rows.length === 0) continue; // Skip if user doesn't exist
         const user_id = rows[0].user_id;
@@ -85,7 +88,7 @@ class Notification
       // from there find the user_id for the post
       const [useridObj] = await pool.query("SELECT user_id FROM content WHERE content_id = ?", [content_id]);
       const user_id = useridObj[0].user_id;
-      console.log("user_id", user_id)
+
       const sameUser = await this.sameUser(user_id, username);
       if(sameUser) return -1;
 
@@ -128,21 +131,18 @@ class Notification
         }
         else if(notification["type"] === "comment")
         {
-          console.log(content);
           const [rows] = await pool.query("SELECT post_id FROM comments WHERE comment_id = ?", [notification["content_id"]]);
           if (rows.length > 0) 
           {
             const post_id = rows[0].post_id;
             const post = await Content.getContent(post_id);
             content.post = post.body;
-            // console.log(post.body);
           }
         }
         contents.push(content);
       }
 
       if(contents.length === 0) return [];
-      // console.log(contents);
       return contents;
 
     }catch(error){
@@ -191,10 +191,5 @@ class Notification
     return unread.length > 0;
   }
 } 
-
-// console.log(await Notification.createMatchingNotif(1, "jess@gmail.com"));
-// console.log(await Notification.createCommentNotif(30, "Ananas"));
-// console.log(await Notification.createVoteNotif(5, "Ananas"));
-// console.log(await Notification.createCalloutNotif(1, [ 'HaHa' ], "Jesster"));
 
 export default Notification;

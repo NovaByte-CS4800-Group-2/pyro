@@ -229,6 +229,27 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
         }
       );
 
+      const regex = /@([\w.-]+)/g; // regex to search for the @'s
+      const matches = [...comment.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
+
+      if(matches.length !== 0)
+      {
+        const requestBody = {
+          content_id: data.id, 
+          calledOuts: matches,
+          username: userData.username,
+        };
+
+        await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/send/callout/notification`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+          }
+        );
+      }
+
       // if response okay, set comment to empty string and fetch comments again
       if (res.ok) {
         console.log("Comment successfully posted!");
