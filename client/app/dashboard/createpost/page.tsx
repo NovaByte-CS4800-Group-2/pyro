@@ -280,17 +280,17 @@ export default function CreatePost() {
       return true;
     });
 
-    if (validFiles.length === 0) return;
+    if (validFiles.length === 0) return; 
 
     const newPreviewURLS = [...mediaPreviewURLs]; // Create a copy of the current preview URLs
 
-    validFiles.forEach((file) => {
-      if (file.type.startsWith('image/')) {
-        const url = URL.createObjectURL(file);
-        newPreviewURLS.push(url);
+    validFiles.forEach((file) => { 
+      if (file.type.startsWith('image/')) { 
+        const url = URL.createObjectURL(file); 
+        newPreviewURLS.push(url); 
       } else {
         // For non-images, we'll just use the file type as placeholder
-        newPreviewURLS.push(file.type);
+        newPreviewURLS.push(file.type); 
       }
     });
     
