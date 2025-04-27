@@ -26,7 +26,7 @@ export default async function SubforumPage(props: Props) {
 }
 
 // this function tells Next.js which `subforum_id`s to statically pre-render
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
   return [
     { subforum_id: "1" },
     { subforum_id: "2" },
@@ -35,4 +35,4 @@ export async function generateStaticParams() {
     { subforum_id: "5" },
     { subforum_id: "6" },
   ];
-}
+}*/
