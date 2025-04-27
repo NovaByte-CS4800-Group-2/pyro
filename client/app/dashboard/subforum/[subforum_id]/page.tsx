@@ -8,8 +8,6 @@ interface Props {
   };
 }
 
-export type paramsType = Promise <{subforum_id: string}>;
-
 // this is the dynamic page component for a given subforum ID
 export default async function SubforumPage(props: Props) {
   // await the `params` object before using its properties
