@@ -15,7 +15,7 @@ const app = express()
 
 app.use(express.json()); // any json.body will be accepted and passed through req.body
 
-const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000', 'https://pyro-6fwb.onrender.com', 'https://pyro-frontend-3yk6e8k22-turtlelover56s-projects.vercel.app'] 
+const allowedOrigins = ['https://pyro-d9fcd.web.app', 'http://localhost:3000', 'https://pyro-6fwb.onrender.com', 'https://pyro-frontend-nine.vercel.app'] 
 
 app.use(cors({
   origin: function (origin, callback) {
