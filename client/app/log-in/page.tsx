@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { signOut } from "firebase/auth";
 
 export default function Login() {
   // Email and Password states
@@ -67,11 +68,12 @@ export default function Login() {
       if (firebaseUser.user.emailVerified) {
         router.push("/dashboard");
       } else {
+        signOut(auth);
         setErrors({
           email: "",
           password: "",
           form: "Please follow the link in your verification email before logging in!",
-        });     
+        });   
       }
     }
   }, [firebaseUser]);
