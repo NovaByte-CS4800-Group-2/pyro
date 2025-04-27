@@ -129,11 +129,8 @@ export default function Register() {
           setErrors(newErrors);
           return;
         } else {
-          router.push("/dashboard");
           if (await sendSignInLinkToEmail()) {
-              // The link was successfully sent. Inform the user.
-              // Save the email locally so you don't need to ask the user for it again
-              // if they open the link on the same device.
+              // The link was successfully sent. Redirect to verification page.
               await signOut(auth);
               router.push("/register/verification");
           } else if (verificationError)  {
