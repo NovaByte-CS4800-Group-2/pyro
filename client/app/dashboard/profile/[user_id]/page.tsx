@@ -2,22 +2,18 @@ import { app } from "@/app/firebase/config";
 import Forum from "@/app/ui/forum";
 import { Avatar, Card, CardBody, CardHeader, Tab, Tabs } from "@heroui/react";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { redirect, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
 // define the expected props shape for this page
 interface Props  {
-	params: Promise <{ user_id: string }>;
-  };
+	params: { user_id: string };
+};
 
-// this is the dynamic page component for a given subforum ID
-export default async function ProfilePage(props: Props) {
-  	// await the `params` object before using its properties
-  	const { user_id } =  await props.params;
-
+// this is the dynamic page component for a given userID
+export default async function ProfilePage({ params }: Props) {
 
 	// User info.
-	let userID = user_id;
+	let userID = params.user_id;
 	let username = "";
 	let comments = [];
 	let profileURL = "";
@@ -98,10 +94,3 @@ export default async function ProfilePage(props: Props) {
     </>
   );
 }
-
-/*export async function generateStaticParams() {
-	return [
-	  { user_id: "fgvfZQxY1SghMxpFvXgjauiUdUo1" }, // your current example
-	  { user_id: "k7KWqmBB6UhpYDHiMyMArmGUoqj2" },
-	];
-  }*/
