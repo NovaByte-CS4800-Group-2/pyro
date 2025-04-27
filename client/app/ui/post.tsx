@@ -15,6 +15,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Link,
 } from "@heroui/react"; // Import UI components from HeroUI
 import React, { useEffect, useState } from "react"; // Import React and hooks
 import Comments from "./comments"; // Import Comments component
@@ -111,7 +112,7 @@ export default function Post({
       {/* Top bar */}
       <div className="flex justify-between items-center text-xs text-gray-500 mb-2 pt-2">
         <div className="flex items-center gap-2">
-          <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL} />
+          <Avatar as={Link} href={`/dashboard/profile/${posterId}`} size="sm" isBordered className="w-6 h-6" src={profileURL} />
           <span className="font-semibold text-sm text-gray-700">
           {highlightMatch(username, search)}
           </span>
