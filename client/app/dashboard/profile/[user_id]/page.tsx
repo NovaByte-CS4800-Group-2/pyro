@@ -7,13 +7,20 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
 // Define the expected props shape for this page
-export default async function Page({ params, }: { params: Promise<{ user_id: string }> }) {
-  const { user_id } = await params;
-  const [userID, setUserID] = useState(user_id);
+export default function Page({ params, }: { params: Promise<{ user_id: string }> }) {
+  const [userID, setUserID] = useState("");
   const [username, setUsername] = useState("");
   const [profileURL, setProfileURL] = useState("");
 
   const storage = getStorage(app); // Initialize Firebase storage
+
+  useEffect(() => {
+    const loadUserID = async () => {
+      const { user_id } = await params;
+      setUserID(user_id);
+    }
+    loadUserID();
+  }, [])
 
   useEffect(() => {
     if (userID) {
