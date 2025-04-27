@@ -9,11 +9,11 @@ interface Props  {
 	params: { user_id: string };
 };
 
-// this is the dynamic page component for a given userID
+// this is the dynamic page component for a given user_id
 export default function ProfilePage({ params }: Props) {
 
 	// User info.
-	let userID = params.user_id;
+	let { user_id } = params;
 	let username = "";
 	let comments = [];
 	let profileURL = "";
@@ -22,12 +22,12 @@ export default function ProfilePage({ params }: Props) {
 
   	// Load user profile information.
 	const loadProfile = async () => {
-		if (!userID) {
+		if (!user_id) {
 			redirect("/dashboard");
 			return;
 		}
 		else {
-			const storageRef = ref(storage, "profilePics/" + userID); // Create a reference to the profile picture in Firebase storage
+			const storageRef = ref(storage, "profilePics/" + user_id); // Create a reference to the profile picture in Firebase storage
 			getDownloadURL(storageRef) // Get the download URL for the profile picture
 				.then((url) => {
 				profileURL = url; // Set the profile picture URL in state
@@ -35,7 +35,7 @@ export default function ProfilePage({ params }: Props) {
 				.catch((e) => {
 				// Do Nothing
 				});
-			const resUser = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${userID}`, {
+			const resUser = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${user_id}`, {
 				method: "GET",
 				headers: { "Content-Type": "application/json" },
 			});
@@ -48,7 +48,7 @@ export default function ProfilePage({ params }: Props) {
 		}
 	};
 	/*const loadComments = async () => {
-		const resComments = await fetch(`http://localhost:8080/userComments/${userID}`, {
+		const resComments = await fetch(`http://localhost:8080/userComments/${user_id}`, {
 			method: "GET",
 			headers: { "Content-Type": "application/json" },
 		});
@@ -73,7 +73,7 @@ export default function ProfilePage({ params }: Props) {
 				<CardBody>
 					<Tabs>
 						<Tab key="posts" title="Posts">
-							<Forum userID={userID}></Forum>
+							<Forum userID={user_id}></Forum>
 						</Tab>
 						{/*<Tab key="comments" title="Comments">
 							{ comments.map((value, index) => {

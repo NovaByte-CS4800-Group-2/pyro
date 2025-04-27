@@ -9,8 +9,8 @@ interface Props {
 }
 
 // this is the dynamic page component for a given subforum ID
-export default function SubforumPage(props: Props) {
-  const { subforum_id } = props.params;
+export default function SubforumPage({ params }: Props) {
+  const { subforum_id } = params;
 
   return (
     <>
