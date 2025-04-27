@@ -10,7 +10,7 @@ interface Props  {
 };
 
 // this is the dynamic page component for a given userID
-export default async function ProfilePage({ params }: Props) {
+export default function ProfilePage({ params }: Props) {
 
 	// User info.
 	let userID = params.user_id;
