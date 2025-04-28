@@ -27,13 +27,12 @@ class Notification
       {
         if (calledOut === username) continue; // Skip if they @'ed themselves
 
-        const [content] = await pool.query("SELECT notification_id FROM notifications WHERE content_id = ? AND type = ?", [content_id, "callout"]);
-        console.log(content)
-        if(content.length > 0) continue; // each content id should only recieve one notification
-        console.log("passed notif check")
         const [rows] = await pool.query("SELECT user_id FROM users WHERE username = ?", [calledOut]);
         if (rows.length === 0) continue; // Skip if user doesn't exist
         const user_id = rows[0].user_id;
+
+        const [content] = await pool.query("SELECT notification_id FROM notifications WHERE content_id = ? AND type = ? AND user_id = ?", [content_id, "comment", user_id]);
+        if(content.length > 0) continue; // each content id should only recieve one notification
 
         await this.createNotif(user_id, "callout", username, content_id);
       }
