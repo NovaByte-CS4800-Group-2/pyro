@@ -214,19 +214,18 @@ export default function Content({
     const fetchImageURLs = async () => {
       const storage = getStorage();
 
-      const imageNames1 = ['comic.png']; 
+      const imageNames = ['comic.png']; 
 
-      const imageNames = async () => {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}` 
-          );
-        } catch (error) { // Handle errors
-          console.error("Error fetching media:", error);
-          setErrorMessage("Failed to fetch media.");
-        }
-      }
-
+      // const imageNames = async () => {
+      //   try {
+      //     const response = await fetch(
+      //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}"` 
+      //     );
+      //     const data = await response.json();
+      //   } catch (error) { // Handle errors
+      //     console.error("Error fetching subforums:", error);
+      //     setErrorMessage("Failed to fetch subforums.");
+      //   }
       // get the image names from db
       try {
         // Fetch all image URLs from Firebase Storage
