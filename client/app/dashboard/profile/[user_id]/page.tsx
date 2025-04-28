@@ -63,6 +63,9 @@ export default function Page({ params, }: { params: Promise<{ user_id: string }>
             <Tab key="posts" title="Posts">
               <Forum userID={userID}></Forum>
             </Tab>
+            <Tab key="comments" title="Comments">
+              
+            </Tab>
           </Tabs>
         </CardBody>
       </Card>

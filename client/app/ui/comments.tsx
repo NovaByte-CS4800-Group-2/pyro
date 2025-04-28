@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"; // import React and useState
 import { Button } from "@heroui/react"; // Importing UI components from heroui
 import { useAuthState } from "react-firebase-hooks/auth"; // Importing Firebase authentication hooks
 import { auth } from "@/app/firebase/config"; // Importing Firebase configuration
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline"; // Importing icons from Heroicons
+import { ChevronUpIcon, ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline"; // Importing icons from Heroicons
 import Content from "./content";
 
 //style for small thumbs
@@ -368,7 +368,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
           <form onSubmit={postComment} className="mt-6 relative">
             {" "}
             {/* Form for posting a comment */}
-            <div className="relative">
+            <div className="flex items-center gap-x-2">
               <textarea
                 name="comment"
                 className="w-full border rounded-md p-1 text-sm pr-12"
@@ -378,18 +378,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
               />
               <Button // Submit button for posting comment
                 type="submit"
-                className="absolute right-1 top-2 text-xs p-0 leading-none"
-                style={{
-                  backgroundColor: "grey",
-                  color: "white",
-                  padding: "0 2px",
-                  lineHeight: "1rem",
-                  height: "2rem",
-                  minHeight: "2rem",
-                }}
+                className="text-white px-[2px] min-h-8 w-8 bg-neutral-500"
                 disabled={!userData.username} // Disable button if user is not logged in
               >
-                {userData.username ? "Submit" : "Loading..."}{" "}
+                <PaperAirplaneIcon width={16} height={16}></PaperAirplaneIcon>
+                <p className="text-sm">{userData.username ? "Send" : "Loading..."}{" "}</p>
                 {/* Show loading state if user is not logged in */}
               </Button>
             </div>
