@@ -133,6 +133,18 @@ class Post
             return null;
         }
     }
+
+    static async getPostMedia(post_id)
+    {
+        try {
+            const [row] = await pool.query("SELECT mediaURLs from posts WHERE post_id =?", [post_id]);
+            JSON.parse(row[0].mediaURLs)
+            const URLS = JSON.parse(row[0].mediaURLs)
+            return URLS
+        } catch (e){
+            console.log("Error in getPostMedia:", e)
+        }
+    }
 }
 
 export default Post;

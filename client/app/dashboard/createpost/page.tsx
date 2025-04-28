@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react"; // Import React and hooks
-import { Textarea, Button } from "@heroui/react"; // Import Textarea components from heroui
+import { Textarea, Button, User } from "@heroui/react"; // Import Textarea components from heroui
 import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import { useAuthState } from "react-firebase-hooks/auth"; // Import useAuthState from firebase hooks
 import { auth } from "@/app/firebase/config"; // Import Firebase auth configuration
 import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline"; // Import icons from heroicons
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+
 // function to create a new post
 export default function CreatePost() {
   const router = useRouter();
@@ -17,7 +20,7 @@ export default function CreatePost() {
   const [user] = useAuthState(auth); // Get the current authenticated user
   const [userData, setUserData] = useState({
     // Initial user data state
-    user_id: 0,
+    user_id: "0",
     username: "",
     city: "",
     business_account: 0,
@@ -129,6 +132,7 @@ export default function CreatePost() {
         city: city, // Use the selected subforum name as city
         username: userData.username, // Use the username from user data
         body: postContent.body, // content of the post
+        //media: 
       };
       console.log("Request body:", requestBody); // Log the request body for debugging
 
@@ -189,6 +193,8 @@ export default function CreatePost() {
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
     }
+
+    uploadImagesToStorage
   };
 
   // Handle form submission for business accounts
@@ -296,7 +302,42 @@ export default function CreatePost() {
     
     setMedia([...media, ...validFiles]);
     setMediaPreviewURLs(newPreviewURLS);
+
   };
+  
+  useEffect(() => {
+    // Log the media preview URLs whenever the state changes
+    console.log("Updated Media Preview URLs:", mediaPreviewURLs);
+  }, [mediaPreviewURLs]); // This runs every time mediaPreviewURLs is updated
+
+  const uploadImagesToStorage = async (userId: string) => {
+    const storage = getStorage();
+
+    // Loop over all the media preview URLs
+    for (let i = 0; i < mediaPreviewURLs.length; i++) {
+      const fileURL = mediaPreviewURLs[i]; // Get the Blob URL
+
+      try {
+        // Fetch the Blob from the Blob URL
+        const file = await fetch(fileURL).then((res) => res.blob());
+        
+        // Create a unique filename using the user ID and the current timestamp
+        const fileName = `media/${userId}_${Date.now()}_${i}`; // Change the extension based on file type
+        // Add this to the database for later
+        
+
+        // Create a reference to Firebase Storage
+        const fileRef = ref(storage, fileName);
+
+        // Upload the file to Firebase Storage
+        const uploadResult = await uploadBytes(fileRef, file);
+        console.log("File uploaded successfully!", uploadResult);
+      } catch (e) {
+        console.error("Error uploading file:", e);
+      }
+    }
+  };
+  
 
   const handleAddMediaClick = () => {
     if (fileInputRef.current) {
@@ -456,6 +497,7 @@ export default function CreatePost() {
                 onPress={ () => {
                   if (userData.business_account) {
                     handleBusinessSubmit();
+                    uploadImagesToStorage(userData.user_id); 
                   } else {
                     handlePersonalSubmit();
                   }

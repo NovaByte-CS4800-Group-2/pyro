@@ -103,4 +103,22 @@ router.post('/delete/post', async (req, res) => {
   return res.status(201).json({msg: "Succesfully deleted post"});
 })
 
+router.get('/get/media/:post_id', async (req, res) => {
+  const { post_id } = req.params;
+
+  if (!post_id) {
+    return res.status(400).json({ error: "Missing post_id" });
+  }
+
+  try {
+    const result = await Post.getPostMedia(post_id);
+    console.log(result)
+    return res.status(200).json({ result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 export default router;

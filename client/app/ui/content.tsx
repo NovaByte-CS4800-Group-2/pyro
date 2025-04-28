@@ -56,6 +56,7 @@ export default function Content({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editedBody, setEditedBody] = useState(body);
   const [profileURL, setProfileURL] = useState("");
+  const [mediaURLs, setMediaURL] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   const formatDate = (dateString: string) => {
@@ -79,19 +80,21 @@ export default function Content({
   const formattedLastEditDate = formatDate(lastEditDate);
 
   useEffect(() => {
+    console.log("Effect triggered:", { contentType, posterId });
     if (contentType === "post" && posterId) {
       const storage = getStorage();
-      const storageRef = ref(storage, "profilePics/" + posterId);
-      getDownloadURL(storageRef)
+      const storageRef1 = ref(storage, "profilePics/" + posterId);
+      getDownloadURL(storageRef1)
         .then((url) => {
           setProfileURL(url);
         })
         .catch((e) => {
           // Silent fail - no profile pic available
-          console.log("Not added!!!")
         });
     }
   }, [contentType, posterId]);
+
+  
 
   const deleteContent = async () => {
     try {
@@ -192,6 +195,8 @@ export default function Content({
     );
   };
 
+
+
   const defaultContainerClasses =
     contentType === "post"
       ? "w-full max-w-2xl bg-white rounded-xl p-2 mb-2 mx-auto"
@@ -203,6 +208,51 @@ export default function Content({
     contentType === "post"
       ? "text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap"
       : "mt-1 mb-2 text-base";
+
+
+  useEffect(() => {
+    const fetchImageURLs = async () => {
+      const storage = getStorage();
+
+      const imageNames1 = ['comic.png']; 
+
+      const imageNames = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}` 
+          );
+        } catch (error) { // Handle errors
+          console.error("Error fetching media:", error);
+          setErrorMessage("Failed to fetch media.");
+        }
+      }
+
+      // get the image names from db
+      try {
+        // Fetch all image URLs from Firebase Storage
+        const urls = await Promise.all(
+          imageNames.map(async (imageName) => {
+            console.log("THIS IS CONTENT ID", contentId)
+            const imageRef = ref(storage, `media/${imageName}`);
+            const url = await getDownloadURL(imageRef);
+            return url;
+          })
+        );
+        
+        setMediaURL(urls); // Set the URLs in state
+      } catch (error) {
+        console.error('Error fetching images:', error);
+        setErrorMessage('Failed to load images.');
+      }
+    };
+
+    fetchImageURLs();
+  }, []);
+
+  const showImages = mediaURLs.map((url, index) => (
+    <img key={index} src={url} alt={`Image ${index}`} width={150} />
+  ));
+      
 
   return (
     <div className={containerClasses}>
@@ -255,9 +305,10 @@ export default function Content({
           </div>
         )}
       </div>
-
+      
       {/* Content Body */}
       <div className={bodyClasses}>{highlightMatch(body, search)}</div>
+      <div > Here are my images: {showImages} </div>
 
       {/* Content Interaction Bar */}
       <div
