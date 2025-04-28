@@ -1,22 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react"; // import React and useState, useEffect hooks
-import {
-  Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@heroui/react"; // Importing UI components from heroui
+import { Button } from "@heroui/react"; // Importing UI components from heroui
 import { useAuthState } from "react-firebase-hooks/auth"; // Importing Firebase authentication hooks
 import { auth } from "@/app/firebase/config"; // Importing Firebase configuration
-import {
-  EllipsisVerticalIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
-} from "@heroicons/react/24/outline"; // Importing icons from Heroicons
-import Vote from "./vote"; // Importing Vote component for voting functionality
+import { ChevronUpIcon, ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline"; // Importing icons from Heroicons
+import Content from "./content";
 
 //style for small thumbs
 const smallThumbsStyle = `
@@ -28,19 +17,21 @@ const smallThumbsStyle = `
 
 interface Comment {
   content_id: number; // Unique identifier for the comment
-  user_id: string; // User ID of the comment author
+  user_id: string; // User ID of the comment author4
   body: string; // Comment text
   post_date: string; // Date when the comment was posted
   last_edit_date?: string; // Added this field for edit date
   username?: string; // Username of the comment author
+  subforum_id?: string; // Subforum ID (optional)
 }
 
 interface CommentsProps {
-  contentId: number;
+  contentId?: number;
   subforumId?: string; // Optional subforum ID prop
+  user_id?: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
+const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_id = null}) => {
   const [comments, setComments] = useState<Comment[]>([]); // State to hold comments
   const [comment, setComment] = useState(""); // State for new comment input
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
@@ -55,15 +46,9 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
   // State to track how many comments to show
   const [visibleComments, setVisibleComments] = useState(2); // Default to showing 2 comments
 
-  // States for comment editing and deletion
-  const [activeComment, setActiveComment] = useState<number | null>(null); // State to track which comment menu is active
-  const [editModalOpen, setEditModalOpen] = useState(false); // State to control edit modal visibility
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false); // State to control delete modal visibility
-  const [currentCommentId, setCurrentCommentId] = useState<number | null>(null); // State to hold the ID of the current comment being edited or deleted
-  const [editedBody, setEditedBody] = useState(""); // State to hold the edited comment body
-
   // only 2 visible comments at a time
   const DEFAULT_VISIBLE_COMMENTS = 2;
+  const COMMENTS_INCREMENT = 3; // Number of comments to show per click
 
   // Fetch current user data
   useEffect(() => {
@@ -114,10 +99,21 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
   const fetchComments = async () => {
     try {
       setIsLoading(true); // Set loading state to true
-      const res = await fetch(
-        // Fetch comments from backend
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
-      );
+      let res;
+      if (contentId !== null) 
+      {
+        console.log("POST COMMENTS");
+        res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
+        );
+      } 
+      else 
+       {
+        console.log("USER COMMENTS");
+        res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userComments/${user_id}`
+        );
+      } 
 
       // if response not okay, throw error
       if (!res.ok) {
@@ -158,6 +154,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
             return {
               ...comment,
               username: userData.username || "User",
+              subforum_id: subforumId, // Pass subforum ID
             };
           } catch (error) {
             // handle errors when fetching username
@@ -165,7 +162,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
               `Error fetching username for comment ${comment.content_id}:`,
               error
             );
-            return { ...comment, username: "User" };
+            return {
+              ...comment,
+              username: "User",
+              subforum_id: subforumId,
+            };
           }
         })
       );
@@ -182,13 +183,12 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
     }
   };
 
-
   // Fetch comments initially
   useEffect(() => {
-    if (contentId) {
+    if (contentId || user_id) {
       fetchComments();
     }
-  }, [contentId]);
+  }, [contentId, user_id]);
 
   // Submit a new comment
   const postComment = async (event: React.FormEvent) => {
@@ -198,8 +198,16 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
       console.error("Comment cannot be empty or user is not logged in");
       return;
     }
-    
+    console.log("Request body for postComment:", {
+      subforum_id: subforumId, // Subforum ID
+      username: userData.username, // User's username
+      body: comment, // Comment body
+      post_id: contentId, // ID of the post being commented on
+    });
 
+    const cityValue = subforumId;
+
+    console.log("City value:", cityValue); // Log city value for debugging
     //check if user is logged in
     try {
       console.log("Posting comment as:", userData.username);
@@ -209,7 +217,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            city: subforumId, // User's city 
+            city: cityValue, // User's city
             username: userData.username, // User's username
             body: comment, // Comment body
             post_id: contentId, // ID of the post being commented on
@@ -217,18 +225,42 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
         }
       );
 
+      console.log("Subforum ID:", subforumId);
       // parse the response data
       const data = await res.json();
 
-      
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send/comment/notification`, {  
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content_id: data.id,
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/send/comment/notification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content_id: data.id,
+            username: userData.username,
+          }),
+        }
+      );
+
+      const regex = /@([\w.-]+)/g; // regex to search for the @'s
+      const matches = [...comment.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
+
+      if(matches.length !== 0)
+      {
+        const requestBody = {
+          content_id: data.id, 
+          calledOuts: matches,
           username: userData.username,
-        }),
-      });
+        };
+
+        await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/send/callout/notification`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+          }
+        );
+      }
 
       // if response okay, set comment to empty string and fetch comments again
       if (res.ok) {
@@ -244,139 +276,24 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
     }
   };
 
-  // Delete a comment
-  const handleDeleteComment = async () => {
-    if (!currentCommentId) return; // Check if currentCommentId is set
-
-    try {
-      const res = await fetch(
-        // Send request to delete comment
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/deleteComment`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            comment_id: currentCommentId, // ID of the comment to delete
-          }),
-        }
-      );
-
-      await fetch(
-        // Send request to remove notification
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/remove/notification/${currentCommentId}/${"comment"}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      // if response okay, set currentCommentId to null and fetch comments again
-      if (res.ok) {
-        console.log("Comment successfully deleted!");
-        setDeleteModalOpen(false);
-        fetchComments(); // Refresh comments
-      } else {
-        // Handle errors
-        console.error("Failed to delete comment:", await res.text());
-      }
-    } catch (error) {
-      console.error("Failed to delete comment:", error);
-    }
-  };
-
-  // Edit a comment
-  const handleEditComment = async () => {
-    // Check if currentCommentId and editedBody are set
-    if (!currentCommentId || !editedBody.trim()) return; // Check if editedBody is empty
-
-    try {
-      const res = await fetch(
-        // Send request to edit comment
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/editComment`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content_id: currentCommentId, // ID of the comment to edit
-            newBody: editedBody, // New comment body
-          }),
-        }
-      );
-
-      // if response okay, set currentCommentId and editedBody to null and fetch comments again
-      if (res.ok) {
-        console.log("Comment successfully edited!");
-        setEditModalOpen(false);
-        fetchComments(); // Refresh comments
-      } else {
-        // Handle errors
-        console.error("Failed to edit comment:", await res.text());
-      }
-    } catch (error) {
-      console.error("Failed to edit comment:", error);
-    }
-  };
-
-  // Toggle comment menu
-  const toggleCommentMenu = (commentId: number) => {
-    // Check if the comment menu is already open
-    setActiveComment(activeComment === commentId ? null : commentId); // Set the active comment ID
-  };
-
-  // Open edit modal
-  const openEditModal = (comment: Comment) => {
-    // Check if the comment is editable
-    setCurrentCommentId(comment.content_id); // Set the current comment ID
-    setEditedBody(comment.body); // Set the edited body to the current comment body
-    setEditModalOpen(true); // Open the edit modal
-    setActiveComment(null); // Close the menu
-  };
-
-  // Open delete modal
-  const openDeleteModal = (commentId: number) => {
-    // Check if the comment is deletable
-    setCurrentCommentId(commentId); // Set the current comment ID
-    setDeleteModalOpen(true); // Open the delete modal
-    setActiveComment(null); // Close the menu
-  };
-
   // Handle "Show more" button click
   const handleShowMore = () => {
-    // Check if there are more comments to show
-    // Show all comments
-    setVisibleComments(comments.length);
+    // Increment the visible comments by COMMENTS_INCREMENT
+    setVisibleComments((prevVisible) =>
+      Math.min(prevVisible + COMMENTS_INCREMENT, comments.length)
+    );
   };
 
   // Handle "Show less" button click
   const handleShowLess = () => {
-    // Check if the comments are expanded
-    // Collapse back to default number of comments
-    setVisibleComments(DEFAULT_VISIBLE_COMMENTS); // Reset to default (2)
+    // Collapse back to the default number of comments
+    setVisibleComments(DEFAULT_VISIBLE_COMMENTS);
   };
 
   // Get limited comments based on visibleComments state
   const displayedComments = comments.slice(0, visibleComments); // Slice comments array to get only the visible comments
   const hasMoreComments = comments.length > visibleComments; // Check if there are more comments to show
   const isExpanded = visibleComments > DEFAULT_VISIBLE_COMMENTS; // Check if comments are expanded
-
-  // Format comment date for display
-  const formatCommentDate = (comment: Comment) => {
-    const postDate = comment.post_date // Get post date from comment
-      ? comment.post_date.replace("T00:00:00.000Z", "")
-      : ""; // Format post date
-    const editDate = // Get last edit date from comment
-      comment.last_edit_date && comment.last_edit_date !== "null"
-        ? comment.last_edit_date.replace("T00:00:00.000Z", "")
-        : ""; // Format edit date
-
-    if (editDate) {
-      // Check if the comment has been edited
-      return `Edited: ${editDate}`; // Format edit date
-    } else {
-      return `Posted: ${postDate}`; // Format post date
-    }
-  };
 
   // render comments section
   return (
@@ -388,96 +305,54 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
           <p className="text-sm text-gray-500">Loading comments...</p> // Loading state
         ) : comments.length > 0 ? (
           <>
-            {displayedComments.map(
-              (
-                comment // Map through comments
-              ) => (
-                <div
-                  key={comment.content_id} // Unique key for each comment
-                  className="border-t border-gray-200 pt-2 mt-2 text-sm text-gray-700 relative"
-                >
-                  <div className="flex justify-between items-start">
-                    {" "}
-                    {/* Flex container for comment header */}
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{comment.username}</p>{" "}
-                      {/* Display username */}
-                      <p className="text-xs text-gray-500">
-                        • {formatCommentDate(comment)}{" "}
-                        {/* Display formatted date */}
-                      </p>
-                    </div>
-                    {/* Comment Menu (visible only to the comment owner) */}
-                    {user?.uid === comment.user_id && ( // Check if the current user is the comment owner
-                      <div className="relative">
-                        <EllipsisVerticalIcon // Icon for comment menu
-                          className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
-                          onClick={() => toggleCommentMenu(comment.content_id)} // Toggle menu on click
-                        />
-
-                        {activeComment === comment.content_id && ( // Check if the menu is active
-                          <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-20 p-2">
-                            <button
-                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              onClick={() => openEditModal(comment)} // Open edit modal on click
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-                              onClick={() =>
-                                openDeleteModal(comment.content_id)
-                              } // Open delete modal on click
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  {/* Comment content */}
-                  <p className="mt-1 mb-2 text-base">{comment.body}</p>{" "}
-                  {/* Display comment body */}
-                  {/* Comment voting - clearly belongs to the comment */}
-                  <div className="flex justify-start items-center text-xs text-gray-500 mt-1 small-thumbs-vote">
-                    <Vote
-                      contentId={comment.content_id} // ID of the comment
-                      userId={user?.uid || ""} // User ID of the current user
-                      username={user?.displayName || ""} // Username of the current user
-                    />
-                  </div>
-                </div>
-              )
-            )}
-
+            {(contentId ? displayedComments : comments).map((comment) => (
+              <Content
+                key={comment.content_id}
+                userId={user?.uid || ""}
+                posterId={comment.user_id}
+                username={comment.username || "User"}
+                contentType="comment"
+                contentId={comment.content_id}
+                body={comment.body}
+                postDate={comment.post_date}
+                lastEditDate={comment.last_edit_date || ""}
+                isOwner={user?.uid === comment.user_id}
+                isVerified={true}
+                subforumId={subforumId}
+                onUpdateContent={fetchComments}
+                onDeleteContent={fetchComments}
+              />
+            ))}
             {/* Comment expand/collapse controls */}
             <div className="mt-3 flex justify-between">
               {/* Show more comments button */}
-              {hasMoreComments && (
-                <button
-                  className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
-                  onClick={handleShowMore} // Show more comments on click
-                >
-                  <ChevronDownIcon className="w-4 h-4 mr-1" />
-                  Show {comments.length - visibleComments} more{" "}
-                  {/* Show remaining comments count */}
-                  {comments.length - visibleComments === 1
-                    ? "comment"
-                    : "comments"}
-                </button>
-              )}
+              {contentId && (
+  <div className="mt-3 flex justify-between">
+    {hasMoreComments && (
+      <button
+        className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
+        onClick={handleShowMore}
+      >
+        <ChevronDownIcon className="w-4 h-4 mr-1" />
+        Show {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments)}{" "}
+        {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments) === 1
+          ? "comment"
+          : "comments"}
+      </button>
+    )}
 
-              {/* Show less button - only visible when expanded */}
-              {isExpanded && (
-                <button
-                  className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
-                  onClick={handleShowLess} // Show less comments on click
-                >
-                  <ChevronUpIcon className="w-4 h-4 mr-1" />
-                  Show less
-                </button>
-              )}
+    {isExpanded && (
+      <button
+        className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
+        onClick={handleShowLess}
+      >
+        <ChevronUpIcon className="w-4 h-4 mr-1" />
+        Show less
+      </button>
+    )}
+  </div>
+)}
+
             </div>
           </>
         ) : (
@@ -485,11 +360,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
         )}
 
         {/* Leave a Comment */}
-        {user ? (
+        {user && contentId ? (
           <form onSubmit={postComment} className="mt-6 relative">
             {" "}
             {/* Form for posting a comment */}
-            <div className="relative">
+            <div className="flex items-center gap-x-2">
               <textarea
                 name="comment"
                 className="w-full border rounded-md p-1 text-sm pr-12"
@@ -499,86 +374,23 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
               />
               <Button // Submit button for posting comment
                 type="submit"
-                className="absolute right-1 top-2 text-xs p-0 leading-none"
-                style={{
-                  backgroundColor: "grey",
-                  color: "white",
-                  padding: "0 2px",
-                  lineHeight: "1rem",
-                  height: "2rem",
-                  minHeight: "2rem",
-                }}
+                className="text-white px-[2px] min-h-8 w-8 bg-neutral-500"
                 disabled={!userData.username} // Disable button if user is not logged in
               >
-                {userData.username ? "Submit" : "Loading..."}{" "}
+                <PaperAirplaneIcon width={16} height={16}></PaperAirplaneIcon>
+                <p className="text-sm">{userData.username ? "Send" : "Loading..."}{" "}</p>
                 {/* Show loading state if user is not logged in */}
               </Button>
             </div>
           </form>
+        ) : user ? (
+          <p></p>
         ) : (
           <p className="text-sm text-gray-500 mt-4">
             Please log in to comment. {/* Prompt to log in */}
           </p>
         )}
       </div>
-      {/* Edit Comment Modal */}
-      <Modal isOpen={editModalOpen} onOpenChange={setEditModalOpen}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>Edit Comment</ModalHeader>
-              <ModalBody>
-                <textarea
-                  className="w-full border rounded-md p-2"
-                  value={editedBody}
-                  onChange={(e) => setEditedBody(e.target.value)}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    handleEditComment(); // Call edit comment function
-                    onClose();
-                  }}
-                >
-                  Save
-                </Button>
-                <Button color="default" onPress={onClose}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-      {/* Delete Comment Modal */}
-      <Modal isOpen={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>Delete Comment</ModalHeader>
-              <ModalBody>
-                <p>Are you sure you want to delete this comment?</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  onPress={() => {
-                    handleDeleteComment(); // Call delete comment function
-                    onClose();
-                  }}
-                >
-                  Delete
-                </Button>
-                <Button color="default" onPress={onClose}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 };

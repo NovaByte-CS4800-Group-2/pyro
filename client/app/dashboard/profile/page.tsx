@@ -8,6 +8,7 @@ import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "reac
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Forum from "@/app/ui/forum";
 import { EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword } from "firebase/auth";
+import Comments from "../../ui/comments"; // Import Comments component
 
 export default function Profile() {
 	const router = useRouter();
@@ -304,41 +305,38 @@ export default function Profile() {
 	}
 	else {
 		return (
-			<div className="flex-grow flex max-lg:flex-col m-6 gap-y-10 gap-x-[15%]">
-				<div className="flex flex-col gap-y-5 min-w-[40%]">
-					<Card shadow="lg" className="shadow-lg p-4 border-2 rounded-3xl w-fit h-fit">
-						<CardHeader className="py-2 px-6 flex-col items-start max-w-60">
+			<div className="flex-grow flex max-lg:flex-col m-6 gap-y-10 gap-x-2">
+					<Card shadow="lg" className="shadow-lg p-4 border-2 rounded-3xl h-fit flex-grow gap-y-1 max-w-[500px]">
+						<CardHeader className="py-2 flex flex-col items-center">
+							<Avatar className="w-40 h-40 hover:cursor-pointer mb-1" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
 							<h3 className="font-bold text-3xl line-clamp-1 hover:line-clamp-none">{userProfile.username}</h3>
 							<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
 						</CardHeader>
-						<CardBody className="pt-2">
-							<Avatar className="w-40 h-40 hover:cursor-pointer" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
+						<CardBody className="pt-2 flex flex-col items-stretch gap-y-3 border-2 border-gray-200 shadow-md bg-neutral-50 rounded-xl">
+							<p className="mt-1 font-semibold text-center">Personal Info</p>
+							<div className="flex border-b-2 border-gray-200 p-2 items-center">
+								<p className="w-[5.5rem]">Username:</p>
+								{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
+								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onPress={saveUsername} value="Change">Save</Button>}
+							</div>
+							<div className="flex border-b-2 border-gray-200 p-2 items-center gap-x-1">
+								<p className="w-28">Change Email:</p>
+								{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
+								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onPress={saveEmail} value="Change">Save</Button>}
+							</div>
+							<div className="flex border-b-2 border-gray-200 p-2 items-center">
+								<p className="w-[5.5rem]">Zipcode:</p>
+								{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
+								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onPress={saveZipcode} value="Change">Save</Button>}
+							</div>
+							<div className="flex border-b-2 border-gray-200 p-2 items-center">
+								<p className="w-[5.5rem]">Password:</p>
+								<p className="font-semibold">*****</p>
+								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive]" onPress={passwordModal.onOpen}>Change Password</Button>}
+							</div>
+							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</Button>
 						</CardBody>
 					</Card>
-					<div className="flex flex-col gap-y-3 border-2 border-gray-500 rounded-xl p-3 max-w-[500px]">
-						<p className="ml-2 mt-1 font-semibold">Personal Info</p>
-						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-							<p className="w-[5.5rem]">Username:</p>
-							{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
-							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onClick={saveUsername} value="Change">Save</button>}
-						</div>
-						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-							<p className="w-28">Change Email:</p>
-							{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
-							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onClick={saveEmail} value="Change">Save</button>}
-						</div>
-						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-							<p className="w-[5.5rem]">Zipcode:</p>
-							{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
-							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onClick={saveZipcode} value="Change">Save</button>}
-						</div>
-						<div className="flex border-b-2 border-gray-300 p-2 max-w-[500px]">
-							<p className="w-[5.5rem]">Password:</p>
-							<p className="font-semibold">*****</p>
-							{!editing ? <></> : <button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-2xl" onClick={passwordModal.onOpen}>Change Password</button>}
-						</div>
-						<button className="shadow-sm border-[1px] mt-3 border-gray-500 bg-[--clay-beige] hover:bg-[--ash-olive] rounded-xl mr-auto px-3 py-0.5" onClick={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</button>
-					</div>
 					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
 						<ModalContent>
 						{(onClose) => (
@@ -410,20 +408,18 @@ export default function Profile() {
 						)}
 						</ModalContent>
 					</Modal>
-				</div>
-				<div className="flex flex-col flex-grow gap-y-5">
-					<Card>
+					<Card className="flex-grow shadow-md border-2 border-neutral-200 rounded-3xl">
 						<CardBody>
 							<Tabs>
 								<Tab key="posts" title="Posts">
 									<Forum userID={String(userProfile.user_id)}></Forum>
 								</Tab>
-								{/*<Tab key="comments" title="Comments">
-								</Tab>*/}
+								<Tab key="comments" title="Comments">
+									<Comments user_id={String(userProfile.user_id)} />
+			  				</Tab>
 							</Tabs>
 						</CardBody>
 					</Card>
-				</div>
 			</div>
 		);
 	}
