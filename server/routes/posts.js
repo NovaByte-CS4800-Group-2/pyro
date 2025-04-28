@@ -112,7 +112,6 @@ router.get('/get/media/:post_id', async (req, res) => {
 
   try {
     const result = await Post.getPostMedia(post_id);
-    console.log(result)
     return res.status(200).json({ result });
   } catch (error) {
     console.error(error);

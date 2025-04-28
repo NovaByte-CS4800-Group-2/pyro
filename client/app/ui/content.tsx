@@ -214,44 +214,125 @@ export default function Content({
     const fetchImageURLs = async () => {
       const storage = getStorage();
 
-      const imageNames = ['comic.png']; 
+      //const imageNames = ['comic.png']; 
 
-      // const imageNames = async () => {
-      //   try {
-      //     const response = await fetch(
-      //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}"` 
-      //     );
-      //     const data = await response.json();
-      //   } catch (error) { // Handle errors
-      //     console.error("Error fetching subforums:", error);
-      //     setErrorMessage("Failed to fetch subforums.");
-      //   }
-      // get the image names from db
-      try {
-        // Fetch all image URLs from Firebase Storage
-        const urls = await Promise.all(
-          imageNames.map(async (imageName) => {
-            console.log("THIS IS CONTENT ID", contentId)
-            const imageRef = ref(storage, `media/${imageName}`);
-            const url = await getDownloadURL(imageRef);
-            return url;
-          })
-        );
+      const imageNames = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}` 
+          );
+          const data = await response.json();
+          console.log("DAATA", data);  // You can see the entire response here.
+      
+          // Check if 'result' is present and is an array
+          if (data && data.result && Array.isArray(data.result) && data.result.length > 0) {
+            const res = data.result;  // Assuming 'result' contains the array of image names.
+            console.log("RESULT:", res);
+            return res;
+          } else {
+            return [];  // No images, return an empty array
+          }
+        } catch (error) {
+          console.error("Error fetching media names:", error);
+          return [];  // If there is an error, return an empty array as fallback
+        }
+      };
+
+
+      const fetchMedia = async () => {
+        try {
+          const names = await imageNames(); // get image names from db 
+          console.log("Names: ", names[0], names[1])
+          const urls = await Promise.all(
+                  names.map(async (imageName: string) => {
+                    console.log("Fetching URL for:", imageName);
+                    const imageRef = ref(storage, `media/${imageName}`);
+                    try {
+                      const url = await getDownloadURL(imageRef);
+                      console.log("UR!!!!", url)
+                      return url;
+                    } catch (e) {
+                      console.log(e)
+                      console.log("URRR ERRRRR")
+                    } 
+                  })
+                );
+                setMediaURL(urls)
+        } catch (e) {
+          console.log(e)
+        }
         
-        setMediaURL(urls); // Set the URLs in state
-      } catch (error) {
-        console.error('Error fetching images:', error);
-        setErrorMessage('Failed to load images.');
       }
+
+      await fetchMedia()
+      // const fetchMedia = async () => {
+      //   try {
+      //     // get images from db
+      //     const names = await imageNames(); // Names should be an array like ["comic.png", "baboon.png"]
+      //     //console.log("NAMES!!!", names.length)
+      //     const urls = await Promise.all(
+      //       names.map(async (imageName: string) => {
+      //         console.log("Fetching URL for:", imageName);
+      //         const imageRef = ref(storage, `media/${imageName}`);
+      //         try {
+      //           const url = await getDownloadURL(imageRef);
+      //           console.log("UR!!!!", url)
+      //           return url;
+      //         } catch (e) {
+      //           console.log(e)
+      //           console.log("URRR ERRRRR")
+      //         }
+      //       })
+      //     );
+      
+      //     // Set the URLs to a state variable to use them later in your UI
+      //     setMediaURL(urls);  // Assuming you have a state like const [mediaURLs, setMediaURLs] = useState([])
+      //   } catch (error) {
+      //     console.error('Error fetching media:', error);
+      //     setErrorMessage('Failed to load media.');
+      //   }
+      // };
+      // fetchMedia();
+      
     };
 
     fetchImageURLs();
   }, []);
 
-  const showImages = mediaURLs.map((url, index) => (
-    <img key={index} src={url} alt={`Image ${index}`} width={150} />
-  ));
-      
+  const showImages = mediaURLs.map((url, index) => {
+    return (
+      <img key={index} src={url} alt={`Media ${index}`} width={150} />
+    );
+    // Ensure the URL is not undefined or empty before proceeding
+    // if (!url) {
+    //   console.error(`Invalid URL at index ${index}:`, url);
+    //   return <div key={index}>Invalid media</div>;
+    // }
+  
+    // const fileExtension = "mp4"
+  
+    // // Check if it's a video
+    // if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg') {
+    //   return (
+    //     <video key={index} width={150} controls>
+    //       <source src={url} type={`video/${fileExtension}`} />
+    //       Your browser does not support the video tag.
+    //     </video>
+    //   );
+    // }
+    // // Check if it's an image
+    // else if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'png' || fileExtension === 'gif') {
+    //   return (
+    //     <img key={index} src={url} alt={`Media ${index}`} width={150} />
+    //   );
+    // } else {
+    //   // Fallback for unsupported types
+    //   return (
+    //     <div key={index}>Unsupported media type</div>
+    //   );
+    // }
+  });
+  
 
   return (
     <div className={containerClasses}>
@@ -307,7 +388,7 @@ export default function Content({
       
       {/* Content Body */}
       <div className={bodyClasses}>{highlightMatch(body, search)}</div>
-      <div > Here are my images: {showImages} </div>
+      <div > {showImages} </div>
 
       {/* Content Interaction Bar */}
       <div

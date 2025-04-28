@@ -138,7 +138,15 @@ class Post
     {
         try {
             const [row] = await pool.query("SELECT mediaURLs from posts WHERE post_id =?", [post_id]);
-            JSON.parse(row[0].mediaURLs)
+            if (row.length ==0 ){
+                //console.log("No post with post_id", post_id)
+                return []
+            }
+            const mediaURLs = row[0].mediaURLs;
+            if (!mediaURLs || mediaURLs.trim() === "") {
+                //console.log("No media URLs found.");
+                return []; // Return an empty array if the value is empty or invalid
+              }
             const URLS = JSON.parse(row[0].mediaURLs)
             return URLS
         } catch (e){
