@@ -76,7 +76,7 @@ router.get('/userPosts/:id', async (req, res) => {  // get all user posts
  * @returns {Object} 400 - Missing values
  * @returns {Object} 406 - Problem editing post
  */
-router.post('/post/edit', async (req, res) => {
+router.post('/edit/post', async (req, res) => {
   const {content_id, newBody} = req.body;
 
   if(!newBody || !content_id) return res.status(400).json({ error: "Missing value" });
@@ -94,7 +94,7 @@ router.post('/post/edit', async (req, res) => {
  * @returns {Object} 201 - Success message
  * @returns {Object} 400 - Missing content ID
  */
-router.post('/post/delete', async (req, res) => {
+router.post('/delete/post', async (req, res) => {
   const {content_id} = req.body;
 
   if(!content_id) return res.status(400).json({ error: "Missing content_id" });

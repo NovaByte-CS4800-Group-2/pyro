@@ -5,7 +5,7 @@ import { Textarea, Button } from "@heroui/react"; // Import Textarea components 
 import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import { useAuthState } from "react-firebase-hooks/auth"; // Import useAuthState from firebase hooks
 import { auth } from "@/app/firebase/config"; // Import Firebase auth configuration
-
+import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline"; // Import icons from heroicons
 // function to create a new post
 export default function CreatePost() {
   const router = useRouter();
@@ -23,6 +23,10 @@ export default function CreatePost() {
     business_account: 0,
   });
   const [subforums, setSubforums] = useState<any[]>([]); // State to store subforums
+
+  const [media, setMedia] = useState<File[]>([]); // State to store media files
+  const [mediaPreviewURLs, setMediaPreviewURLs] = useState<string[]>([]); // State to store media preview URLs
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // Fetch subforums when the component mounts
   useEffect(() => { 
@@ -262,6 +266,60 @@ export default function CreatePost() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return; // Check if files are selected
+    const newFiles = Array.from(e.target.files); // Convert FileList to array
+    const validFiles = newFiles.filter((file) => {
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4']; // Allowed file types
+
+      if (!validTypes.includes(file.type)) {
+        setErrorMessage(`Invalid file type: ${file.name}`); // Set error message for invalid file type
+        return false; // Exclude invalid files
+      }
+
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    const newPreviewURLS = [...mediaPreviewURLs]; // Create a copy of the current preview URLs
+
+    validFiles.forEach((file) => {
+      if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        newPreviewURLS.push(url);
+      } else {
+        // For non-images, we'll just use the file type as placeholder
+        newPreviewURLS.push(file.type);
+      }
+    });
+    
+    setMedia([...media, ...validFiles]);
+    setMediaPreviewURLs(newPreviewURLS);
+  };
+
+  const handleAddMediaClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleRemoveMedia = (index: number) => {
+    const newMedia = [...media];
+    const newPreviewURLS = [...mediaPreviewURLs];
+    
+    // If the URL is an object URL, revoke it to avoid memory leaks
+    if (newPreviewURLS[index].startsWith('blob:')) {
+      URL.revokeObjectURL(newPreviewURLS[index]);
+    }
+    
+    newMedia.splice(index, 1);
+    newPreviewURLS.splice(index, 1);
+    
+    setMedia(newMedia);
+    setMediaPreviewURLs(newPreviewURLS);
+  };
+
   // Check if the component is mounted
   if (!isClient) return null;
 
@@ -328,6 +386,65 @@ export default function CreatePost() {
               onChange={handleChange}
               className="mb-4 w-full"
             />
+             {/* Media Preview Section */}
+             {mediaPreviewURLs.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Attached Media</h4>
+                <div className="flex flex-wrap gap-2">
+                  {mediaPreviewURLs.map((url, index) => (
+                    <div key={index} className="relative">
+                      {url.startsWith('blob:') ? (
+                        // Display image preview
+                        <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-300">
+                          <img 
+                            src={url} 
+                            alt={`Media ${index + 1}`} 
+                            className="h-full w-full object-cover"
+                          />
+                          <button
+                            onClick={() => handleRemoveMedia(index)}
+                            className="absolute top-0 right-0 bg-white rounded-full p-0.5"
+                          >
+                            <XMarkIcon className="h-4 w-4 text-gray-500" />
+                          </button>
+                        </div>
+                      ) : (
+                        // Display file type icon for non-images
+                        <div className="relative h-20 w-20 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-50">
+                          <div className="text-xs text-gray-500 text-center overflow-hidden">
+                            {url.split('/')[1]?.toUpperCase() || 'FILE'}
+                          </div>
+                          <button
+                            onClick={() => handleRemoveMedia(index)}
+                            className="absolute top-0 right-0 bg-white rounded-full p-0.5"
+                          >
+                            <XMarkIcon className="h-4 w-4 text-gray-500" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Add Media Button */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*, video/*, .pdf, .doc, .docx"
+              multiple
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={handleAddMediaClick}
+              className="flex items-center justify-center text-sm text-gray-600 hover:text-blue-500 mb-4"
+            >
+              <PhotoIcon className="h-5 w-5 mr-1" />
+              Add Media
+            </button>
             {/* Action buttons */}
             <div className="flex justify-end">
               <Button onPress={handleCancel} className="mr-2">
