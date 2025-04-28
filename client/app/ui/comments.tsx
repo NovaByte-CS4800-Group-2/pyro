@@ -26,11 +26,12 @@ interface Comment {
 }
 
 interface CommentsProps {
-  contentId: number;
+  contentId?: number;
   subforumId?: string; // Optional subforum ID prop
+  user_id?: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
+const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_id = null}) => {
   const [comments, setComments] = useState<Comment[]>([]); // State to hold comments
   const [comment, setComment] = useState(""); // State for new comment input
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
@@ -98,10 +99,21 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
   const fetchComments = async () => {
     try {
       setIsLoading(true); // Set loading state to true
-      const res = await fetch(
-        // Fetch comments from backend
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
-      );
+      let res;
+      if (contentId !== null) 
+      {
+        console.log("POST COMMENTS");
+        res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
+        );
+      } 
+      else 
+       {
+        console.log("USER COMMENTS");
+        res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userComments/${user_id}`
+        );
+      } 
 
       // if response not okay, throw error
       if (!res.ok) {
@@ -173,10 +185,10 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
 
   // Fetch comments initially
   useEffect(() => {
-    if (contentId) {
+    if (contentId || user_id) {
       fetchComments();
     }
-  }, [contentId]);
+  }, [contentId, user_id]);
 
   // Submit a new comment
   const postComment = async (event: React.FormEvent) => {
@@ -293,70 +305,54 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
           <p className="text-sm text-gray-500">Loading comments...</p> // Loading state
         ) : comments.length > 0 ? (
           <>
-            {displayedComments.map(
-              (
-                comment // Map through comments
-              ) => (
-                <Content
-                  key={comment.content_id}
-                  userId={user?.uid || ""}
-                  posterId={comment.user_id}
-                  username={comment.username || "User"}
-                  contentType="comment"
-                  contentId={comment.content_id}
-                  body={comment.body}
-                  postDate={comment.post_date}
-                  lastEditDate={comment.last_edit_date || ""}
-                  isOwner={user?.uid === comment.user_id}
-                  isVerified={true}
-                  subforumId={subforumId} // Pass subforum ID to Content component
-                  onUpdateContent={() => {
-                    fetchComments(); // Fetch comments after updating
-                  }}
-                  onDeleteContent={() => {
-                    // Delete a comment
-
-                    fetchComments();
-                  }}
-                />
-              )
-            )}
-
+            {(contentId ? displayedComments : comments).map((comment) => (
+              <Content
+                key={comment.content_id}
+                userId={user?.uid || ""}
+                posterId={comment.user_id}
+                username={comment.username || "User"}
+                contentType="comment"
+                contentId={comment.content_id}
+                body={comment.body}
+                postDate={comment.post_date}
+                lastEditDate={comment.last_edit_date || ""}
+                isOwner={user?.uid === comment.user_id}
+                isVerified={true}
+                subforumId={subforumId}
+                onUpdateContent={fetchComments}
+                onDeleteContent={fetchComments}
+              />
+            ))}
             {/* Comment expand/collapse controls */}
             <div className="mt-3 flex justify-between">
               {/* Show more comments button */}
-              {hasMoreComments && (
-                <button
-                  className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
-                  onClick={handleShowMore} // Show more comments on click
-                >
-                  <ChevronDownIcon className="w-4 h-4 mr-1" />
-                  Show{" "}
-                  {Math.min(
-                    COMMENTS_INCREMENT,
-                    comments.length - visibleComments
-                  )}{" "}
-                  more{" "}
-                  {/* Show the number of comments that will be displayed */}
-                  {Math.min(
-                    COMMENTS_INCREMENT,
-                    comments.length - visibleComments
-                  ) === 1
-                    ? "comment"
-                    : "comments"}
-                </button>
-              )}
+              {contentId && (
+  <div className="mt-3 flex justify-between">
+    {hasMoreComments && (
+      <button
+        className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
+        onClick={handleShowMore}
+      >
+        <ChevronDownIcon className="w-4 h-4 mr-1" />
+        Show {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments)}{" "}
+        {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments) === 1
+          ? "comment"
+          : "comments"}
+      </button>
+    )}
 
-              {/* Show less button - only visible when expanded */}
-              {isExpanded && (
-                <button
-                  className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
-                  onClick={handleShowLess} // Show less comments on click
-                >
-                  <ChevronUpIcon className="w-4 h-4 mr-1" />
-                  Show less
-                </button>
-              )}
+    {isExpanded && (
+      <button
+        className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
+        onClick={handleShowLess}
+      >
+        <ChevronUpIcon className="w-4 h-4 mr-1" />
+        Show less
+      </button>
+    )}
+  </div>
+)}
+
             </div>
           </>
         ) : (
@@ -364,7 +360,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
         )}
 
         {/* Leave a Comment */}
-        {user ? (
+        {user && contentId ? (
           <form onSubmit={postComment} className="mt-6 relative">
             {" "}
             {/* Form for posting a comment */}
@@ -387,6 +383,8 @@ const Comments: React.FC<CommentsProps> = ({ contentId, subforumId }) => {
               </Button>
             </div>
           </form>
+        ) : user ? (
+          <p></p>
         ) : (
           <p className="text-sm text-gray-500 mt-4">
             Please log in to comment. {/* Prompt to log in */}

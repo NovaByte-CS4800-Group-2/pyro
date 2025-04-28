@@ -8,6 +8,7 @@ import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "reac
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Forum from "@/app/ui/forum";
 import { EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword } from "firebase/auth";
+import Comments from "../../ui/comments"; // Import Comments component
 
 export default function Profile() {
 	const router = useRouter();
@@ -414,8 +415,8 @@ export default function Profile() {
 									<Forum userID={String(userProfile.user_id)}></Forum>
 								</Tab>
 								<Tab key="comments" title="Comments">
-              
-			  					</Tab>
+									<Comments user_id={String(userProfile.user_id)} />
+			  				</Tab>
 							</Tabs>
 						</CardBody>
 					</Card>

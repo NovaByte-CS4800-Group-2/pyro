@@ -5,6 +5,7 @@ import Forum from "@/app/ui/forum";
 import { Avatar, Card, CardBody, CardHeader, Tab, Tabs } from "@heroui/react";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
+import Comments from "../../../ui/comments"; // Import Comments component
 
 // Define the expected props shape for this page
 export default function Page({ params, }: { params: Promise<{ user_id: string }> }) {
@@ -64,7 +65,7 @@ export default function Page({ params, }: { params: Promise<{ user_id: string }>
               <Forum userID={userID}></Forum>
             </Tab>
             <Tab key="comments" title="Comments">
-              
+              <Comments user_id={userID} />
             </Tab>
           </Tabs>
         </CardBody>

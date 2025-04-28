@@ -20,7 +20,7 @@ export interface ContentProps {
   posterId: string;
   username: string;
   contentType: "post" | "comment";
-  contentId: number;
+  contentId?: number;
   body: string;
   postDate: string;
   lastEditDate: string;
