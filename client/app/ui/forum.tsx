@@ -40,71 +40,6 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
     }
   };
 
-  const deletePost = async (contentId: number) => {
-    // Function to delete a post
-    console.log("Deleting post with contentId:", contentId); // Debug log
-    try {
-      // Fetch the delete endpoint
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/delete`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content_id: contentId }), // Send the content ID in the request body
-        }
-      );
-
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/remove/notification/${contentId}/${"callout"}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        // if response not okay, throw an error
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete post.");
-      }
-
-      console.log("Post deleted successfully!"); // Debug log
-      fetchPosts(); // Refresh posts after deletion
-    } catch (error: any) {
-      //handle errors
-      console.error("Error deleting post:", error.message);
-    }
-  };
-
-  const onEditPost = async (contentId: number, newBody: string) => {
-    // Function to edit a post
-    console.log(
-      "Editing post with contentId:",
-      contentId,
-      "New body:",
-      newBody
-    ); // Debug log
-    try {
-      // Fetch the edit endpoint
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/edit`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content_id: contentId, newBody: newBody }), // Send the content ID and new body in the request body
-        }
-      );
-
-      if (!response.ok) {
-        // if response not okay, throw an error
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to edit post.");
-      }
-
-      console.log("Post edited successfully!");
-      fetchPosts(); // Refresh posts after editing
-    } catch (error: any) {
-      //handle errors
-      console.error("Error editing post:", error.message);
-    }
-  };
-
   const fetchPosts = async () => {
     // Function to fetch posts from the backend
     let fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${subforumID}`;
@@ -113,7 +48,7 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
       // If userID is provided, fetch posts for that user
       fetchString = `${process.env.NEXT_PUBLIC_BACKEND_URL}/userPosts/${userID}`;
     }
-  
+
     const response = await fetch(fetchString, {
       // Fetch posts from the backend
       method: "GET",
@@ -121,44 +56,44 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
         "Content-Type": "application/json",
       },
     });
-  
+
     if (!response.ok) {
       setHtml("<p>Error loading posts :(</p>");
       return;
     }
-  
+
     const contentData = await response.json();
     //console.log("Fetched posts from backend:", contentData.posts); // Debug log
     const searchLower = search.toLowerCase();
-  
+
     // Use map to handle async operations
     const posts = await Promise.all(
       contentData.posts.map(async (post: any, index: any) => {
         const { post_date, last_edit_date, body, user_id, content_id } = post;
         //console.log("Post content_id:", content_id); // Debug log
         const username = await getUser(user_id);
-  
+
         // Determine if the logged-in user is the owner of the post
         const isOwner = user_id === user?.uid;
 
         // Filter posts that do not match the search in either username or body
         const bodyMatch = body.toLowerCase().includes(searchLower);
         const userMatch = username.toLowerCase().includes(searchLower);
-  
+
         if (!bodyMatch && !userMatch) return null; // Skip this post if no match
-  
+
         // Return the HTML content for each post
         return `<post key=${index} posterid="${user_id}" username="${username}" date="${post_date}" editeddate="${last_edit_date}" body="${body}" contentId="${content_id}" isOwner="${isOwner}"></post>`;
       })
     );
-  
+
     // Combine all post HTML content into one string, filtering out nulls
     setHtml(posts.filter(Boolean).join(""));
   };
 
   useEffect(() => {
     fetchPosts();
-  }, [subforumID, user?.uid, search]); 
+  }, [subforumID, user?.uid, search]);
 
   const parsedContent = parse(html, {
     // Parse the HTML string
@@ -179,17 +114,22 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
             posterId={posterid}
             key={parsedContentId}
             username={username}
-            date={date}
-            editeddate={editeddate}
+            postDate={date}
+            lastEditDate={editeddate}
+            subforumId={subforumID}
             body={body}
             search={search}
             contentId={parsedContentId}
             isVerified={true}
             isOwner={attribs.isowner === "true"}
-            onDeletePost={() => deletePost(parsedContentId)}
-            onEditPost={(contentId: number, newBody: string) =>
-              onEditPost(contentId, newBody)
-            }
+            onRefresh={fetchPosts} // Pass the fetchPosts function to refresh the posts
+            contentType="post" // Provide a default contentType
+            onUpdateContent={(updatedContent) => {
+              console.log("Content updated:", updatedContent);
+            }} // Provide a handler for updating content
+            onDeleteContent={() => {
+              console.log("Content deleted");
+            }} // Provide a handler for deleting content
           />
         );
       }
@@ -198,10 +138,14 @@ const Forum: React.FC<ForumProps> = ({ subforumID = "1", userID = "-1" }) => {
 
   return (
     <div className="space-y-4">
-      <SearchBar value={search} onChange={setSearch} placeholder="Search by username or text..." />
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        placeholder="Search by username or text..."
+      />
       {parsedContent || <p>No posts available</p>}
     </div>
-  );  
+  );
 };
 
 export default Forum;
