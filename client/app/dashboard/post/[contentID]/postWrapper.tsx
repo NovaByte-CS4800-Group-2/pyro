@@ -29,15 +29,16 @@ export default function PostWrapper({ post }: WrapperProps) {
       userId={post.userId}
       posterId={post.posterId}
       username={post.username}
-      date={post.date}
-      editeddate={post.editeddate}
+      //date={post.date}
+      //editeddate={post.editeddate}
       body={post.body}
       contentId={post.contentId}
       isVerified={post.isVerified}
       isOwner={post.isOwner && canInteract}
-      onDeletePost={canInteract ? () => {} : () => {}}
-      onEditPost={canInteract ? () => {} : () => {}}
-      search={""}
-    />
+      onDeleteContent={canInteract ? () => { } : () => { } }
+      onUpdateContent={canInteract ? () => { } : () => { } }
+      search={""} contentType={"post"} postDate={""} lastEditDate={""} onRefresh={function (): void {
+        throw new Error("Function not implemented.");
+      } }    />
   );
 }

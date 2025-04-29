@@ -22,26 +22,28 @@ export default function PostClientPage({ contentID }: { contentID: string }) {
   const [user] = useAuthState(auth);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/post/${contentID}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("📦 Fetched Post Data:", data); // <--- Add this
+    const fetchPost = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/post/${contentID}`)
+        const data = await res.json();
         setPost({
           userId: data.user_id,
-          posterId: data.poster_id,
+          posterId: data.user_id,
           username: data.username,
           date: data.post_date,
           editeddate: data.last_edit_date || "null",
           body: data.body,
           contentId: parseInt(data.id),
           isVerified: data.is_verified,
-          isOwner: user?.displayName === data.username,
+          isOwner: user ? user.displayName === data.username : false,
         });
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("❌ Failed to fetch post:", err);
-      });
-  }, [contentID, user]);
+      }
+    };
+
+    fetchPost();
+  }, [contentID, user?.displayName]); // notice: only depend on user.displayName instead of whole user
 
   if (!post) {
     return <p className="text-sm text-gray-500">Loading post...</p>;
@@ -49,9 +51,13 @@ export default function PostClientPage({ contentID }: { contentID: string }) {
 
   return (
     <Post
+      contentType="post"
+      postDate={post.date}
+      lastEditDate={post.editeddate}
       {...post}
-      onDeletePost={() => {}}
-      onEditPost={() => {}}
+      onDeleteContent={() => {}}
+      onUpdateContent={() => {}}
+      onRefresh={() => {}}
     />
   );
 }
