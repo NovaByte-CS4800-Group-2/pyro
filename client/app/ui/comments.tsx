@@ -50,6 +50,9 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
   const DEFAULT_VISIBLE_COMMENTS = 2;
   const COMMENTS_INCREMENT = 3; // Number of comments to show per click
 
+  // Detect if viewing a shared post page
+  const isSharedPost = typeof window !== "undefined" && window.location.pathname.includes("/shared/");
+
   // Fetch current user data
   useEffect(() => {
     const fetchUserData = async () => {
@@ -101,19 +104,19 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
       setIsLoading(true); // Set loading state to true
       let res;
       if (contentId !== null) 
-      {
+        {
         console.log("POST COMMENTS");
         res = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
         );
       } 
-      else 
-       {
+      else
+      {
         console.log("USER COMMENTS");
         res = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/userComments/${user_id}`
         );
-      } 
+      }
 
       // if response not okay, throw error
       if (!res.ok) {
@@ -244,10 +247,10 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
       const regex = /@([\w.-]+)/g; // regex to search for the @'s
       const matches = [...comment.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
 
-      if(matches.length !== 0)
-      {
+      if(matches.length !== 0) 
+        {
         const requestBody = {
-          content_id: data.id, 
+          content_id: data.id,
           calledOuts: matches,
           username: userData.username,
         };
@@ -326,32 +329,32 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
             {/* Comment expand/collapse controls */}
             <div className="mt-3 flex justify-between">
               {/* Show more comments button */}
-              {contentId && (
-  <div className="mt-3 flex justify-between">
-    {hasMoreComments && (
-      <button
-        className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
-        onClick={handleShowMore}
-      >
-        <ChevronDownIcon className="w-4 h-4 mr-1" />
-        Show {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments)}{" "}
-        {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments) === 1
-          ? "comment"
-          : "comments"}
-      </button>
-    )}
+            {contentId && (
+              <div className="mt-3 flex justify-between">
+                {hasMoreComments && (
+                  <button
+                    className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
+                    onClick={handleShowMore}
+                  >
+                    <ChevronDownIcon className="w-4 h-4 mr-1" />
+                    Show {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments)}{" "}
+                    {Math.min(COMMENTS_INCREMENT, comments.length - visibleComments) === 1
+                      ? "comment"
+                      : "comments"}
+                  </button>
+                )}
 
-    {isExpanded && (
-      <button
-        className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
-        onClick={handleShowLess}
-      >
-        <ChevronUpIcon className="w-4 h-4 mr-1" />
-        Show less
-      </button>
-    )}
-  </div>
-)}
+                {isExpanded && (
+                  <button
+                    className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
+                    onClick={handleShowLess}
+                  >
+                    <ChevronUpIcon className="w-4 h-4 mr-1" />
+                    Show less
+                  </button>
+                )}
+              </div>
+            )}
 
             </div>
           </>
@@ -360,7 +363,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
         )}
 
         {/* Leave a Comment */}
-        {user && contentId ? (
+        {user && contentId && !isSharedPost ? (
           <form onSubmit={postComment} className="mt-6 relative">
             {" "}
             {/* Form for posting a comment */}
@@ -378,12 +381,11 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
                 disabled={!userData.username} // Disable button if user is not logged in
               >
                 <PaperAirplaneIcon width={16} height={16}></PaperAirplaneIcon>
-                <p className="text-sm">{userData.username ? "Send" : "Loading..."}{" "}</p>
-                {/* Show loading state if user is not logged in */}
+                <p className="text-sm">{userData.username ? "Send" : "Loading..."}</p>
               </Button>
             </div>
           </form>
-        ) : user ? (
+        ) : user && !isSharedPost ? (
           <p></p>
         ) : (
           <p className="text-sm text-gray-500 mt-4">
