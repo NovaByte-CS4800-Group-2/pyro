@@ -28,10 +28,10 @@ export function EmblaCarousel() {
       <div className="embla w-full max-w-screen-lg mx-auto overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex h-56">
           <div className="embla__slide flex items-center justify-center w-full flex-shrink-0">
-            <img className="w-full h-full object-cover" src="images/slide1.png" alt="cat"  />
+            <img className="w-full h-full object-cover" src="images/resource2d.webp" alt="cat"  />
           </div>
           <div className="embla__slide flex items-center justify-center w-full flex-shrink-0">
-            <img className="w-full h-full object-cover" src="images/slide2.png" alt="dogs" />
+            <img className="w-full h-full object-cover" src="images/resource2b.png" alt="dogs" />
           </div>
           <div className="embla__slide flex items-center justify-center w-full flex-shrink-0">
             <img className="w-full h-full object-cover" src="images/slide3.png" alt="" />
