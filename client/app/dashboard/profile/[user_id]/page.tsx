@@ -7,7 +7,7 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
 // Define the expected props shape for this page
-export default function Page({ params, }: { params: Promise<{ user_id: string }> }) {
+export default function Profile({ params, }: { params: Promise<{ user_id: string }> }) {
   const [userID, setUserID] = useState("");
   const [username, setUsername] = useState("");
   const [profileURL, setProfileURL] = useState("");

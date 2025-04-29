@@ -2,7 +2,7 @@ import Forum from "@/app/ui/forum";
 import Subforumbar from "../../../ui/subforumbar";
 
 // this is the dynamic page component for a given subforum ID
-export default async function Page({ params, }: { params: Promise<{ subforum_id: string }> }) {
+export default async function Subforum({ params, }: { params: Promise<{ subforum_id: string }> }) {
   const { subforum_id } = await params
   return (
     <>
