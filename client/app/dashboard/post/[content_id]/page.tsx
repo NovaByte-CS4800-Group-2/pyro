@@ -50,16 +50,27 @@ export default function SharedPostPage({ params }: Props) {
           return;
         }
 
+        let username = "User";
+        try {
+        const usernameRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/username/${data.user_id}`);
+        if (usernameRes.ok) {
+          const usernameData = await usernameRes.json();
+          username = usernameData.username || "User";
+        }
+        } catch (error) {
+          console.error("❌ Failed to fetch username:", error);
+        }
+
         setPost({
           userId: data.user_id,
           posterId: data.user_id,
-          username: data.username,
+          username: username,
           date: data.post_date,
           editeddate: data.last_edit_date || "null",
           body: data.body,
-          contentId: parseInt(data.id),
+          contentId: parseInt(data.content_id),
           isVerified: data.is_verified,
-          isOwner: false, // <- always false for shared post
+          isOwner: false,
         });
       } catch (error) {
         console.error("❌ Failed to fetch post:", error);
@@ -94,7 +105,7 @@ export default function SharedPostPage({ params }: Props) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/50 p-4">
       <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full border border-gray-200 overflow-y-auto max-h-[90vh]">
-        <PostWrapper post={{ ...post, isOwner: false }} />
+      <PostWrapper post={{ ...post, isOwner: false }} isSharedPost={true} />
       </div>
     </div>
   );

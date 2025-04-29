@@ -14,14 +14,16 @@ interface VoteProps { // Defining the props for the Vote component
   contentId: number;
   userId: string;
   username: string;
+  isSharedPost?: boolean;
 }
 
-export default function Vote({ contentId, userId, username }: VoteProps) { // Defining the Vote component
+export default function Vote({ contentId, userId, username,  isSharedPost = false }: VoteProps) { // Defining the Vote component
   const [totalVotes, setTotalVotes] = useState(0);
   const [userVote, setUserVote] = useState<number | null>(null); // 1 = upvote, 0 = downvote, null = no vote
 
   useEffect(() => {
     const fetchVotes = async () => { 
+      if (isSharedPost) return;
       try {
         const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
         const data1 = await res1.json();
@@ -40,7 +42,7 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
   }, [contentId, userId]); 
 
   const handleVote = async (value: number) => { // function to handle vote
-    if (!userId) return;
+    if (!userId || isSharedPost) return;
     if (userVote === value) {  // same icon was clicked, remove vote
 
       // remove vote from database
@@ -97,7 +99,7 @@ export default function Vote({ contentId, userId, username }: VoteProps) { // De
 
   return ( // display vote total and iconsfilled if theres a vote, outline otherwise
     <div className="flex flex-col items-start space-y-1">
-      {userId ? (
+      {userId && !isSharedPost ? (
         <div className="flex items-center space-x-2">
           {userVote === 1 ? (
 

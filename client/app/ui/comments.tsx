@@ -385,16 +385,9 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
               </Button>
             </div>
           </form>
-        ) : user && !isSharedPost ? (
-          <p></p>
-        ) : (
-          <p className="text-sm text-gray-500 mt-4">
-            Please log in to comment. {/* Prompt to log in */}
-          </p>
-        )}
+        ) : null}
       </div>
     </div>
   );
 };
-
 export default Comments;

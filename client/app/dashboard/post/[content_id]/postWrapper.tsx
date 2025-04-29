@@ -17,9 +17,10 @@ interface WrapperProps {
     isVerified: boolean;
     isOwner: boolean;
   };
+  isSharedPost?: boolean;
 }
 
-export default function PostWrapper({ post }: WrapperProps) {
+export default function PostWrapper({ post, isSharedPost = false }: WrapperProps) {
   const [user] = useAuthState(auth);
 
   const canInteract = false; // <-- force no interaction on shared posts
