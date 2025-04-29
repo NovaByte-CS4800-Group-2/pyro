@@ -13,14 +13,27 @@ const router = Router();  // groups together requests
  * @returns {Object} 400 - Missing required field
  */
 router.post('/post', async (req, res) => {
-  const {city, username, body} = req.body;
-
+  const {city, username, body, imageURLs} = req.body;
   if(!city) return res.status(400).json({ error: "Missing city" });
   if(!username) return res.status(400).json({ error: "Missing username" });
   if(!body) return res.status(400).json({ error: "Missing body" });
 
-  const id = await Post.createPost(city, username, body);
+  const id = Post.createPost(city, username, body);
+
   return res.status(201).json({id: id});
+})
+
+router.post('/post/media', async (req, res) => {
+  try {
+    const {imageURLs, post_id} = req.body;
+    if(!imageURLs) return res.status(400).json({ error: "Missing body" });
+    if (!post_id) return res.status(400).json({error: "No post id"})
+  
+    const id = Post.addPostMedia(imageURLs, post_id);
+    return res.status(201).json("Sucessfully added images!");
+  } catch (e){
+    return res.status(400).json("Error in post media.");
+  }
 })
 
 /**

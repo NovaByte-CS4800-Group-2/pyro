@@ -222,7 +222,6 @@ export default function Content({
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/media/${contentId}` 
           );
           const data = await response.json();
-          console.log("DAATA", data);  // You can see the entire response here.
       
           // Check if 'result' is present and is an array
           if (data && data.result && Array.isArray(data.result) && data.result.length > 0) {
@@ -242,18 +241,15 @@ export default function Content({
       const fetchMedia = async () => {
         try {
           const names = await imageNames(); // get image names from db 
-          console.log("Names: ", names[0], names[1])
           const urls = await Promise.all(
                   names.map(async (imageName: string) => {
                     console.log("Fetching URL for:", imageName);
                     const imageRef = ref(storage, `media/${imageName}`);
                     try {
                       const url = await getDownloadURL(imageRef);
-                      console.log("UR!!!!", url)
                       return url;
                     } catch (e) {
-                      console.log(e)
-                      console.log("URRR ERRRRR")
+                      // silent fail 
                     } 
                   })
                 );
@@ -265,72 +261,44 @@ export default function Content({
       }
 
       await fetchMedia()
-      // const fetchMedia = async () => {
-      //   try {
-      //     // get images from db
-      //     const names = await imageNames(); // Names should be an array like ["comic.png", "baboon.png"]
-      //     //console.log("NAMES!!!", names.length)
-      //     const urls = await Promise.all(
-      //       names.map(async (imageName: string) => {
-      //         console.log("Fetching URL for:", imageName);
-      //         const imageRef = ref(storage, `media/${imageName}`);
-      //         try {
-      //           const url = await getDownloadURL(imageRef);
-      //           console.log("UR!!!!", url)
-      //           return url;
-      //         } catch (e) {
-      //           console.log(e)
-      //           console.log("URRR ERRRRR")
-      //         }
-      //       })
-      //     );
-      
-      //     // Set the URLs to a state variable to use them later in your UI
-      //     setMediaURL(urls);  // Assuming you have a state like const [mediaURLs, setMediaURLs] = useState([])
-      //   } catch (error) {
-      //     console.error('Error fetching media:', error);
-      //     setErrorMessage('Failed to load media.');
-      //   }
-      // };
-      // fetchMedia();
-      
     };
 
     fetchImageURLs();
   }, []);
 
   const showImages = mediaURLs.map((url, index) => {
-    return (
-      <img key={index} src={url} alt={`Media ${index}`} width={150} />
-    );
+
     // Ensure the URL is not undefined or empty before proceeding
-    // if (!url) {
-    //   console.error(`Invalid URL at index ${index}:`, url);
-    //   return <div key={index}>Invalid media</div>;
-    // }
+    if (!url) {
+      return 
+    }
+    
+    const fileExtension = url.split(".")[5].split("?")[0].toString()
+    //console.log("SHOW URL", url)
   
-    // const fileExtension = "mp4"
-  
-    // // Check if it's a video
-    // if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg') {
-    //   return (
-    //     <video key={index} width={150} controls>
-    //       <source src={url} type={`video/${fileExtension}`} />
-    //       Your browser does not support the video tag.
-    //     </video>
-    //   );
-    // }
-    // // Check if it's an image
-    // else if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'png' || fileExtension === 'gif') {
-    //   return (
-    //     <img key={index} src={url} alt={`Media ${index}`} width={150} />
-    //   );
-    // } else {
-    //   // Fallback for unsupported types
-    //   return (
-    //     <div key={index}>Unsupported media type</div>
-    //   );
-    // }
+    // Check if it's a video
+    if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg' || fileExtension === "mov") {
+      //console.log("SHOW VIDEO URL", fileExtension)
+      return (
+        <video key={index} width={100} controls>
+
+        <source src={url} type={`video/${fileExtension}`} />
+        Your browser does not support the video tag.
+        </video>
+      );
+    }
+    // Check if it's an image
+    else if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'png' || fileExtension === 'gif') {
+      //console.log("SHOW IMAGE URL", fileExtension)
+      return (
+        <img  key={index} src={url} alt={`Media ${index}`} width={100} />
+      );
+    } else {
+      // Fallback for unsupported types
+      return (
+        <div key={index}>Unsupported media type</div>
+      );
+    }
   });
   
 

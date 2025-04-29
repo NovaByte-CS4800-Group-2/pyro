@@ -22,11 +22,11 @@ class Post
      * @param {boolean} has_media - True if media is present, false otherwise
      * @returns {number|null} - Returns post ID or null on error
      */
-    static async createPost(city, username, body, has_media)
+    static async createPost(city, username, body)
     {
         try {
             const post_id = await Content.createContent(city, username, body);
-            await pool.query("INSERT INTO posts (post_id, has_media) VALUES (?, ?)", [post_id, has_media]);
+            await pool.query("INSERT INTO posts (post_id, has_media) VALUES (?, ?)", [post_id, 0]);
             return post_id;
     
         } catch (error) {
@@ -35,6 +35,15 @@ class Post
         }
     }
     
+    static async addPostMedia(imageURLs, post_id){
+        try {
+
+            await pool.query("UPDATE posts SET has_media = ?, mediaURLs = ? WHERE post_id = ?", [1, imageURLs, post_id]);
+            return post_id;
+        } catch (e){
+            console.log("Error in addPost Media:", e)
+        }
+    }
     /**
      * Edits the body content of a post.
      * @param {number} content_id - ID of the content/post
@@ -150,7 +159,7 @@ class Post
             const URLS = JSON.parse(row[0].mediaURLs)
             return URLS
         } catch (e){
-            console.log("Error in getPostMedia:", e)
+            //console.log("Error in getPostMedia:", e)
         }
     }
 }

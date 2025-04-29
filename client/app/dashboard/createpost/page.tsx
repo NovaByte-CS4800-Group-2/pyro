@@ -29,6 +29,7 @@ export default function CreatePost() {
 
   const [media, setMedia] = useState<File[]>([]); // State to store media files
   const [mediaPreviewURLs, setMediaPreviewURLs] = useState<string[]>([]); // State to store media preview URLs
+  const [firebaseURLs, setFirebaseURLs] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // Fetch subforums when the component mounts
@@ -125,15 +126,16 @@ export default function CreatePost() {
       setErrorMessage("User data is incomplete. Please try again.");
     }
 
+
     // create a request body for the post submission to send to backend
     try { 
-
       const requestBody = {
         city: city, // Use the selected subforum name as city
         username: userData.username, // Use the username from user data
         body: postContent.body, // content of the post
-        //media: 
+        //imageURLs: firebaseURLs
       };
+
       console.log("Request body:", requestBody); // Log the request body for debugging
 
       // Send a POST request to the backend to create a new post
@@ -163,6 +165,35 @@ export default function CreatePost() {
       const regex = /@([\w.-]+)/g; // regex to search for the @'s
       const matches = [...str.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
 
+
+      for (let i =0 ; i < mediaPreviewURLs.length; i ++ )
+        {
+          console.log("MEDIA!!!!", mediaPreviewURLs[i])
+          // You need to fetch the blob content from the URL
+          const response = await fetch(mediaPreviewURLs[i]);
+          const blob = await response.blob();  // Now blob is a real Blob object
+          console.log("OBJJJJj: ", blob)
+    
+          // Now create a File with a name
+          const file = new File([blob], `${postData.id.toString()}_${i}.png`, { type: blob.type });
+    
+          console.log(file.name); 
+          console.log(file.type);  
+    
+    
+          const storage = getStorage();
+          const storageRef = ref(storage, `media/${file.name}`);
+    
+          await uploadBytes(storageRef, file);
+    
+          // Get the download URL
+          const downloadURL = await getDownloadURL(storageRef);
+          console.log("DOWNURL: ", downloadURL)
+    
+          // Add the URL to the state
+          setFirebaseURLs(prev => [...prev, downloadURL]);
+        }
+
       if(matches.length !== 0)
       {
         const requestBody = {
@@ -181,6 +212,7 @@ export default function CreatePost() {
         );
       }
 
+
       // Fetch the subforum ID based on the selected city (subforum name)
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/subforum/${city}`
@@ -189,13 +221,53 @@ export default function CreatePost() {
 
       // send user back to selected subforum page to see post
       router.push(`/dashboard/subforum/${data.subforumId}`);
+
+      
     } catch (error: any) { // Handle errors
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
     }
-
-    uploadImagesToStorage
   };
+
+  // Watch when firebaseURLs updates
+  useEffect(() => {
+    console.log("Updated firebaseURLs:", firebaseURLs);
+    for (let j = 0; j < firebaseURLs.length; j++) {
+      console.log("FBURL:", firebaseURLs[j]);
+    }
+  
+    const sendData = async () => {
+      try {
+        const imageURLs = JSON.stringify(firebaseURLs);
+        console.log("FBURL!!!:", imageURLs);
+  
+        const mediaRequestBody = {
+          post_id: 101, 
+          imageURLs: imageURLs
+        };
+  
+        // Send the request inside an async function
+        const mediaResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/media`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(mediaRequestBody),
+          }
+        );
+  
+        console.log("Media response:", await mediaResponse.json());
+      } catch (error) {
+        console.error("Error sending media request:", error);
+      }
+    };
+  
+    if (firebaseURLs.length > 0) {
+      sendData(); // Call async function inside useEffect
+    }
+  }, [firebaseURLs]);  
+  
+
 
   // Handle form submission for business accounts
   const handleBusinessSubmit = async () => {
@@ -328,6 +400,7 @@ export default function CreatePost() {
 
         // Create a reference to Firebase Storage
         const fileRef = ref(storage, fileName);
+        console.log("FILE REF", fileRef)
 
         // Upload the file to Firebase Storage
         const uploadResult = await uploadBytes(fileRef, file);
