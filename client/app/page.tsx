@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Button from "./ui/button";
 import { EmblaCarousel } from "./ui/carousel";
-import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase/config";
+import { Button } from "@heroui/react";
 
 const ContentCard = ({ children }: { children: React.ReactNode }) => (
   <div className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 text-[--text-color] my-6">
@@ -47,7 +46,7 @@ export default function Landing() {
               Ready to Join?
             </div>
             <nav className="inline-block">
-              <Button label="Register" link="/register" />
+              <Button as={Link} href="/register" className="bg-[--bark] text-white">Register</Button>
             </nav>
 
             <div className="text-base font-normal mt-4">
