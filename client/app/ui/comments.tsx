@@ -29,6 +29,7 @@ interface CommentsProps {
   contentId?: number;
   subforumId?: string; // Optional subforum ID prop
   user_id?: string;
+  isSharedPost?: boolean;
 }
 
 const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_id = null}) => {

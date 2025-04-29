@@ -17,13 +17,12 @@ interface VoteProps { // Defining the props for the Vote component
   isSharedPost?: boolean;
 }
 
-export default function Vote({ contentId, userId, username,  isSharedPost = false }: VoteProps) { // Defining the Vote component
+export default function Vote({ contentId, userId, username, isSharedPost = false }: VoteProps) { // Defining the Vote component
   const [totalVotes, setTotalVotes] = useState(0);
   const [userVote, setUserVote] = useState<number | null>(null); // 1 = upvote, 0 = downvote, null = no vote
 
   useEffect(() => {
     const fetchVotes = async () => { 
-      if (isSharedPost) return;
       try {
         const res1 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/content/total/votes/${contentId}`)  // fetch upvotes - downvotes
         const data1 = await res1.json();
@@ -39,10 +38,10 @@ export default function Vote({ contentId, userId, username,  isSharedPost = fals
       }
     };
     fetchVotes();
-  }, [contentId, userId]); 
+  }, [contentId, userId, isSharedPost]); 
 
   const handleVote = async (value: number) => { // function to handle vote
-    if (!userId || isSharedPost) return;
+    if (!userId || isSharedPost) return; // prevent voting on shared posts
     if (userVote === value) {  // same icon was clicked, remove vote
 
       // remove vote from database
@@ -99,10 +98,10 @@ export default function Vote({ contentId, userId, username,  isSharedPost = fals
 
   return ( // display vote total and iconsfilled if theres a vote, outline otherwise
     <div className="flex flex-col items-start space-y-1">
-      {userId && !isSharedPost ? (
-        <div className="flex items-center space-x-2">
+      {userId ? (
+        <div className={`flex items-center space-x-2 ${isSharedPost ? "opacity-40 pointer-events-none" : ""}`}>
           {userVote === 1 ? (
-
+  
             // upvotes ,filled if theres a vote, outline otherwise
             <UpFilled
               className="w-5 h-5 text-emerald-700 cursor-pointer"
@@ -114,12 +113,12 @@ export default function Vote({ contentId, userId, username,  isSharedPost = fals
               onClick={() => handleVote(1)}
             />
           )}
-
+  
           <span className="text-sm font-medium text-gray-700">
             {totalVotes}
           </span>
-
-                {/* down votes */}
+  
+          {/* down votes */}
           {userVote === 0 ? (
             <DownFilled
               className="w-5 h-5 text-red-800 cursor-pointer"
@@ -133,9 +132,10 @@ export default function Vote({ contentId, userId, username,  isSharedPost = fals
           )}
         </div>
       ) : (
-        <>
-          <p className="text-xs text-gray-500 italic">Please log in/register to interact with post.</p>
-        </>
+        // show message if not logged in
+        <p className="text-xs text-gray-500 italic">
+          Please log in/register to interact with post.
+        </p>
       )}
     </div>
   );

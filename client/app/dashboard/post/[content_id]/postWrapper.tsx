@@ -1,7 +1,7 @@
 "use client";
 
 import Post from "@/app/ui/post";
-import Comments from "@/app/ui/comments"; // Keep the same import
+import Comments from "@/app/ui/comments"; 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 
@@ -33,7 +33,7 @@ export default function PostWrapper({ post, isSharedPost = false }: WrapperProps
       body={post.body}
       contentId={post.contentId}
       isVerified={post.isVerified}
-      isOwner={false} // <- always false here too
+      isOwner={false} 
       search=""
       contentType="post"
       postDate={post.date}
@@ -41,9 +41,10 @@ export default function PostWrapper({ post, isSharedPost = false }: WrapperProps
       onDeleteContent={() => {}}
       onUpdateContent={() => {}}
       onRefresh={() => {}}
+      isSharedPost={isSharedPost}
     >
       {/* Comments normally rendered */}
-      <Comments contentId={post.contentId} />
+      <Comments contentId={post.contentId} isSharedPost={isSharedPost} />
     </Post>
   );
 }

@@ -14,6 +14,8 @@ import React, { useState } from "react"; // Import React and hooks
 import Comments from "./comments"; // Import Comments component
 import Content, { ContentProps } from "./content";
 
+const isSharedPost = typeof window !== "undefined" && window.location.pathname.includes("/shared/");
+
 type PostComponentProps = ContentProps & {
   onRefresh: () => void; // Function to refresh the post
 };
@@ -21,6 +23,7 @@ type PostComponentProps = ContentProps & {
 export default function Post(props: PostComponentProps) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const isSharedPost = props.isSharedPost ?? false;
 
   const { contentId, onRefresh, subforumId } = props;
   console.log("Subforum ID passed to comments:", subforumId); // Debug log
@@ -29,6 +32,7 @@ export default function Post(props: PostComponentProps) {
     <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
       <Content
         {...props}
+        isSharedPost={isSharedPost} 
         contentType="post"
         onUpdateContent={() => onRefresh()}
         onDeleteContent={() => onRefresh()}
