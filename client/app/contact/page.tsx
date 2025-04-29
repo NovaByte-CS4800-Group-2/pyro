@@ -60,7 +60,7 @@ export default function Contact() {
             <div className="mt-4 space-y-2">
                 <p>Email: <a href="mailto:contact@novabyte.com" className="text-[--olive-stone] underline">contact@novabyte.com</a></p>
                 <p>Website: <a href="https://novabyte-cs4800-group-2.github.io/NovaByte-website/index.html" className="text-[--olive-stone] underline" target="_blank">NovaByte</a></p>
-                <p>Address: </p>
+                <p>Address: 3801 West Temple Avenue Pomona, California 91768</p>
                 <p>Review form: </p>
             </div>
           </div>
