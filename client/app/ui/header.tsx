@@ -2,7 +2,9 @@
 
 import "@/app/globals.css";
 import { BellIcon, FireIcon } from "@heroicons/react/24/outline";
-import { Avatar, Button, Link, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { Avatar, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import Link from "next/link";
+import Button from "./button";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
@@ -36,28 +38,28 @@ export default function Header() {
   if (pathname?.includes("register") || pathname?.includes("log-in")) {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
-        <Button as={Link} href="/" className="bg-[--bark] text-white">Back</Button>
+        <Button label="Back" link="/" />
       </div>
     );
   } else if (!user) {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
-        <Button as={Link} href="/log-in" className="bg-[--bark] text-white">Log In</Button>
-        <Button as={Link} href="/register" className="bg-[--bark] text-white">Register</Button>
+        <Button link="/log-in" label="Log In" />
+        <Button link="/register" label="Register" />
       </div>
     );
   } else if (!pathname?.includes("dashboard")) {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
-        <Button as={Link} href="/dashboard" className="bg-[--bark] text-white">Dashboard</Button>
-        <Button as={Link} href="/logout" className="bg-[--bark] text-white">Log Out</Button>
+        <Button label="Dashboard" link="/dashboard" />
+        <Button label="Logout" link="/logout" />
       </div>
     );
   } else {
     navContent = (
       <div className="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2">
-        <Button as={Link} href="/dashboard/createpost" className="bg-[--bark] text-white">Create Post</Button>
-        <Button as={Link} href="/logout" className="bg-[--bark] text-white">Log Out</Button>
+        <Button label="Create Post" link="/dashboard/createpost" />
+        <Button label="Logout" link="/logout" />
         
         <Popover
           offset={20}

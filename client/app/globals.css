@@ -66,6 +66,21 @@ body {
   font-family: var(--font-normal);
 }
 
+/* Button Styling */
+.button {
+  font-family: var(--font-display);
+  background-color: var(--bark);
+  color: var(--porcelain);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s ease-in-out;
+  min-width: max-content;
+}
+
+.button:hover {
+  background-color: var(--deep-moss);
+}
+
 /* Carousel Styles (Embla) */
 .embla__viewport {
   overflow: hidden;
@@ -77,3 +92,68 @@ body {
   flex: 0 0 100%;
   min-width: 0;
 }
+
+/* Imports Nova Byte fonts from Google Fonts */
+/*@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+:root {
+  --cocoa-brown: #cb5a2d;     
+  --liver: #4a3b3b;           
+  --dark-brown: #2b2222;      
+  --sage: #b7c28a;           
+  --moss-green: #8c9570;      
+  --auburn: #9c2f31;          
+  --seashell: #f7f1ec;        
+
+  --bg-color: var(--seashell);
+  --text-color: var(--liver);
+  --input-bg: white;
+  --input-border: var(--liver);
+  --button-bg: var(--liver);
+  --button-hover: var(--moss-green);
+}
+
+.dark {
+  --bg-color: #1a1a1a;
+  --text-color: var(--seashell);
+  --input-bg: #2a2a2a;
+  --input-border: var(--sage);
+  --button-bg: var(--moss-green);
+  --button-hover: var(--cocoa-brown);
+}
+
+@theme {
+  --font-display: "Playfair Display", "serif";
+  --font-normal: "Barlow", "sans-serif";
+}
+
+body {
+  font-family: var(--font-normal);
+  color: dimgrey;
+}
+Button Styling 
+.button {
+  font-family: var(--font-display);
+  background: grey;
+  color: white;
+  border-radius: 10px;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.button:hover {
+  background: var(--moss-green);
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}*/
