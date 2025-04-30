@@ -86,7 +86,9 @@ export default function Header() {
             </div>
           </PopoverContent>
         </Popover>
-        <Avatar as={Link} href="/dashboard/profile" className="w-10 h-10" isBordered src={user?.photoURL || undefined} />
+        <Link href="/dashboard/profile">
+          <Avatar className="w-10 h-10" isBordered src={user?.photoURL || undefined} />
+        </Link>
       </div>
     );
   }
