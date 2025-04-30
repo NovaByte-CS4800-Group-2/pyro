@@ -35,6 +35,14 @@ class Post
         }
     }
     
+    /**
+     * Creates a new post.
+     * - Creates a content entry
+     * - Inserts a post entry linked to the content
+     * 
+     * @param {string} imageURLs - A stringified array of all the media names that are stored in firebase
+     * @param {number|null} post_id - The post id that all the media belongs to 
+     */
     static async addPostMedia(imageURLs, post_id){
         try {
 
@@ -44,6 +52,7 @@ class Post
             console.log("Error in addPost Media:", e)
         }
     }
+    
     /**
      * Edits the body content of a post.
      * @param {number} content_id - ID of the content/post
