@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { signOut } from "firebase/auth";
+import { Button } from "@heroui/react";
 
 export default function Login() {
   // Email and Password states
@@ -166,8 +167,8 @@ export default function Login() {
           </div>
 
           {/* login button */}
-          <button
-            className="button w-full py-2 text-lg font-semibold"
+          <Button
+            className="w-full py-2 text-lg bg-[--bark] text-white"
             style={{
               opacity: isFormValid ? 1 : 0.5,
               cursor: isFormValid ? "pointer" : "not-allowed",
@@ -176,7 +177,7 @@ export default function Login() {
             type="submit"
           >
             Log In
-          </button>
+          </Button>
 
           <p className="text-sm text-red-500 text-center mt-2">
             {errors.form}

@@ -1,6 +1,6 @@
 "use client"
 
-export default function Dashboard() {
+export default function Resources() {
 	return (
 		<div className="flex flex-col text-center gap-y-5 mx-6 w-full h-fullpt-1">
 			<h2 className="text-left text-2xl mt-8">Wildfire Preparedness</h2>
