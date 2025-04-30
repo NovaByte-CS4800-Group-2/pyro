@@ -18,23 +18,26 @@ router.post('/post', async (req, res) => {
   if(!username) return res.status(400).json({ error: "Missing username" });
   if(!body) return res.status(400).json({ error: "Missing body" });
 
-  const id = Post.createPost(city, username, body);
+  const id = await Post.createPost(city, username, body);
 
   return res.status(201).json({id: id});
 })
 
 router.post('/post/media', async (req, res) => {
   try {
-    const {imageURLs, post_id} = req.body;
-    if(!imageURLs) return res.status(400).json({ error: "Missing body" });
-    if (!post_id) return res.status(400).json({error: "No post id"})
-  
-    const id = Post.addPostMedia(imageURLs, post_id);
-    return res.status(201).json("Sucessfully added images!");
-  } catch (e){
-    return res.status(400).json("Error in post media.");
+    const { imageURLs, post_id } = req.body;
+
+    if (!imageURLs) return res.status(400).json({ error: "Missing body" });
+    if (!post_id) return res.status(400).json({ error: "No post id" });
+
+    const result = await Post.addPostMedia(imageURLs, post_id);
+
+    return res.status(201).json({ msg: "Successfully added images!", result });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Error in post media", details: e.message });
   }
-})
+});
 
 /**
  * @route GET /get/post/:id

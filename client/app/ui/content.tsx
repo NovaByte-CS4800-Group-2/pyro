@@ -287,7 +287,7 @@ export default function Content({
     if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg' || fileExtension === "mov") {
       //console.log("SHOW VIDEO URL", fileExtension)
       return (
-        <video key={index} width={100} controls>
+        <video key={index} width={150} controls>
 
         <source src={url} type={`video/${fileExtension}`} />
         Your browser does not support the video tag.
@@ -298,7 +298,7 @@ export default function Content({
     else if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'png' || fileExtension === 'gif') {
       //console.log("SHOW IMAGE URL", fileExtension)
       return (
-        <img  key={index} src={url} alt={`Media ${index}`} width={100} />
+        <img  key={index} src={url} alt={`Media ${index}`} width={150} />
       );
     } else {
       // Fallback for unsupported types

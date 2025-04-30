@@ -18,6 +18,7 @@ export default function CreatePost() {
   const [city, setCity] = useState<string>("General"); // Default to "general forum"
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
   const [user] = useAuthState(auth); // Get the current authenticated user
+  const [postData1, setPostData1] = useState(null)
   const [userData, setUserData] = useState({
     // Initial user data state
     user_id: "0",
@@ -30,6 +31,7 @@ export default function CreatePost() {
   const [media, setMedia] = useState<File[]>([]); // State to store media files
   const [mediaPreviewURLs, setMediaPreviewURLs] = useState<string[]>([]); // State to store media preview URLs
   const [firebaseURLs, setFirebaseURLs] = useState<string[]>([])
+  const [dbNames, setDBNames] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // Fetch subforums when the component mounts
@@ -147,41 +149,13 @@ export default function CreatePost() {
       }
 
       // Parse the response data
-      const postData = await postResponse.json();
+      const postData = await postResponse.json()
+      setPostData1(postData)
 
       const str = postContent.body;
       const regex = /@([\w.-]+)/g; // regex to search for the @'s
       const matches = [...str.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
-
-
-      for (let i =0 ; i < mediaPreviewURLs.length; i ++ )
-        {
-          console.log("MEDIA!!!!", mediaPreviewURLs[i])
-          // You need to fetch the blob content from the URL
-          const response = await fetch(mediaPreviewURLs[i]);
-          const blob = await response.blob();  // Now blob is a real Blob object
-          console.log("OBJJJJj: ", blob)
-    
-          // Now create a File with a name
-          const file = new File([blob], `${postData.id.toString()}_${i}.png`, { type: blob.type });
-    
-          console.log(file.name); 
-          console.log(file.type);  
-    
-    
-          const storage = getStorage();
-          const storageRef = ref(storage, `media/${file.name}`);
-    
-          await uploadBytes(storageRef, file);
-    
-          // Get the download URL
-          const downloadURL = await getDownloadURL(storageRef);
-          console.log("DOWNURL: ", downloadURL)
-    
-          // Add the URL to the state
-          setFirebaseURLs(prev => [...prev, downloadURL]);
-        }
-
+      
       if(matches.length !== 0)
       {
         const requestBody = {
@@ -200,6 +174,20 @@ export default function CreatePost() {
         );
       }
 
+      for (let i = 0; i < media.length; i++) {
+        const file = media[i];
+        const mimeType = file.type;
+        const extension = mimeType.split("/")[1];
+      
+        const fileName = `${postData.id}_${i}.${extension}`;
+        const storageRef = ref(getStorage(), `media/${fileName}`);
+      
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+      
+        setFirebaseURLs((prev) => [...prev, downloadURL]);
+        setDBNames((prev) => [...prev, fileName]);
+      }
 
       // Fetch the subforum ID based on the selected city (subforum name)
       const res = await fetch(
@@ -217,44 +205,6 @@ export default function CreatePost() {
     }
   };
 
-  // Watch when firebaseURLs updates
-  useEffect(() => {
-    console.log("Updated firebaseURLs:", firebaseURLs);
-    for (let j = 0; j < firebaseURLs.length; j++) {
-      console.log("FBURL:", firebaseURLs[j]);
-    }
-  
-    const sendData = async () => {
-      try {
-        const imageURLs = JSON.stringify(firebaseURLs);
-        console.log("FBURL!!!:", imageURLs);
-  
-        const mediaRequestBody = {
-          post_id: 101, 
-          imageURLs: imageURLs
-        };
-  
-        // Send the request inside an async function
-        const mediaResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/media`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(mediaRequestBody),
-          }
-        );
-  
-        console.log("Media response:", await mediaResponse.json());
-      } catch (error) {
-        console.error("Error sending media request:", error);
-      }
-    };
-  
-    if (firebaseURLs.length > 0) {
-      sendData(); // Call async function inside useEffect
-    }
-  }, [firebaseURLs]);  
-  
 
 
   // Handle form submission for business accounts
@@ -300,10 +250,26 @@ export default function CreatePost() {
 
       // Parse the response data
       const postData = await postResponse.json();
+      setPostData1(postData)
 
       // Log the post data for debugging
       console.log("Post submitted successfully:", postData);
 
+      for (let i = 0; i < media.length; i++) {
+        const file = media[i]; 
+        const mimeType = file.type;
+        const extension = mimeType.split("/")[1];
+      
+        const fileName = `${postData.id}_${i}.${extension}`;
+        const storageRef = ref(getStorage(), `media/${fileName}`);
+      
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+      
+        setFirebaseURLs((prev) => [...prev, downloadURL]);
+        setDBNames((prev) => [...prev, fileName]);
+      }
+      
       // send user back to fundraiser page to see post
       router.push("/dashboard/fundraiser");
     } catch (error: any) { // Handle errors
@@ -311,6 +277,47 @@ export default function CreatePost() {
       console.error("Error submitting post:", error);
     }
   };
+
+    // Watch when firebaseURLs updates
+    useEffect(() => {
+      if (!postData1) return;
+      console.log("Updated firebaseURLs:", firebaseURLs);
+      for (let j = 0; j < firebaseURLs.length; j++) {
+        console.log("FBURL:", firebaseURLs[j]);
+      }
+    
+      const sendData = async () => {
+        try {
+          const imageNames = JSON.stringify(dbNames);
+          console.log("FILENAMESFBL!!!:", imageNames);
+          console.log("POST IN EFFECT", postData1.id)
+          const mediaRequestBody = {
+            post_id: postData1.id, 
+            imageURLs: imageNames
+          };
+    
+          // Send the request inside an async function
+          const mediaResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/media`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(mediaRequestBody),
+            }
+          );
+    
+          console.log("Media response:", await mediaResponse.json());
+        } catch (error) {
+          console.error("Error sending media request:", error);
+        }
+      };
+    
+      if (firebaseURLs.length > 0) {
+        sendData(); // Call async function inside useEffect
+      }
+    }, [firebaseURLs, dbNames, postData1]);  
+    
+  
 
   // Handle cancel button click
   const handleCancel = async () => {
@@ -365,35 +372,6 @@ export default function CreatePost() {
     console.log("Updated Media Preview URLs:", mediaPreviewURLs);
   }, [mediaPreviewURLs]); // This runs every time mediaPreviewURLs is updated
 
-  const uploadImagesToStorage = async (userId: string) => {
-    const storage = getStorage();
-
-    // Loop over all the media preview URLs
-    for (let i = 0; i < mediaPreviewURLs.length; i++) {
-      const fileURL = mediaPreviewURLs[i]; // Get the Blob URL
-
-      try {
-        // Fetch the Blob from the Blob URL
-        const file = await fetch(fileURL).then((res) => res.blob());
-        
-        // Create a unique filename using the user ID and the current timestamp
-        const fileName = `media/${userId}_${Date.now()}_${i}`; // Change the extension based on file type
-        // Add this to the database for later
-        
-
-        // Create a reference to Firebase Storage
-        const fileRef = ref(storage, fileName);
-        console.log("FILE REF", fileRef)
-
-        // Upload the file to Firebase Storage
-        const uploadResult = await uploadBytes(fileRef, file);
-        console.log("File uploaded successfully!", uploadResult);
-      } catch (e) {
-        console.error("Error uploading file:", e);
-      }
-    }
-  };
-  
 
   const handleAddMediaClick = () => {
     if (fileInputRef.current) {
@@ -553,7 +531,6 @@ export default function CreatePost() {
                 onPress={ () => {
                   if (userData.business_account) {
                     handleBusinessSubmit();
-                    uploadImagesToStorage(userData.user_id); 
                   } else {
                     handlePersonalSubmit();
                   }
