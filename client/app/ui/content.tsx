@@ -28,6 +28,7 @@ export interface ContentProps {
   isVerified: boolean;
   parentId?: number;
   subforumId?: string;
+  isSharedPost?: boolean;
   onUpdateContent: (contentId: number, newBody: string) => void;
   onDeleteContent: (contentId: number) => void;
   search?: string;
@@ -46,6 +47,7 @@ export default function Content({
   lastEditDate = "",
   isVerified = false,
   isOwner = false,
+  isSharedPost = false,
   onUpdateContent,
   onDeleteContent,
   search = "",
@@ -270,6 +272,7 @@ export default function Content({
           contentId={contentId}
           userId={userId || ""}
           username={username || ""}
+          isSharedPost={isSharedPost}
         />
 
         {/* Custom content passed as children */}

@@ -76,10 +76,8 @@ export default function CreatePost() {
     
         // Set user data in state
         setUserData(profile);
-        console.log("Updated userData state:", profile);
       } catch (error) { // Handle errors
         setErrorMessage("Failed to fetch user data.");
-        console.error("Error fetching user data:", error);
       }
     };
 
@@ -103,12 +101,6 @@ export default function CreatePost() {
 
   // Handle form submission for personal accounts
   const handlePersonalSubmit = async () => {
-
-    // Log the submission process for debugging
-    console.log("Submitting post...");
-    console.log("Post content:", postContent.body);
-    console.log("City (subforum name):", city);
-    console.log("User data:", userData);
 
     if (!postContent.body.trim()) { // Check if post content is empty
       setErrorMessage("Post cannot be empty.");
@@ -142,9 +134,6 @@ export default function CreatePost() {
         }
       );
 
-      // Log the response for debugging
-      console.log("Post response:", postResponse);
-
       // if the response is not okay, throw an error
       if (!postResponse.ok) {
         const errorData = await postResponse.json();
@@ -153,7 +142,6 @@ export default function CreatePost() {
 
       // Parse the response data
       const postData = await postResponse.json();
-      console.log("Post submitted successfully:", postData);
 
       const str = postContent.body;
       const regex = /@([\w.-]+)/g; // regex to search for the @'s
@@ -193,11 +181,6 @@ export default function CreatePost() {
 
   // Handle form submission for business accounts
   const handleBusinessSubmit = async () => {
-
-    // Log the submission process for debugging
-    console.log("Submitting post...");
-    console.log("Post content:", postContent.body);
-    console.log("User data:", userData);
 
     // Check if post content is empty
     if (!postContent.body.trim()) {
