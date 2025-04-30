@@ -102,14 +102,12 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
       let res;
       if (contentId !== null) 
       {
-        console.log("POST COMMENTS");
         res = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/for/post/${contentId}`
         );
       } 
       else 
        {
-        console.log("USER COMMENTS");
         res = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/userComments/${user_id}`
         );
