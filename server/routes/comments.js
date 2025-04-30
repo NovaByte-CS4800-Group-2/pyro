@@ -26,7 +26,7 @@ router.post('/createComment', async (req, res) => {
 })
 
 /**
- * @route POST /editComment
+ * @route POST /edit/comment
  * @description Edit the body of an existing comment
  * @param {number} req.body.content_id - The ID of the comment to edit
  * @param {string} req.body.newBody - The new text content of the comment
@@ -46,15 +46,15 @@ router.post('/edit/comment', async (req, res) => {
 })
 
 /**
- * @route POST /deleteComment
+ * @route DELETE /delete/comment
  * @description Delete a comment by its ID
- * @param {number} req.body.comment_id - The ID of the comment to delete
+ * @param {number} req.params.comment_id - The ID of the comment to delete
  * @returns {Object} 200 - Success message
  * @returns {Object} 400 - Missing comment ID
  * @returns {Object} 406 - Error deleting comment
  */
-router.post('/delete/comment', async (req, res) => {
-  const { comment_id } = req.body; 
+router.delete('/delete/comment/:comment_id', async (req, res) => {
+  const { comment_id } = req.params; 
 
   if(!comment_id) return res.status(400).json({ error: "Missing comment_id" });
 

@@ -24,8 +24,15 @@ export default function PostClientPage({ contentID }: { contentID: string }) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/post/${contentID}`)
-        const data = await res.json();
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/post/${contentID}`);
+        const body = await res.json();
+        const data = body.post;
+
+        if (!data) {
+          console.error("❌ No post data found!");
+          return;
+        }
+
         setPost({
           userId: data.user_id,
           posterId: data.user_id,
@@ -42,8 +49,10 @@ export default function PostClientPage({ contentID }: { contentID: string }) {
       }
     };
 
-    fetchPost();
-  }, [contentID, user?.displayName]); // notice: only depend on user.displayName instead of whole user
+    if (contentID) {
+      fetchPost(); 
+    }
+  }, [contentID, user?.displayName]); 
 
   if (!post) {
     return <p className="text-sm text-gray-500">Loading post...</p>;

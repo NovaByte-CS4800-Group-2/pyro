@@ -28,6 +28,7 @@ export interface ContentProps {
   isVerified: boolean;
   parentId?: number;
   subforumId?: string;
+  isSharedPost?: boolean;
   onUpdateContent: (contentId: number, newBody: string) => void;
   onDeleteContent: (contentId: number) => void;
   search?: string;
@@ -46,6 +47,7 @@ export default function Content({
   lastEditDate = "",
   isVerified = false,
   isOwner = false,
+  isSharedPost = false,
   onUpdateContent,
   onDeleteContent,
   search = "",
@@ -100,15 +102,9 @@ export default function Content({
   const deleteContent = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/${contentType}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/${contentType}/${contentId}`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(
-            contentType === "comment"
-              ? { comment_id: contentId }
-              : { content_id: contentId }
-          ),
+          method: "DELETE",
         }
       );
       await fetch(
@@ -127,10 +123,6 @@ export default function Content({
           method: "DELETE",
         }
       );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete content.");
-      }
 
       console.log(`${contentType} deleted successfully!`);
 
@@ -377,6 +369,7 @@ export default function Content({
           contentId={contentId}
           userId={userId || ""}
           username={username || ""}
+          isSharedPost={isSharedPost}
         />
 
         {/* Custom content passed as children */}

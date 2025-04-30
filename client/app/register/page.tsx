@@ -7,7 +7,6 @@ import { FormEvent, useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
 import { useCreateUserWithEmailAndPassword, useSendEmailVerification, useUpdateProfile } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
-import { Button } from "@heroui/react";
 
 export default function Register() {
   // Input States
@@ -287,9 +286,9 @@ export default function Register() {
             <p className="text-sm text-red-500">{errors.confirmPassword}</p>
           )}
 
-          <Button type="submit" className="w-full py-2 text-lg bg-[--bark] text-white">
+          <button type="submit" className="button w-full py-2 text-lg font-semibold">
             Sign Up
-          </Button>
+          </button>
 
           {errors.form && (
             <p className="text-sm text-red-500 text-center mt-2">

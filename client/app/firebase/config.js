@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import {initializeAuth, browserSessionPersistence} from "firebase/auth";
+import {initializeAuth, browserLocalPersistence} from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-librariesc
@@ -20,6 +20,6 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize auth with session persistence (log-out on close).
-const auth = initializeAuth(app, { persistence: browserSessionPersistence});
+const auth = initializeAuth(app, { persistence: browserLocalPersistence});
 //const auth = getAuth(app); //now expose this to application 
 export {app, auth};

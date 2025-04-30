@@ -84,7 +84,7 @@ router.get('/userPosts/:id', async (req, res) => {  // get all user posts
 })
 
 /**
- * @route POST /post/edit
+ * @route POST /edit/post
  * @description Edit the body of a post
  * @param {number} req.body.content_id - ID of the post to edit
  * @param {string} req.body.newBody - New body content
@@ -104,14 +104,14 @@ router.post('/edit/post', async (req, res) => {
 })
 
 /**
- * @route POST /post/delete
+ * @route DELETE /delete/post
  * @description Delete a post by ID
- * @param {number} req.body.content_id - ID of the post to delete
+ * @param {number} req.params.content_id - ID of the post to delete
  * @returns {Object} 201 - Success message
  * @returns {Object} 400 - Missing content ID
  */
-router.post('/delete/post', async (req, res) => {
-  const {content_id} = req.body;
+router.delete('/delete/post/:content_id', async (req, res) => {
+  const {content_id} = req.params;
 
   if(!content_id) return res.status(400).json({ error: "Missing content_id" });
 
