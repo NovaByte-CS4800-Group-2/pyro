@@ -5,8 +5,8 @@ import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { useUpdateProfile } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSendEmailVerification, useUpdateProfile } from "react-firebase-hooks/auth";
+import { signOut } from "firebase/auth";
 
 export default function Register() {
   // Input States
@@ -21,6 +21,7 @@ export default function Register() {
   // Create Account function
   const [createUserWithEmailAndPassword, firebaseCredential, firebaseLoading, firebaseError] = useCreateUserWithEmailAndPassword(auth);
   const [updateProfile] = useUpdateProfile(auth);
+  const [sendSignInLinkToEmail, verificationSending, verificationError] = useSendEmailVerification(auth);
 
   // Error Validation State
   const [errors, setErrors] = useState({
@@ -128,7 +129,21 @@ export default function Register() {
           setErrors(newErrors);
           return;
         } else {
-          router.push("/dashboard");
+          if (await sendSignInLinkToEmail()) {
+              // The link was successfully sent. Redirect to verification page.
+              await signOut(auth);
+              router.push("/register/verification");
+          } else if (verificationError)  {
+            setErrors({
+              name: "",
+              email: "",
+              username: "",
+              zipCode: "",
+              password: "",
+              confirmPassword: "",
+              form: "Error sending verification email, please try again.",
+            })
+          }    
         }
     
       } 

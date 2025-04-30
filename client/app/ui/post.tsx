@@ -8,6 +8,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Link,
 } from "@heroui/react"; // Import UI components from HeroUI
 import React, { useState } from "react"; // Import React and hooks
 import Comments from "./comments"; // Import Comments component

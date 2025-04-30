@@ -10,6 +10,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Link,
 } from "@heroui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import Vote from "./vote";
@@ -19,7 +20,7 @@ export interface ContentProps {
   posterId: string;
   username: string;
   contentType: "post" | "comment";
-  contentId: number;
+  contentId?: number;
   body: string;
   postDate: string;
   lastEditDate: string;
@@ -113,9 +114,15 @@ export default function Content({
       await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
-        }/remove/notification/${contentId}/${
-          contentType === "post" ? "callout" : "comment"
-        }`,
+        }/remove/notification/${contentId}/callout`,
+        {
+          method: "DELETE",
+        }
+      );
+      await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/remove/notification/${contentId}/comment`,
         {
           method: "DELETE",
         }
@@ -308,7 +315,7 @@ export default function Content({
       <div className="flex justify-between items-center text-xs text-gray-500 mb-2 pt-2">
         <div className="flex items-center gap-2">
           {contentType === "post" && (
-            <Avatar size="sm" isBordered className="w-6 h-6" src={profileURL} />
+            <Avatar as={Link} href={`/dashboard/profile/${posterId}`} size="sm" isBordered className="w-6 h-6" src={profileURL} />
           )}
           <span className="font-semibold text-sm text-gray-700">
             {highlightMatch(username, search)}
