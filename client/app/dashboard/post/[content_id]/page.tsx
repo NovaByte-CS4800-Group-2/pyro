@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import PostWrapper from "./postWrapper";
+import { useRouter } from "next/navigation"; 
 
 interface Props {
   params: Promise<{ content_id: string }>;
@@ -22,6 +23,7 @@ interface PostData {
 }
 
 export default function SharedPostPage({ params }: Props) {
+  const router = useRouter(); 
   const [contentID, setContentID] = useState<string | null>(null);
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,6 +99,12 @@ export default function SharedPostPage({ params }: Props) {
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/50 p-4">
         <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full border border-gray-200 overflow-y-auto max-h-[90vh] text-center">
           <p className="text-gray-500">Post not found.</p>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="mt-4 text-blue-600 hover:text-blue-800"
+          >
+            Go back to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -105,7 +113,13 @@ export default function SharedPostPage({ params }: Props) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/50 p-4">
       <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full border border-gray-200 overflow-y-auto max-h-[90vh]">
-      <PostWrapper post={{ ...post, isOwner: false }} isSharedPost={true} />
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="mb-4 text-zinc-600 hover:text-zinc-900"
+        >
+          ← Back to Dashboard
+        </button>
+        <PostWrapper post={{ ...post, isOwner: false }} isSharedPost={true} />
       </div>
     </div>
   );
