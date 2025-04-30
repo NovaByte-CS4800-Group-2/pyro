@@ -1,13 +1,11 @@
-import Link from "next/link";
 import "@/app/globals.css";
 import Image from "next/image";
-import Button from "./button";
+import { Button, Link } from "@heroui/react";
 
 export default function Footer() {
   return (
     <footer
-      className="w-full shadow-inner rounded-t-2xl px-6 py-4 flex justify-between items-center text-[--text-color] font-display mt-auto"
-      style={{ backgroundColor: "var(--clay-beige)" }}
+      className="w-full shadow-inner rounded-t-2xl px-6 py-4 flex justify-between items-center text-[--text-color] bg-[--clay-beige] font-display mt-auto"
     >
       <div className="w-1/3 text-sm pl-1">
         <p>&copy; 2025 Nova Byte</p>
@@ -28,7 +26,7 @@ export default function Footer() {
       </Link>
 
       <div className="w-1/3 flex justify-end pr-2">
-        <Button label="Contact Us" link="/contact" />
+        <Button as={Link} href="/contact" className="bg-[--bark] text-white">Contact</Button>
       </div>
     </footer>
   );

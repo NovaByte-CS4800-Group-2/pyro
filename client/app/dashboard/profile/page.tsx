@@ -249,7 +249,6 @@ export default function Profile() {
 		}
 	};
 
-	// TODO: function to change user password.
 	const updateUserPassword = async () => {
 		if (user?.email) {
 			const credential = EmailAuthProvider.credential(
@@ -285,7 +284,7 @@ export default function Profile() {
 	}
 
 	// Function to toggle edit state.
-	const toggleEditting = () => {
+	const toggleEditing = () => {
 		if (editing) {
 			setEditing(false);
 			setUsername(userProfile.username);
@@ -334,7 +333,7 @@ export default function Profile() {
 								<p className="font-semibold">*****</p>
 								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive]" onPress={passwordModal.onOpen}>Change Password</Button>}
 							</div>
-							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditting}>{editing ? "Cancel" : "Edit Information"}</Button>
+							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditing}>{editing ? "Cancel" : "Edit Information"}</Button>
 						</CardBody>
 					</Card>
 					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
