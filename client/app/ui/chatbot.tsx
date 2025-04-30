@@ -1,5 +1,4 @@
 'use client'
-import { Button } from "@heroui/react";
 import { useState, useEffect, useRef } from "react";
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -143,12 +142,12 @@ export default function Chatbot() {
             className="w-full px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-white text-[--bark] resize-none overflow-hidden leading-snug"
             placeholder="Type a message..."
             />
-            <Button
-              onPress={handleSend} // Function to send the message
-              className="bg-[--olive-stone] hover:bg-[--deep-moss] py-2 rounded-lg text-lg text-white font-semibold"
+            <button
+              onClick={handleSend} // Function to send the message
+              className="bg-[--olive-stone] hover:bg-[--deep-moss] px-4 py-2 rounded-lg text-white font-semibold"
             >
               Send
-            </Button>
+            </button>
           </div>
         </div>
       </div>

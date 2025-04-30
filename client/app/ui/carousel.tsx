@@ -2,10 +2,9 @@ import React, { useCallback } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { Button } from '@heroui/react'
 
 export function EmblaCarousel() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 4000, stopOnInteraction: true })])
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 2000, stopOnInteraction: false })])
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
@@ -18,12 +17,12 @@ export function EmblaCarousel() {
   return (
     <div className="flex items-center justify-between w-full mt-12 px-4"> 
       {/*left arrow*/}
-      <Button 
-        className="bg-[--bark] text-white"
-        onPress={scrollPrev}
+      <button 
+        className="button"
+        onClick={scrollPrev}
       >
         <ChevronLeftIcon className="w-6 h-6 text-liver-700" />
-      </Button>
+      </button>
 
       {/*carousel wrapper*/}
       <div className="embla w-full max-w-screen-lg mx-auto overflow-hidden" ref={emblaRef}>
@@ -41,12 +40,12 @@ export function EmblaCarousel() {
       </div>
 
       {/*right arrow*/}
-      <Button 
-        className="bg-[--bark] text-white"
-        onPress={scrollNext}
+      <button 
+        className="button"
+        onClick={scrollNext}
       >
         <ChevronRightIcon className="w-6 h-6 text-liver-700" />
-      </Button>
+      </button>
     </div>
   )
 }
