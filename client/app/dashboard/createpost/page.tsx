@@ -18,7 +18,7 @@ export default function CreatePost() {
   const [city, setCity] = useState<string>("General"); // Default to "general forum"
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
   const [user] = useAuthState(auth); // Get the current authenticated user
-  const [postData1, setPostData1] = useState(null)
+  const [postData1, setPostData1] = useState<{ id: number } | null>(null);
   const [userData, setUserData] = useState({
     // Initial user data state
     user_id: "0",
