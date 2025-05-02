@@ -4,10 +4,10 @@ import {addToast, Avatar, Button, Card, CardHeader, CardBody, CircularProgress, 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
-import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
+import { useAuthState, useVerifyBeforeUpdateEmail, useUpdateProfile, useUpdatePassword } from "react-firebase-hooks/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Forum from "@/app/ui/forum";
-import { EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential, } from "firebase/auth";
 import Comments from "../../ui/comments"; // Import Comments component
 
 export default function Profile() {
@@ -15,6 +15,7 @@ export default function Profile() {
 	const [user] = useAuthState(auth);
 	const [verifyBeforeUpdateEmail, emailUpdating, emailError] = useVerifyBeforeUpdateEmail(auth);
 	const [updateProfile, profileError] = useUpdateProfile(auth);
+	const [updatePassword, passwordLoading, passwordError] = useUpdatePassword(auth);
 	const profileModal = useDisclosure();
 	const passwordModal = useDisclosure();
 	// User Info States (from database)
@@ -85,10 +86,17 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Email Change",
 					description: "An email has been sent to your new email address. Please open it to confirm your change.",
+					timeout: 3000,
 				});
 			}
 			else {
-				console.log(emailError?.message);
+				addToast({
+					color: "warning",
+					variant: "bordered",
+					title: "Email Change",
+					description: "The given email is invalid or already in use. Please try again.",
+					timeout: 3000,
+				});
 			}
 		}
 	};
@@ -111,7 +119,7 @@ export default function Profile() {
 						variant: "bordered",
 						title: "Username Change",
 						description: "New username saved successfully!",
-						timeout: 1000,
+						timeout: 3000,
 					});
 				}
 				else {
@@ -120,7 +128,7 @@ export default function Profile() {
 						variant: "bordered",
 						title: "Username Change",
 						description: `FIREBASE ERROR >:( ${profileError}`,
-						timeout: 1000,
+						timeout: 3000,
 					});
 				}
 			} else if (response.status == 400) {
@@ -129,7 +137,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Username Change",
 					description: "An error occurred, please try again.",
-					timeout: 1000,
+					timeout: 3000,
 				});
 			} else if (response.status == 406) {
 				addToast({
@@ -137,7 +145,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Username Change",
 					description: `The username ${username} is taken. Please select a different username.`,
-					timeout: 1000,
+					timeout: 3000,
 				});				
 			}
 		}
@@ -160,7 +168,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Zipcode Change",
 					description: "New zipcode saved successfully!",
-					timeout: 1000,
+					timeout: 3000,
 				});
 			} else if (response.status == 400) {
 				addToast({
@@ -168,7 +176,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Zipcode Change",
 					description: "An error occurred, please try again.",
-					timeout: 1000,
+					timeout: 3000,
 				});
 			} else if (response.status == 406) {
 				addToast({
@@ -176,7 +184,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Zipcode Change",
 					description: `Invalid zipcode format. Please correct the error and try again.`,
-					timeout: 1000,
+					timeout: 3000,
 				});				
 			}
 		}
@@ -222,7 +230,7 @@ export default function Profile() {
 						variant: "bordered",
 						title: "Profile Picture Change",
 						description: `New profile picture saved successfully!`,
-						timeout: 1000,
+						timeout: 3000,
 					});	
 				}
 				else {
@@ -231,7 +239,7 @@ export default function Profile() {
 						variant: "bordered",
 						title: "Profile Picture Change",
 						description: `No profile picture given. Please try again.`,
-						timeout: 1000,
+						timeout: 3000,
 					});	
 				}
 			}
@@ -241,7 +249,7 @@ export default function Profile() {
 					variant: "bordered",
 					title: "Profile Picture Change",
 					description: `How did you get here??? You're not logged in!`,
-					timeout: 1000,
+					timeout: 3000,
 				});	
 			}
 		} catch(e) {
@@ -256,26 +264,8 @@ export default function Profile() {
 				password
 			)
 			if (credential) {
-				try {
 					await reauthenticateWithCredential(user, credential)
-					await updatePassword(user, newPassword);
-					addToast({
-						color: "success",
-						variant: "bordered",
-						title: "Password Change",
-						description: `New password saved successfully!`,
-						timeout: 1000,
-					});	
-				}
-				catch (e) {
-					addToast({
-						color: "danger",
-						variant: "bordered",
-						title: "Password Change",
-						description: `The given password was incorrect. Please try again.`,
-						timeout: 1000,
-					});	
-				}
+					await updatePassword(newPassword);
 			}
 			setPassword("");
 			setNewPassword("");
@@ -283,10 +273,42 @@ export default function Profile() {
 		}
 	}
 
+	useEffect(() => {
+		if (!passwordLoading) {
+			if (!passwordError) {
+				addToast({
+				color: "success",
+				variant: "bordered",
+				title: "Password Change",
+				description: `New password saved successfully!`,
+				timeout: 3000,
+				});
+			}	
+			else if (passwordError?.message.includes("auth/password-does-not-meet-requirements")) {
+				addToast({
+					color: "warning",
+					variant: "bordered",
+					title: "Password Change",
+					description: `The new password given does not meet requirements. Please try again.`,
+					timeout: 3000,
+				});	
+			} else {
+				addToast({
+					color: "danger",
+					variant: "bordered",
+					title: "Password Change",
+					description: `The given password was incorrect. Please try again.`,
+					timeout: 3000,
+				});	
+			}
+		}
+	}, [passwordLoading]);
+
 	// Function to toggle edit state.
 	const toggleEditing = () => {
 		if (editing) {
 			setEditing(false);
+			setEmail(userProfile.email);
 			setUsername(userProfile.username);
 			setZipcode(String(userProfile.zip_code));
 		} else {
@@ -318,8 +340,8 @@ export default function Profile() {
 								{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
 								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onPress={saveUsername} value="Change">Save</Button>}
 							</div>
-							<div className="flex border-b-2 border-gray-200 p-2 items-center gap-x-1">
-								<p className="w-28">Change Email:</p>
+							<div className="flex border-b-2 border-gray-200 p-2 items-center">
+								<p className="w-[5.5rem]">Email:</p>
 								{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
 								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onPress={saveEmail} value="Change">Save</Button>}
 							</div>
@@ -333,7 +355,7 @@ export default function Profile() {
 								<p className="font-semibold">*****</p>
 								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive]" onPress={passwordModal.onOpen}>Change Password</Button>}
 							</div>
-							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditing}>{editing ? "Cancel" : "Edit Information"}</Button>
+							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditing}>{editing ? "Stop Editing" : "Edit Information"}</Button>
 						</CardBody>
 					</Card>
 					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
@@ -399,7 +421,7 @@ export default function Profile() {
 									<Button color="danger" variant="light" onPress={onClose}>
 									Close
 									</Button>
-									<Button color="primary" onPress={() => {onClose(); updateUserPassword();}}>
+									<Button color="primary" isDisabled={!password || !newPassword || !confirmPassword || confirmPassword != newPassword} onPress={() => {onClose(); updateUserPassword();}}>
 									Save
 									</Button>
 								</ModalFooter>
