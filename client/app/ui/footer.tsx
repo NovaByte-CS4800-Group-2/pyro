@@ -18,15 +18,23 @@ export default function Footer() {
         href="https://novabyte-cs4800-group-2.github.io/NovaByte-website/"
         className="flex justify-center w-1/3"
       >
+        <div className="flex justify-center w-1/3">
         <Image
-          src="/logo-transparent-svg.svg"
-          alt="The Nova Byte Logo"
+          src="/logo-transparent-svg-light.svg"
+          alt="The Nova Byte Logo (Light)"
           width={150}
           height={40}
-          className="object-contain"
+          className="object-contain dark:hidden"
         />
+        <Image
+          src="/logo-transparent-svg-dark.svg"
+          alt="The Nova Byte Logo (Dark)"
+          width={150}
+          height={40}
+          className="object-contain hidden dark:block"
+        />
+      </div>
       </Link>
-
       <div className="w-1/3 flex justify-end pr-2">
         <Button label="Contact Us" link="/contact" />
       </div>
