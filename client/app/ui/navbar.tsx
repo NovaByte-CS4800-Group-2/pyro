@@ -24,7 +24,7 @@ const navLinks = user
     );
 
   return (
-    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm`} >
+    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm`} >
       <h2 className="text-lg font-bold font-display px-4 py-3 text-neutral-800 border-b border-stone-200">
         Navigation
       </h2>
