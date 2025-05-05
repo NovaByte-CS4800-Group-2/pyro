@@ -76,7 +76,6 @@ router.get('/comments/for/post/:post_id', async (req, res) => {
   const { post_id } = req.params;
 
   if(!post_id) return res.status(400).json({ error: "Missing post_id" });
-  console.log("Getting POST comments");
   const result = await Comment.getComments(post_id);
   if(!result) return res.status(406).json({ error : "problem getting comments"});
 
@@ -90,12 +89,11 @@ router.get('/comments/for/post/:post_id', async (req, res) => {
  * @returns {Object} 200 - Array of comments
  * @returns {Object} 400 - Missing ID
  */
-router.get('/userComments/:id', async (req, res) => {  // get all user posts
+router.get('/userComments/:id', async (req, res) => {  // get all user's comments
   const { id } = req.params; // read id from URL parameters
 
   if(!id) return res.status(400).json({ error: "Missing userId" });
   const comments = await Comment.getUserComments(id);
-  console.log("Getting USER comments");
   return res.status(200).json({comments:comments});
 })
 

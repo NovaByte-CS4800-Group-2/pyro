@@ -13,7 +13,7 @@ const router = Router();  // groups together requests
  * @returns {Object} 400 - Missing required field
  */
 router.post('/post', async (req, res) => {
-  const {city, username, body, imageURLs} = req.body;
+  const {city, username, body} = req.body;
   if(!city) return res.status(400).json({ error: "Missing city" });
   if(!username) return res.status(400).json({ error: "Missing username" });
   if(!body) return res.status(400).json({ error: "Missing body" });
@@ -23,6 +23,15 @@ router.post('/post', async (req, res) => {
   return res.status(201).json({id: id});
 })
 
+
+/**
+ * @route POST /post
+ * @description Create a new post in a subforum (city)
+ * @param {[string]} req.body.imageURLs - The subforum/city the post is being created in
+ * @param {string} req.body.post_id - The username of the post creator
+ * @returns {Object} 201 - Success message
+ * @returns {Object} 400 - Missing required field
+ */
 router.post('/post/media', async (req, res) => {
   try {
     const { imageURLs, post_id } = req.body;
@@ -34,8 +43,7 @@ router.post('/post/media', async (req, res) => {
 
     return res.status(201).json({ msg: "Successfully added images!", result });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: "Error in post media", details: e.message });
+    console.error("Error in postMedia:",e);
   }
 });
 
@@ -130,8 +138,7 @@ router.get('/get/media/:post_id', async (req, res) => {
     const result = await Post.getPostMedia(post_id);
     return res.status(200).json({ result });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Server error" });
+    console.error("Error in getMedia route:", error);
   }
 });
 

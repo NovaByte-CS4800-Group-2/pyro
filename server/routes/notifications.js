@@ -82,8 +82,10 @@ router.post('/get/notification/content', async (req, res) => {
 router.get('/unread/notifications/:id', async (req, res) => { 
   const { id } = req.params;
 
-  const unread = await Notification.unreadNotifications(id); // returns true if there are unread notifications, false otherwise
+  // returns true if there are unread notifications, false otherwise
+  const unread = await Notification.unreadNotifications(id);
   res.status(200).json({ unread:unread });
 });
+
 
 export default router;
