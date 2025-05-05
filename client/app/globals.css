@@ -16,6 +16,7 @@
   --deep-moss: #4f5a3d;
   --muted-terracotta: #d9a173;
   --deep-terracotta: #b56b44;
+  --dark-green: #7b856b;
 
   --accessible-beige: #d0c5b8;
   --classic-gray: #e3e0db;
@@ -43,22 +44,23 @@
 
 /* Dark Mode */
 .dark {
-  --porcelain: #1e1b19; /* nearly black, soft not pure black */
-  --olive-stone: rgb(120, 131, 104); /* soft pale green-gray */
-  --greige-mist: #292525; /* darkened greige */
-  --greige-deep: #5c5b57; /* desaturated deeper taupe */
-  --bark: #d8d5ce; /* light beige-gray text on dark */
-  --ash-olive: #868686; /* earthy green-gray */
-  --clay-beige: #3a3732; /* muted clay base */
-  --deep-moss: rgb(78, 84, 54); /* light moss highlight */
-  --muted-terracotta: #e8b693; /* softened warm orange for contrast */
+  --porcelain: #1e1b19;
+  --olive-stone: rgb(120, 131, 104);
+  --greige-mist: #292525;
+  --greige-deep: #5c5b57;
+  --bark: #d8d5ce;
+  --ash-olive: #868686;
+  --clay-beige: #3a3732;
+  --deep-moss: #4f5a3d;
+  --muted-terracotta: #e8b693;
   --deep-terracotta: #c8856c;
+  --dark-green: #7b856b;
 
-  --bg-color: #242222; /* dark background: from dark --porcelain */
-  --text-color: #d8d5ce; /* light bark: soft text on dark bg */
-  --input-bg: #2b2b28; /* dark input field */
-  --input-border: #788467; /* subtle earthy border (dark ash-olive) */
-  --button-bg: #aebf96; /* muted olive-stone as base button */
+  --bg-color: #242222;
+  --text-color: #d8d5ce;
+  --input-bg: #2b2b28;
+  --input-border: #788467;
+  --button-bg: #aebf96;
   --button-hover: #c5d2a2;
 }
 

@@ -40,7 +40,7 @@ export default function Landing() {
       {!user && (
         <section
           className="w-full text-[--bark] py-12 px-4 rounded-xl shadow-lg"
-          style={{ backgroundColor: "var(--olive-stone)" }}
+          style={{ backgroundColor: "var(--dark-green)" }}
         >
           <div className="max-w-4xl mx-auto text-center">
             <div className="text-4xl font-display font-bold mb-6">

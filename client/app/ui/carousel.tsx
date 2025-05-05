@@ -4,7 +4,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 
 export function EmblaCarousel() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 2000, stopOnInteraction: false })])
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
