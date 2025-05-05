@@ -413,7 +413,7 @@ export default function CreatePost() {
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-md">
           <div className="absolute inset-0 bg-black opacity-50 z-40" />
           <div className="bg-white p-6 rounded-lg w-1/3 z-50 shadow-xl">
-            <h2 className="text-xl font-bold mb-4">New Post</h2>
+            <h2 className="text-xl font-display font-bold mb-4">New Post</h2>
 
             {/* Subforum selection */}
             {!userData.business_account && ( // Check if the user is a business account
@@ -429,7 +429,7 @@ export default function CreatePost() {
                   name="subforum"
                   value={city || ""}
                   onChange={(e) => setCity(e.target.value)} // Update city instead of subforumId
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 font-semibold text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
                   <option value="" disabled> 
                     -- Select a Subforum --
@@ -515,7 +515,7 @@ export default function CreatePost() {
             <button
               type="button"
               onClick={handleAddMediaClick}
-              className="flex items-center justify-center text-sm text-gray-600 hover:text-blue-500 mb-4"
+              className="flex items-center justify-center text-sm text-gray-600 hover:text-[--muted-terracotta] mb-4"
             >
               <PhotoIcon className="h-5 w-5 mr-1" />
               Add Media
@@ -536,7 +536,7 @@ export default function CreatePost() {
                   }
                 }}
                 disabled={!postContent.body.trim()}
-                className="bg-blue-500 text-white px-4 py-2"
+                className="bg-[--deep-moss] text-white px-4 py-2"
               >
                 Post
               </Button>

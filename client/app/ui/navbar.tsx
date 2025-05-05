@@ -24,8 +24,8 @@ const navLinks = user
     );
 
   return (
-    <div className="flex flex-col min-w-[200px] bg-stone-100 border-r border-stone-300 shadow-sm">
-      <h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b border-stone-200">
+    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm`} >
+      <h2 className="text-lg font-bold font-display px-4 py-3 text-neutral-800 border-b border-stone-200">
         Navigation
       </h2>
       {navLinks.map((link) => {
@@ -48,11 +48,11 @@ const navLinks = user
           <Link
             key={link.href}
             href={link.href}
-            className={`text-left px-4 py-3 border-b border-stone-200 transition-colors block
+            className={` px-4 py-3 border border-transparent transition-colors block font-normal
               ${isActive
-                ? "bg-stone-300 text-black font-semibold"
-                : "bg-white text-neutral-800 hover:bg-stone-200 hover:text-neutral-900"
-              }`}
+                ? "bg-[--greige-deep] text-white font-semibold"
+                : "bg-[--greige-mist] text-[--bark] hover:bg-[--ash-olive] hover:text-[--deep-moss]"
+              }`}                
           >
             {link.label}
           </Link>

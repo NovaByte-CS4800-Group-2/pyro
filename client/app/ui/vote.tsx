@@ -104,12 +104,12 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
   
             // upvotes ,filled if theres a vote, outline otherwise
             <UpFilled
-              className="w-5 h-5 text-emerald-700 cursor-pointer"
+              className="w-5 h-5 text-[--deep-moss] cursor-pointer"
               onClick={() => handleVote(1)}
             />
           ) : (
             <HandThumbUpIcon
-              className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer"
+              className="w-5 h-5 text-gray-500 hover:text-[--deep-moss] cursor-pointer"
               onClick={() => handleVote(1)}
             />
           )}
@@ -121,12 +121,12 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
           {/* down votes */}
           {userVote === 0 ? (
             <DownFilled
-              className="w-5 h-5 text-red-800 cursor-pointer"
+              className="w-5 h-5 text-[--deep-terracotta] cursor-pointer"
               onClick={() => handleVote(0)}
             />
           ) : (
             <HandThumbDownIcon
-              className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer"
+              className="w-5 h-5 text-gray-500 hover:text-[--deep-terracotta] cursor-pointer"
               onClick={() => handleVote(0)}
             />
           )}

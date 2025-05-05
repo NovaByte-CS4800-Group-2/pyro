@@ -330,7 +330,7 @@ export default function Content({
             {isMenuOpen && (
               <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
                 <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[--greige-mist]"
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsEditModalOpen(true);
@@ -339,7 +339,7 @@ export default function Content({
                   Edit
                 </button>
                 <button
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                  className="block w-full text-left px-4 py-2 text-sm text-[--deep-terracotta] hover:bg-[--greige-mist]"
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsDeleteModalOpen(true);
@@ -361,7 +361,7 @@ export default function Content({
       <div
         className={`flex ${
           contentType === "post" ? "justify-between" : "justify-start"
-        } items-center text-xs text-gray-500 mt-1 ${
+        } items-center text-xs text-[--deep-moss] mt-1 ${
           contentType === "comment" ? "small-thumbs-vote" : ""
         }`}
       >
@@ -378,7 +378,7 @@ export default function Content({
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="text-sm text-red-500 mt-2">{errorMessage}</div>
+        <div className="text-sm text-[--deep-terracotta] mt-2">{errorMessage}</div>
       )}
 
       {/* Edit Modal */}
@@ -428,17 +428,21 @@ export default function Content({
               </ModalBody>
               <ModalFooter>
                 <Button
-                  color="danger"
                   onPress={() => {
                     handleDelete();
                     onClose();
                   }}
+                  className="bg-[--deep-terracotta] hover:bg[--muted-terracotta] text-white px-4 py-2 rounded-md"
                 >
                   Delete
                 </Button>
-                <Button color="default" onPress={onClose}>
+                <Button
+                  onPress={onClose}
+                  className="bg-[--greige-deep] hover:bg-[--greige-mist] text-[--bark] px-4 py-2 rounded-md"
+                >
                   Cancel
                 </Button>
+
               </ModalFooter>
             </>
           )}
