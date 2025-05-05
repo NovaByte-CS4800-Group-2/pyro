@@ -185,7 +185,7 @@ export default function Content({
     const regex = new RegExp(`(${keyword})`, "gi");
     return text.split(regex).map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} className="bg-[--deep-moss] text-white px-1 rounded">
+        <mark key={i} className="bg-[--deep-moss] text[--porcelain] px-1 rounded">
           {part}
         </mark>
       ) : (
@@ -198,14 +198,14 @@ export default function Content({
 
   const defaultContainerClasses =
     contentType === "post"
-      ? "w-full max-w-2xl bg-white rounded-xl p-2 mb-2 mx-auto"
-      : "border-t border-gray-200 pt-2 mt-2 text-sm text-gray-700 relative";
+      ? "w-full max-w-2xl bg-[--porcelain] rounded-xl p-2 mb-2 mx-auto"
+      : "border-t border-[--clay-beige] pt-2 mt-2 text-sm text-[--greige-deep] relative";
 
   const containerClasses = className || defaultContainerClasses;
 
   const bodyClasses =
     contentType === "post"
-      ? "text-large text-gray-800 leading-relaxed mb-4 whitespace-pre-wrap"
+      ? "text-large text-[--bark] leading-relaxed mb-4 whitespace-pre-wrap"
       : "mt-1 mb-2 text-base";
 
 
@@ -304,15 +304,15 @@ export default function Content({
   return (
     <div className={containerClasses}>
       {/* Header - Username and Date */}
-      <div className="flex justify-between items-center text-xs text-gray-500 mb-2 pt-2">
+      <div className="flex justify-between items-center text-xs text-[--bark] mb-2 pt-2">
         <div className="flex items-center gap-2">
           {contentType === "post" && (
             <Avatar as={Link} href={`/dashboard/profile/${posterId}`} size="sm" isBordered className="w-6 h-6" src={profileURL} />
           )}
-          <span className="font-semibold text-sm text-gray-700">
+          <span className="font-semibold text-sm text-[--bark]">
             {highlightMatch(username, search)}
           </span>
-          <span className="text-gray-400">•</span>
+          <span className="text-[--greige-deep]">•</span>
           <span>
             {formattedLastEditDate
               ? `Edited ${formattedLastEditDate}`
@@ -324,13 +324,13 @@ export default function Content({
         {isOwner && (contentType === "comment" || isVerified) && (
           <div className="relative">
             <EllipsisVerticalIcon
-              className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+              className="w-5 h-5 text-[--deep-moss] hover:text-[--bark] cursor-pointer"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2 bg-white border shadow-md rounded-md z-10 p-2">
+              <div className="absolute right-0 mt-2 bg-[--porcelain] border shadow-md rounded-md z-10 p-2">
                 <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[--greige-mist]"
+                  className="block w-full text-left px-4 py-2 text-sm text-[--bark] hover:bg-[--greige-mist]"
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsEditModalOpen(true);
@@ -432,7 +432,7 @@ export default function Content({
                     handleDelete();
                     onClose();
                   }}
-                  className="bg-[--deep-terracotta] hover:bg[--muted-terracotta] text-white px-4 py-2 rounded-md"
+                  className="bg-[--deep-terracotta] hover:bg[--muted-terracotta] text-[--porcelain] px-4 py-2 rounded-md"
                 >
                   Delete
                 </Button>

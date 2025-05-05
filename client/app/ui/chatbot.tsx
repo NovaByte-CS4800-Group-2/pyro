@@ -118,7 +118,7 @@ export default function Chatbot() {
               {msg.content} {/* Display the message content */}
               </div>
             ))}
-            {loading && <div className="text-left text-gray-500">NovaBot is typing...</div>}
+            {loading && <div className="text-left text-[--bark]">NovaBot is typing...</div>}
             <div ref={bottomRef} />
           </div>
 
@@ -139,12 +139,12 @@ export default function Chatbot() {
               }
             }}
             rows={1}
-            className="w-full px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-white text-[--bark] resize-none overflow-hidden leading-snug"
+            className="w-full px-3 py-2 border border-[--ash-olive] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--ash-olive] bg-[--porcelain] text-[--bark] resize-none overflow-hidden leading-snug"
             placeholder="Type a message..."
             />
             <button
               onClick={handleSend} // Function to send the message
-              className="bg-[--olive-stone] hover:bg-[--deep-moss] px-4 py-2 rounded-lg text-white font-semibold"
+              className="bg-[--olive-stone] hover:bg-[--deep-moss] px-4 py-2 rounded-lg text-[--porcelain] font-semibold"
             >
               Send
             </button>

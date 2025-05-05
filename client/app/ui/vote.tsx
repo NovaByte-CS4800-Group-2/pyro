@@ -133,7 +133,7 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
         </div>
       ) : (
         // show message if not logged in
-        <p className="text-xs text-gray-500 italic">
+        <p className="text-xs text-[--ash-olive] italic">
           Please log in/register to interact with post.
         </p>
       )}

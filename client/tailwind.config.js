@@ -68,9 +68,43 @@ module.exports = {
         }, // light theme colors
       },
       dark: {
-        layout: {}, // dark theme layout tokens
-        colors: {}, // dark theme colors
-      },
+        layout: {},
+        colors: {
+          primary: {
+            foreground: "#ffffff",
+            DEFAULT: "#aebf96", // lighter olive-stone
+          },
+          secondary: {
+            foreground: "#ffffff",
+            DEFAULT: "#c57d5c", // lighter terracotta
+          },
+          background: {
+            50: "#2b2b28",
+            100: "#22221f",
+            200: "#1e1e1b",
+            DEFAULT: "#1e1e1b", // page background
+          },
+          foreground: {
+            DEFAULT: "#d8d5ce", // page text
+          },
+          input: {
+            DEFAULT: "#2b2b28",
+            foreground: "#f3f3f3",
+            border: "#788467"
+          },
+          divider: {
+            DEFAULT: "#44433f",
+          },
+          content1: {
+            DEFAULT: "#2a2a26", // cards, modals
+          },
+          button: {
+            DEFAULT: "#aebf96",
+            hover: "#c5d2a2",
+            foreground: "#1e1e1b",
+          }
+        },
+      },      
     },
   })],
 };

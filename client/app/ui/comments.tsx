@@ -302,9 +302,9 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
     <div className="mt-4">
       <style>{smallThumbsStyle}</style> {/* Apply small thumbs style */}
       {/* Comments Section - Indented from the post */}
-      <div className="pl-4 ml-2 border-l-2 border-gray-200">
+      <div className="pl-4 ml-2 border-l-2 border-[--porcelain]">
         {isLoading ? (
-          <p className="text-sm text-gray-500">Loading comments...</p> // Loading state
+          <p className="text-sm text-[--greige-deep]">Loading comments...</p> // Loading state
         ) : comments.length > 0 ? (
           <>
             {(contentId ? displayedComments : comments).map((comment) => (
@@ -332,7 +332,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
               <div className="mt-3 flex justify-between">
                 {hasMoreComments && (
                   <button
-                    className="text-sm text-grey-400 hover:text-blue-400 font-small flex items-center"
+                    className="text-sm text-[--greige-deep] hover:text-[--deep-moss] font-small flex items-center"
                     onClick={handleShowMore}
                   >
                     <ChevronDownIcon className="w-4 h-4 mr-1" />
@@ -345,7 +345,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
 
                 {isExpanded && (
                   <button
-                    className="text-sm text-grey-300 hover:text-blue-300 font-small flex items-center"
+                    className="text-sm text-[--greige-deep] hover:text-[--deep-moss] font-small flex items-center"
                     onClick={handleShowLess}
                   >
                     <ChevronUpIcon className="w-4 h-4 mr-1" />
@@ -358,7 +358,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
             </div>
           </>
         ) : (
-          <p className="text-sm text-gray-500">No comments yet.</p> // No comments state
+          <p className="text-sm text-[--greige-deep]">No comments yet.</p> // No comments state
         )}
 
         {/* Leave a Comment */}
@@ -376,7 +376,7 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
               />
               <Button // Submit button for posting comment
                 type="submit"
-                className="text-white px-[2px] min-h-8 w-8 bg-[--bark]"
+                className="text-[--porcelain] px-[2px] min-h-8 w-8 bg-[--bark]"
                 disabled={!userData.username} // Disable button if user is not logged in
               >
                 <PaperAirplaneIcon width={16} height={16}></PaperAirplaneIcon>

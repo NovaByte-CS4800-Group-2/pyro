@@ -8,7 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase/config";
 
 const ContentCard = ({ children }: { children: React.ReactNode }) => (
-  <div className="w-full max-w-7xl bg-white rounded-2xl shadow-xl p-8 text-[--text-color] my-6">
+  <div className="w-full max-w-7xl bg-[--porcelain] rounded-2xl shadow-xl p-8 text-[--text-color] my-6">
     {children}
   </div>
 );
@@ -40,7 +40,7 @@ export default function Landing() {
       {!user && (
         <section
           className="w-full text-[--bark] py-12 px-4 rounded-xl shadow-lg"
-          style={{ backgroundColor: "var(--ash-olive)" }}
+          style={{ backgroundColor: "var(--olive-stone)" }}
         >
           <div className="max-w-4xl mx-auto text-center">
             <div className="text-4xl font-display font-bold mb-6">
@@ -53,7 +53,7 @@ export default function Landing() {
             <div className="text-base font-normal mt-4">
               <Link
                 href="/dashboard"
-                className="font-semibold hover:underline text-[--olive-stone]"
+                className="font-semibold hover:underline text-[--deep-moss]"
               >
                 or skip for now
               </Link>

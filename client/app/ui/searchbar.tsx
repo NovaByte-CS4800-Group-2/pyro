@@ -17,7 +17,7 @@ export default function SearchBar({ value, onChange, placeholder, className }: S
       placeholder={placeholder || "Search..."}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full mb-4 ${className || ""}`}
-    />
+      className={`w-full mb-4 hover:!border-[--deep-terracotta] ${className || ""}`}
+      />
   );
 }

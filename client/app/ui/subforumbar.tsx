@@ -42,8 +42,8 @@ export default function Subforumbar({ className }: SubforumbarProps) { // Define
 
   // return the subforum bar component
   return (
-    <div className={`flex flex-col min-w-[200px] bg-stone-100 border-l border-stone-300 shadow-sm =${className}`} >
-      <h2 className="text-lg font-bold font-display px-4 py-3 text-neutral-800 border-b border-stone-200">
+    <div className={`flex flex-col min-w-[200px] bg-[--porcelain] border-l border-[--porcelain] shadow-sm`} >
+      <h2 className="text-lg font-bold font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
         Subforums
       </h2>
       {subforums.map((sf) => {
@@ -52,9 +52,9 @@ export default function Subforumbar({ className }: SubforumbarProps) { // Define
           <Link
             key={sf.subforum_id}
             href={`/dashboard/subforum/${sf.subforum_id}`}
-            className={` px-4 py-3 border border-transparent transition-colors block font-normal 
+            className={`px-4 py-3 border border-transparent transition-colors block font-normal
               ${isSelected
-                ? "bg-[--greige-deep] text-white font-semibold"
+                ? "bg-[--greige-deep] text-[--porcelain] font-semibold"
                 : "bg-[--greige-mist] text-[--bark] hover:bg-[--ash-olive] hover:text-[--deep-moss]"
               }`}            
             onClick={() => setSelectedSubforumId(sf.subforum_id)}
