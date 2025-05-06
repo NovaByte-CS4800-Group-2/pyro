@@ -18,10 +18,10 @@ export function EmblaCarousel() {
     <div className="flex items-center justify-between w-full mt-12 px-4"> 
       {/*left arrow*/}
       <button 
-        className="button"
+        className="p-1 m-1 bg-transparent border-none focus:outline-none hover:bg-transparent active:bg-transparent"
         onClick={scrollPrev}
       >
-        <ChevronLeftIcon className="w-6 h-6 text-liver-700" />
+        <ChevronLeftIcon className="w-10 h-10 text-liver-700" />
       </button>
 
       {/*carousel wrapper*/}
@@ -41,10 +41,10 @@ export function EmblaCarousel() {
 
       {/*right arrow*/}
       <button 
-        className="button"
         onClick={scrollNext}
+        className="p-1 m-1 bg-transparent border-none focus:outline-none hover:bg-transparent active:bg-transparent"
       >
-        <ChevronRightIcon className="w-6 h-6 text-liver-700" />
+        <ChevronRightIcon className="w-10 h-10 text-liver-700" />
       </button>
     </div>
   )
