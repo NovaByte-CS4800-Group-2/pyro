@@ -267,14 +267,11 @@ export default function Profile() {
 					await reauthenticateWithCredential(user, credential)
 					await updatePassword(newPassword);
 			}
-			setPassword("");
-			setNewPassword("");
-			setConfirmPassword("");
 		}
 	}
 
 	useEffect(() => {
-		if (!passwordLoading) {
+		if (!passwordLoading && password) {
 			if (!passwordError) {
 				addToast({
 				color: "success",
@@ -301,6 +298,9 @@ export default function Profile() {
 					timeout: 3000,
 				});	
 			}
+			setPassword("");
+			setNewPassword("");
+			setConfirmPassword("");
 		}
 	}, [passwordLoading]);
 
