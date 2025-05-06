@@ -96,7 +96,7 @@ export default function Chatbot() {
       {isOpen && ( // Render the chatbox if it's open
         <div
           ref={chatboxRef}
-          className="fixed bg-[--clay-beige] border-2 border-[--brown] rounded-2xl shadow-xl flex flex-col z-[100]"
+          className="fixed bg-[--greige-mist] border-2 border-[--brown] rounded-2xl shadow-xl flex flex-col z-[100]"
           style={{ width: "20rem", height: "28rem", resize: "both", overflow: "auto", left: "calc(100% - 23rem)", bottom: "6.5rem" }}
         >
           <div
