@@ -1,6 +1,5 @@
 "use client"
 import {useState} from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 
 export default function Resources() {
 	const [activeToastUrl, setActiveToastUrl] = useState<string | null>(null);
@@ -25,12 +24,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">Ready for Wildfire</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Ready for Wildfire</p>
 						<a href="https://readyforwildfire.org/prepare-for-wildfire/emergency-supply-kit/">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Assembling your Wildfire-Ready Kit
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-grey-700">
 								Be proactive with a well-prepared emergency supply kit.
 							</p>
 						</a>
@@ -55,12 +54,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">American Red Cross</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">American Red Cross</p>
 						<a href="https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/wildfire.html?srsltid=AfmBOopRTJ8Nh58i4OClG0bJSb908NNxzmBSkWNO0695k2hdOEJruFdf">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								What Should You Do Before a Wildfire Starts?
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 								More people are living in areas at risk for wildfires, but we can take action to prepare.
 							</p>
 						</a>
@@ -85,12 +84,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">National Weather Service</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">National Weather Service</p>
 						<a href="https://www.weather.gov/safety/wildfire-ready">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Home Preparedness
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 								Take personal responsibility and prepare long before the threat of a wildland 
 								fire so your home is ready in case of a fire
 							</p>
@@ -116,7 +115,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">Southern California Edison</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Southern California Edison</p>
 						<a href="https://www.sce.com/wildfire/wildfire-mitigation-efforts?ecid=ppc~ggl~psps~mkt~res~40125~%epid!&gclsrc=aw.ds&gad_source=1&gad_campaignid=22398918419&gbraid=0AAAAABWg2-JvrXhxpqfcehLjRnpHwH-Pe&gclid=Cj0KCQjww-HABhCGARIsALLO6XwioIxcCpUaQOSB1bmU7EChdiJfn8acczvA9SnT0cKm1iiHvFbDjE0aAnTSEALw_wcB">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Wildfire Mitigation Efforts
@@ -147,7 +146,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">National Interagency Fire Center</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">National Interagency Fire Center</p>
 						<a href="https://www.nifc.gov/fire-information">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								National Wildland Fire Preparedness Levels
@@ -177,7 +176,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">National Interagency Fire Center</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">National Interagency Fire Center</p>
 						<a href="https://www.dnr.wa.gov/publications/rp_fire_how_to_prepare_wildfire.pdf">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								How to Prepare for a Wildfire
@@ -214,12 +213,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">California State Parks</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">California State Parks</p>
 						<a href="https://www.parks.ca.gov/?page_id=30661">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Wildfire Safety Tips
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 							Whether you are an experienced outdoor enthusiast or a new one, California State Parks looks forward to seeing you at 
 							California’s park trails, beaches, mountains, and deserts but ask that you recreate responsibly.
 							</p>
@@ -245,12 +244,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">Ruidoso New Mexico Gov</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide  mb-2">Ruidoso New Mexico Gov</p>
 						<a href="https://www.ruidoso-nm.gov/wildfire-safety-tips">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Everything you need to know to protect you, your family and property during a wildfire 
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 							Knowing what to do in the event of a wildfire can help save your life and property.  
 							Learn how to protect you, your family and property during a rural fire with these essential wildfire safety tips.
 							</p>
@@ -276,12 +275,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">Ready.GOV</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Ready.GOV</p>
 						<a href="https://www.ready.gov/wildfires">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Wildfires
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 							Wildfires are unplanned fires that burn in natural areas like forests, grasslands or prairies. 
 							These dangerous fires spread quickly and can devastate not only wildlife and natural areas, but also communities.
 							</p>
@@ -310,12 +309,12 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-[--deep-moss] uppercase tracking-wide font-semibold mb-2">Los Angeles Fire Department</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Los Angeles Fire Department</p>
 						<a href="https://lafd.org/ready-set-go#:~:text=Create%20a%20Wildfire%20Action%20Plan,important%20evacuation%20and%20contact%20information.">
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Ready, Set, Go!
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 								If there is an active wildfire in your area, you need to be prepared before it’s time to Go!
 							</p>
 						</a>
@@ -340,7 +339,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">USDA.GOV</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">USDA.GOV</p>
 						<a href="https://www.climatehubs.usda.gov/sites/default/files/A%20Guide%20to%20Staying%20Safe%20During%20Wildfires_1.pdf">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Guide to Staying Safe During Wildfires
@@ -371,7 +370,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">Idaho Firewise</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Idaho Firewise</p>
 						<a href="https://idahofirewise.org/evacuation/if-you-get-trapped/">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Evacuation If You Get Trapped
@@ -411,7 +410,7 @@ export default function Resources() {
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								After a Wildfire
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 								From damage assessment to future planning, get all the advice you need to recover from a wildfire.
 							</p>
 						</a>
@@ -441,7 +440,7 @@ export default function Resources() {
 							<h2 className="text-lg font-semibold text-[--bark] mb-2">
 								Returning Home Checklist
 							</h2>
-							<p className="text-sm text-[--olive-stone]">
+							<p className="text-sm text-gray-700">
 								The danger doesn’t end when the wildfire is extinguished. The aftermath can present various hazards, 
 								from flash flooding and debris flows to structural instability and compromised trees.
 							</p>
@@ -467,7 +466,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">Wildfire Risk to communities</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">Wildfire Risk to communities</p>
 						<a href="https://wildfirerisk.org/reduce-risk/wildfire-response/">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Community Tools for Wildfire Response
@@ -497,7 +496,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">California Environmental Protection Agency</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">California Environmental Protection Agency</p>
 						<a href="https://calepa.ca.gov/disaster/fire/">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Fire Response and Recovery
@@ -527,7 +526,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">California Fire Foundation</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">California Fire Foundation</p>
 						<a href="https://www.cafirefoundation.org/what-we-do/for-communities/disaster-relief">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Wildfire & Disaster Relief
@@ -558,7 +557,7 @@ export default function Resources() {
 						className="w-full object-cover rounded-t-2xl"
 					/>
 					<div className="p-4">
-						<p className="text-sm text-gray-600 uppercase tracking-wide mb-2">California Department of Public Health</p>
+						<p className="text-sm text-[--deep-moss] uppercase tracking-wide mb-2">California Department of Public Health</p>
 						<a href="https://www.cdph.ca.gov/Programs/EPO/CDPH%20Document%20Library/Wildfire%20Cleanup%20Considerations%20for%20California%27s%20Public%20Health%20Officials%20%28August%202019%29.pdf">
 							<h2 className="text-lg font-semibold text-gray-800 mb-2">
 								Wildfire Cleanup

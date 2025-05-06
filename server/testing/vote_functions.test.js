@@ -54,50 +54,50 @@ test("Remove votes for a piece of content", async() => {
 
 })
 
-// !! bUffer
-// test("Get all of a user's votes", async () => {
-//     const result = await Vote.getUserVotes(1)
-//     const resultValues = []
-//     for (let i = 0; i < result.length; i++) {
-//         result[i].value = result[i].value.toJSON()
-//         resultValues.push(result[i].value.toJSON())
-//     }
-//     console.log(result.value)
-//     const expected = 
-//     [
-//         { "content_id": 62, "user_id": '1', "value": resultValues[0] },
-//         { "content_id": 63, "user_id": '1', "value": resultValues[1] }
-//     ]
-//     expect(result).toEqual(expected)
-// })
+!! bUffer
+test("Get all of a user's votes", async () => {
+    const result = await Vote.getUserVotes(1)
+    const resultValues = []
+    for (let i = 0; i < result.length; i++) {
+        result[i].value = result[i].value.toJSON()
+        resultValues.push(result[i].value.toJSON())
+    }
+    console.log(result.value)
+    const expected = 
+    [
+        { "content_id": 62, "user_id": '1', "value": resultValues[0] },
+        { "content_id": 63, "user_id": '1', "value": resultValues[1] }
+    ]
+    expect(result).toEqual(expected)
+})
 
-// Test for object equality
-// test("Get all the votes for a piece of content", async() => {
-//     const result = await Vote.getVotes(63)
-//     console.log(result)
+//Test for object equality
+test("Get all the votes for a piece of content", async() => {
+    const result = await Vote.getVotes(63)
+    console.log(result)
     
-//     const expected = 
-//     [
-//         {
-//           "content_id": 63,
-//           "user_id": "1",
-//           "value": {
-//             "type": "Buffer",
-//             "data": [
-//               1
-//             ]
-//           }
-//         },
-//         {
-//           "content_id": 63,
-//           "user_id": "xByyjxajyxcV0g2p0du1kDsbTIJ3",
-//           "value": {
-//             "type": "Buffer",
-//             "data": [
-//               1
-//             ]
-//           }
-//         }
-//     ]
-//     expect(result).toEqual(expect.arrayContaining(expected));
-// })
+    const expected = 
+    [
+        {
+          "content_id": 63,
+          "user_id": "1",
+          "value": {
+            "type": "Buffer",
+            "data": [
+              1
+            ]
+          }
+        },
+        {
+          "content_id": 63,
+          "user_id": "xByyjxajyxcV0g2p0du1kDsbTIJ3",
+          "value": {
+            "type": "Buffer",
+            "data": [
+              1
+            ]
+          }
+        }
+    ]
+    expect(result).toEqual(expect.arrayContaining(expected));
+})
