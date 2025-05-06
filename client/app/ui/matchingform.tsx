@@ -1,7 +1,7 @@
 import "@/app/globals.css"
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import { Input } from "@heroui/input";
-import { Button, Checkbox, Form, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, NumberInput, useDisclosure } from "@heroui/react";
+import { Button, Checkbox, Form, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, NumberInput, Slider, useDisclosure } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -23,6 +23,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 	const router = useRouter();
 	const [user] = useAuthState(auth);
 	const [formID, setFormID] = useState(0);
+	const [maxDistance, setMaxDistance] = useState<number[]>([20]);
 	const [error, setError] = useState("");
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const [matches, setMatches] = useState<any[]>([]);
@@ -57,6 +58,8 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 		data.user_id = user?.uid || "";
 		data.type = type ? "offering" : "requesting" ;
 		data.email = user?.email || "";
+		data.zipcode = zipcode;
+		data.max_distance = String(maxDistance[0]);
 		// Check if a user requesting housing has made an error in the number of people in their party.
 		if (!type) {
 			const youngerChildren = Number(data["young_children"]) + Number(data["adolescent_children"]);
@@ -118,6 +121,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 		index: number,
 		form_id: number,
 		email: string,
+		zipcode?: number,
 		num_rooms?: number,
 		num_people?: number,
 		young_children?: number, 
@@ -287,6 +291,8 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 					<p className="text-sm mb-4">Fields marked with an orange asterisk <span className="text-danger">*</span> are required.</p>
 					{/* General Fields */}
 					<Input name="zipcode" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Zipcode" type="text" description={type ? "The zipcode of your hosting address." : "The zipcode of your current location."} placeholder="12345" value={zipcode} onChange={validateZipcode} isRequired isClearable minLength={5} maxLength={5}></Input>
+					{type == 0 && <Slider id="max_distance" className="max-w-72" onChangeEnd={(e) => {Array.isArray(e) ? setMaxDistance(e) : setMaxDistance([e])}} label="Maximum Distance" maxValue={200} minValue={0} step={1}></Slider>}
+					{type == 0 && <p className="text-xs -ml-10 text-neutral-400">The maximum distance you are willing to travel.</p>}
 					<NumberInput name="num_rooms" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Bedrooms" description={"The " + (type ? "" : "minimum") + " number of bedrooms " + (type ? "available for your guest(s)." : "required.")} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
 					<NumberInput id="num-people" name="num_people" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Guests" description={"The total number of people " + descriptionEnding} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
 					{/* List of Characteristics */}

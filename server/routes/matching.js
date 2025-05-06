@@ -22,10 +22,10 @@ const router = Router();  // groups together requests
  * @returns {Object} 406 - Unable to create form
  */
 router.post('/create/matching/form', async(req, res) => {
-  const {user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
+  const {user_id, email, zipcode, max_distance, type, num_rooms, num_people, young_children, adolescent_children, 
          teenage_children, elderly, small_dog, large_dog, cat, other_pets} = req.body;
   
-  const id = await Matching.createForm(user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
+  const id = await Matching.createForm(user_id, email, zipcode, max_distance, type, num_rooms, num_people, young_children, adolescent_children, 
                                        teenage_children, elderly, small_dog, large_dog, cat, other_pets);
 
   if(!id) return res.status(406).json({ error: "unable to create form"});
@@ -46,7 +46,7 @@ router.post('/create/matching/form', async(req, res) => {
 router.get('/get/match/:id/:type', async(req, res) => {
   const {id, type} = req.params;
 
-  if(!id || !type) return res.status(400).json({ error: "missing paramaters"});
+  if(!id || !type) return res.status(400).json({ error: "missing parameters"});
 
   const matches = await Matching.match(id, type);
 
@@ -76,7 +76,7 @@ router.get('/get/form/:id', async(req, res) => {
 })
 
 /**
- * @route GET /get/form/:id
+ * @route GET /get/user/form/:id
  * @description Return a single matching form by ID
  * @param {number} req.params.id - user ID associated with the form
  * @returns {Object} 200 - Success message
