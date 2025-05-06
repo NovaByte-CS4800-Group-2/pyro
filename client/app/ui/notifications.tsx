@@ -98,11 +98,11 @@ export default function Notifications({ userId, username }: NotificationsProps) 
         notifications.map((notif, index) => (
           <div
             key={`${notif.content_id}-${notif.type}-${index}`}
-            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-[--classic-gray]' : 'bg-[--porcelain]'}`}
+            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-[--porcelain]' : 'bg-[--porcelain]'}`}
           >
             <button
               onClick={() => deleteNotif(notif.content_id, notif.type)}
-              className="absolute top-2 right-2 text-sm text-gray-400 hover:text-red-500"
+              className="absolute top-2 right-2 text-sm text-[--olive-stone] hover:text-[--deep-terracotta]"
               aria-label="Delete notification"
             >
               ×
@@ -113,11 +113,11 @@ export default function Notifications({ userId, username }: NotificationsProps) 
             </p>
 
             {notif.type === 'matching' ? (
-              <p className="mt-2 font-semibold text-gray-800">
+              <p className="mt-2 font-semibold text-[--bark]">
                 You’ve got a match!
               </p>
             ) : notif.type === 'callout' ? (
-              <p className="mt-2 font-semibold text-gray-800">
+              <p className="mt-2 font-semibold text-[--bark]">
                 {notif.username} mentioned you
               </p>
             ) : (
@@ -129,31 +129,31 @@ export default function Notifications({ userId, username }: NotificationsProps) 
             <div className="mt-2 text-sm whitespace-pre-wrap">
               {notif.type === 'vote' && notif.content ? (
                 <>
-                  <div className="p-2 rounded border text-gray-800 mb-1">
+                  <div className="p-2 rounded border text-[--bark] mb-1">
                     {notif.content.body}
                   </div>
                   {notif.content.vote === 1 ? (
                     <div className="flex items-center gap-2">
-                      <UpFilled className="w-5 h-5 text-emerald-700" />
-                      <HandThumbDownIcon className="w-5 h-5 text-gray-500" />
+                      <UpFilled className="w-5 h-5 text-[--deep-moss]" />
+                      <HandThumbDownIcon className="w-5 h-5 text-[--deep-terracotta]" />
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <HandThumbUpIcon className="w-5 h-5 text-gray-500" />
-                      <DownFilled className="w-5 h-5 text-red-800" />
+                      <HandThumbUpIcon className="w-5 h-5 text-[--deep-moss]" />
+                      <DownFilled className="w-5 h-5 text-[--deep-terracotta]" />
                     </div>
                   )}
                 </>
               ) : notif.type === 'comment' && notif.content ? (
                 <>
-                  <div className="rounded border text-gray-800 mb-1 p-3">
+                  <div className="rounded border text-[--bark] mb-1 p-3">
                     {notif.content.post}
-                    <hr className="my-2 border-gray-300" />
-                    <p className="ml-4 italic text-gray-700">
+                    <hr className="my-2 border-[--bark]" />
+                    <p className="ml-4 italic text-[--muted-terracotta]">
                       “
                       {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
                         part === `@${username}` ? (
-                          <span key={i} className="text-blue-600 font-semibold">{part}</span>
+                          <span key={i} className="text-[--deep-moss] font-semibold">{part}</span>
                         ) : (
                           <span key={i}>{part}</span>
                         )
@@ -163,14 +163,14 @@ export default function Notifications({ userId, username }: NotificationsProps) 
                   </div>
 
 
-                  {/* <div className="rounded border text-gray-800 mb-1 p-3">
+                  {/* <div className="rounded border text-[--bark] mb-1 p-3">
                     {notif.content.post}
                     <hr className="my-2 border-gray-300" />
                     <p className="ml-4 italic text-gray-700">“{notif.content.body}”</p>
                   </div> */}
                 </>
               ) : notif.type === 'matching' ? (
-                <div className="p-3 rounded border text-gray-800 space-y-2">
+                <div className="p-3 rounded border text-[--bark] space-y-2">
                   <p>
                     You’ve been paired with <strong>{notif.username}</strong>!
                   </p>
@@ -182,17 +182,17 @@ export default function Notifications({ userId, username }: NotificationsProps) 
                   </p>
                 </div>
               ) : notif.type === 'callout' && notif.content ? (
-                <div className="p-2 rounded border text-gray-800">
+                <div className="p-2 rounded border text-[--bark]">
                   {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
                     part === `@${username}` ? (
-                      <span key={i} className="text-blue-600 font-semibold">{part}</span>
+                      <span key={i} className="text-[--deep-moss] font-semibold">{part}</span>
                     ) : (
                       <span key={i}>{part}</span>
                     )
                   )}
                 </div>
               ) : (
-                <div className="p-2 rounded border text-gray-800">
+                <div className="p-2 rounded border text-[--bark]">
                   {notif.content?.body}
                 </div>
               )}
