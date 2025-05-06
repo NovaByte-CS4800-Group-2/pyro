@@ -1,4 +1,6 @@
 import pool from './pool.js'
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * Class for managing wildfire evacuation housing match requests.
@@ -24,7 +26,7 @@ class Matching
    * @param {number} other_pets - Number of other pets.
    * @returns {Promise<number|boolean>} - The ID of the newly created form, or `false` if the form already exists or an error occurred.
    */
-  static async createForm(user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
+  static async createForm(user_id, email, zipcode, max_distance, type, num_rooms, num_people, young_children, adolescent_children, 
                           teenage_children, elderly, small_dog, large_dog, cat, other_pets)
   {
     try{
@@ -35,9 +37,9 @@ class Matching
       const fullDate = new Date();  // generate current date
       const date = fullDate.toISOString().split('T')[0];
 
-      const [result] = await pool.query(`INSERT INTO matching_request_forms (user_id, email, type, num_rooms, num_people, date, young_children,
+      const [result] = await pool.query(`INSERT INTO matching_request_forms (user_id, email, zipcode, max_distance, type, num_rooms, num_people, date, young_children,
                                          adolescent_children, teenage_children, elderly, small_dog, large_dog, cat, other_pets) VALUES (?, ?, 
-                                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [user_id, email, type, num_rooms, num_people, date, young_children, 
+                                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [user_id, email, zipcode, max_distance, type, num_rooms, num_people, date, young_children, 
                                          adolescent_children, teenage_children, elderly, small_dog, large_dog, cat, other_pets])
       const form_id = result.insertId;
       return form_id;                            
@@ -80,7 +82,7 @@ class Matching
       if(type === "requesting") 
         newType = "offering";
 
-      const [rows] = await pool.query(`SELECT form_id, email, user_id, num_rooms, num_people, young_children, adolescent_children, 
+      const [rows] = await pool.query(`SELECT form_id, email, zipcode, max_distance, user_id, num_rooms, num_people, young_children, adolescent_children, 
         teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
         WHERE type = ?`, [newType]);
 
@@ -103,7 +105,7 @@ class Matching
   {
     try{
 
-      const [rows] = await pool.query(`SELECT form_id, email, num_rooms, num_people, young_children, adolescent_children, 
+      const [rows] = await pool.query(`SELECT form_id, email, zipcode, max_distance, num_rooms, num_people, young_children, adolescent_children, 
         teenage_children, elderly, small_dog, large_dog, cat, other_pets FROM matching_request_forms 
         WHERE form_id = ?`, [form_id]);  // only retrieve relevant info
 
@@ -144,39 +146,67 @@ class Matching
    * @param {string} type - The type of the original form ("offering" or "requesting").
    * @returns {Promise<Array<Object>|boolean>} - Array of matched forms, or `false` if none found or error.
    */
-  static async match(form_id, type)
-  {
-    try{
+  static async match(form_id, type) {
+    try {
       const match_form = await this.getForm(form_id);  // form that needs to be matched
       const forms = await this.getForms(type); // forms that are going to be searched through
-      if(!forms || !match_form) return false; // no forms to match
-
+      if (!forms || !match_form) return false; // no forms to match
+  
       const matches = [];
-
-      for (const form of forms) // goes through each form
-      {
-        let score = 0;
-        for(const key in form)  // goes through values in each form
-        {
-          if(key != "form_id" && type === "offering")
-          {
-            if(form[key] <= match_form[key]) score ++;
-          } 
-          else if(key != "form_id" && type === "requesting")
-          {
-            if(form[key] >= match_form[key]) score ++;
-          }
-            
-              
+  
+      for (const form of forms) {
+        const apiKey = process.env.ZIPCODE_API_KEY;
+        if (!apiKey) {
+          console.error("ZIPCODE_API_KEY is not defined in the environment.");
+          return false;
         }
-        if(score > 7)  // threshold for the match
-          matches.push(form);
-      }
-      if(matches.length === 0) return false;  // no matches were found
-      return matches;
+        const url = `https://www.zipcodeapi.com/rest/${apiKey}/distance.json/${match_form["zipcode"]}/${form["zipcode"]}/mile`;
 
-    }catch(error){
-      console.log("Error in match:", error)
+        let distance = 0;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+  
+          console.log("ZIP API response:", data);
+  
+          if (data.error_msg) {
+            console.log(`API Error between ${match_form["zipcode"]} and ${form["zipcode"]}: ${data.error_msg}`);
+            continue;
+          }
+  
+          distance = data.distance;
+          console.log(`Distance between ${match_form["zipcode"]} and ${form["zipcode"]}:`, distance);
+
+          let max_distace = match_form["max_distace"];
+          if(type === "offering")
+            max_distace = form["max_distace"];
+
+  
+          if (distance > 100) continue;  // Skip forms too far away
+  
+        } catch (err) {
+          console.log(`Failed to get distance for zipcodes ${match_form["zipcode"]} and ${form["zipcode"]}:`, err);
+          continue; // skip this form if distance couldn't be fetched
+        }
+  
+        let score = 0;
+        for (const key in form) {
+          if (key !== "form_id" && key !== "zipcode" && key !== "max_distance" && type === "offering") {
+            if (form[key] <= match_form[key]) score++;
+          } else if (key !== "form_id" && key !== "zipcode" && key !== "max_distance" && type === "requesting") {
+            if (form[key] >= match_form[key]) score++;
+          }
+        }
+  
+        if (score > 7) matches.push(form);  // threshold for the match
+      }
+  
+      console.log("done matching!!!");
+      if (matches.length === 0) return false;  // no matches were found
+      return matches;
+  
+    } catch (error) {
+      console.log("Error in match:", error);
       return false;
     }
   }

@@ -22,10 +22,10 @@ const router = Router();  // groups together requests
  * @returns {Object} 406 - Unable to create form
  */
 router.post('/create/matching/form', async(req, res) => {
-  const {user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
+  const {user_id, email, zipcode, max_distance, type, num_rooms, num_people, young_children, adolescent_children, 
          teenage_children, elderly, small_dog, large_dog, cat, other_pets} = req.body;
   
-  const id = await Matching.createForm(user_id, email, type, num_rooms, num_people, young_children, adolescent_children, 
+  const id = await Matching.createForm(user_id, email, zipcode, max_distance, type, num_rooms, num_people, young_children, adolescent_children, 
                                        teenage_children, elderly, small_dog, large_dog, cat, other_pets);
 
   if(!id) return res.status(406).json({ error: "unable to create form"});

@@ -57,6 +57,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 		data.user_id = user?.uid || "";
 		data.type = type ? "offering" : "requesting" ;
 		data.email = user?.email || "";
+		data.zipcode = zipcode;
 		// Check if a user requesting housing has made an error in the number of people in their party.
 		if (!type) {
 			const youngerChildren = Number(data["young_children"]) + Number(data["adolescent_children"]);
@@ -118,6 +119,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 		index: number,
 		form_id: number,
 		email: string,
+		zipcode?: number,
 		num_rooms?: number,
 		num_people?: number,
 		young_children?: number, 
