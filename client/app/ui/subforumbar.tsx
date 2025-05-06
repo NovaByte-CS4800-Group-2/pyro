@@ -41,7 +41,7 @@ export default function Subforumbar({ className = "", mobile = false }: Subforum
     }
   }, [pathname]);
 
-  if (mobile) {
+  /*if (mobile) {
     return (
       <div className="flex flex-col bg-[--porcelain] border border-[--porcelain] shadow-sm rounded-md mb-4">
         <h2 className="text-lg font-bold font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
@@ -64,7 +64,7 @@ export default function Subforumbar({ className = "", mobile = false }: Subforum
         </select>
       </div>
     );
-  }  
+  }  */
 
   // return the subforum bar component
   return (
