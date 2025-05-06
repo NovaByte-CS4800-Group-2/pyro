@@ -199,7 +199,7 @@ export default function Content({
   const defaultContainerClasses =
     contentType === "post"
       ? "w-full max-w-2xl bg-[--porcelain] rounded-xl p-2 mb-2 mx-auto"
-      : "border-t border-[--greige-deep] pt-2 mt-2 text-sm text-[--greige-deep] relative";
+      : "border-t border-[--greige-deep] pt-2 mt-2 text-sm text-[--bark] relative";
 
   const containerClasses = className || defaultContainerClasses;
 

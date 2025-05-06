@@ -148,7 +148,7 @@ export default function Matching() {
 						
 					</div> ) :
 					(
-						<p className="mt-4 text-justify max-w-[215px] px-3"> After you create a form you will be able to see its status here! Already submitted one but it's not here? Check your notifications to see if you have a match!</p>
+						<p className="mt-4 text-center max-w-[215px] px-3"> After you create a form you will be able to see its status here! Already submitted one but it's not here? Check your notifications to see if you have a match!</p>
 					)
 				}
 			</div>
