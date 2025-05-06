@@ -20,7 +20,7 @@ export default function Contact() {
                         <div className="w-24 h-24 rounded-full bg-[--ash-olive] overflow-hidden">
                             <img src="/images/sample.jpg" alt="Arin Boyadjian" className="w-full h-full object-cover" />
                         </div>
-                        <p className="font-display text-lg">Arin Boyadjian</p>
+                        <p className="font-display text-center text-lg">Natalie Mamikonyan<br/>- CEO</p>
                     </div>
 
                     {/* ana */}
@@ -28,7 +28,7 @@ export default function Contact() {
                         <div className="w-24 h-24 rounded-full bg-[--ash-olive] overflow-hidden">
                             <img src="/images/sample.jpg" alt="arin" className="w-full h-full" />
                         </div>
-                        <p className="font-display text-lg">Anastasia Davis</p>
+                        <p className="font-display text-lg">Arin Boyadjian</p>
                     </div>
 
                     {/* natalie */}
@@ -36,7 +36,7 @@ export default function Contact() {
                         <div className="w-24 h-24 rounded-full bg-[--ash-olive] overflow-hidden">
                             <img src="/images/sample.jpg" alt="arin" className="w-full h-full" />
                         </div>
-                        <p className="font-display text-lg">Natalie Mamikonyan</p>
+                        <p className="font-display text-lg">Anastasia Davis</p>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@ export default function Contact() {
                 </div>
             </div>
 
-            <div className="bg-[--balboa-mist] rounded-2xl shadow-sm p-6 mt-8">
+            <div className="bg-[--porcelain] rounded-2xl shadow-sm p-6 mt-8">
             <h2 className="text-2xl font-semibold font-display text-[--bark] mb-4">Company Info</h2>
             <div className="space-y-2">
                 <p>
