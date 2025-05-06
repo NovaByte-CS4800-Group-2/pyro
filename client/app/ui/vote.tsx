@@ -109,12 +109,12 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
             />
           ) : (
             <HandThumbUpIcon
-              className="w-5 h-5 text-gray-500 hover:text-[--deep-moss] cursor-pointer"
+              className="w-5 h-5 text-[--deep-moss] hover:text-[--deep-moss] cursor-pointer"
               onClick={() => handleVote(1)}
             />
           )}
   
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-[--text-color]">
             {totalVotes}
           </span>
   
@@ -126,7 +126,7 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
             />
           ) : (
             <HandThumbDownIcon
-              className="w-5 h-5 text-gray-500 hover:text-[--deep-terracotta] cursor-pointer"
+              className="w-5 h-5 text-[--deep-terracotta] hover:text-[--deep-terracotta] cursor-pointer"
               onClick={() => handleVote(0)}
             />
           )}

@@ -80,7 +80,7 @@ export default function Chatbot() {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-6 bg-[--olive-stone] text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-[--deep-moss] z-[100]"
+        className="fixed bottom-24 right-6 bg-[--olive-stone] text-[porcelain] w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-[--deep-moss] z-[100]"
       >
         💬
       </button>
@@ -88,17 +88,17 @@ export default function Chatbot() {
       {isOpen && ( // Render the chatbox if it's open
         <div
           ref={chatboxRef}
-          className="fixed bg-[--porcelain] border-2 border-[--bark] rounded-2xl shadow-xl flex flex-col z-[100]"
+          className="fixed bg-[--clay-beige] border-2 border-[--brown] rounded-2xl shadow-xl flex flex-col z-[100]"
           style={{ width: "20rem", height: "28rem", resize: "both", overflow: "auto", left: "calc(100% - 23rem)", bottom: "6.5rem" }}
         >
           <div
             onMouseDown={handleMouseDown} // Add mouse down event listener for dragging
-            className="bg-[--bark] text-[--porcelain] text-lg font-display font-bold p-3 rounded-t-2xl flex justify-between items-center cursor-move"
+            className="bg-[--brown] text-[--white] text-lg font-display font-bold p-3 rounded-t-2xl flex justify-between items-center cursor-move"
           >
             NovaBot ⭐️🤖
             <button
               onClick={() => setIsOpen(false)} // Function to close the chatbox
-              className="text-[--porcelain] text-xl font-bold px-2 hover:text-[--muted-terracotta]"
+              className="text-[--white] text-xl font-bold px-2 hover:text-[--muted-terracotta]"
               aria-label="Close chat"
             >
               ×
@@ -111,8 +111,8 @@ export default function Chatbot() {
               key={idx}
               className={`w-fit max-w-[85%] p-2 rounded-xl whitespace-pre-line ${
                 msg.role === "user"
-                  ? "bg-[--bark] text-[--porcelain] self-end text-right"
-                  : "bg-[--deep-moss] text-[--porcelain] self-start text-left"
+                  ? "bg-[--brown] text-[--white] self-end text-right"
+                  : "bg-[--dark-green] text-[--white] self-start text-left"
               }`}
               >
               {msg.content} {/* Display the message content */}
@@ -122,7 +122,7 @@ export default function Chatbot() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="flex flex-col border-t border-[--bark] px-3 py-2">
+          <div className="flex flex-col border-t border-[--brown] px-3 py-2">
           <div className="flex gap-2 items-end">
             <textarea
             ref={textareaRef}

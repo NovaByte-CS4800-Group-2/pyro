@@ -326,121 +326,134 @@ export default function Profile() {
 	}
 	else {
 		return (
-			<div className="flex-grow flex max-lg:flex-col m-6 gap-y-10 gap-x-2">
-					<Card shadow="lg" className="shadow-lg p-4 border-2 rounded-3xl h-fit flex-grow gap-y-1 max-w-[500px]">
-						<CardHeader className="py-2 flex flex-col items-center">
-							<Avatar className="w-40 h-40 hover:cursor-pointer mb-1" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
-							<h3 className="font-bold text-3xl line-clamp-1 hover:line-clamp-none">{userProfile.username}</h3>
-							<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
-						</CardHeader>
-						<CardBody className="pt-2 flex flex-col items-stretch gap-y-3 border-2 border-gray-200 shadow-md bg-neutral-50 rounded-xl">
-							<p className="mt-1 font-semibold text-center">Personal Info</p>
-							<div className="flex border-b-2 border-gray-200 p-2 items-center">
-								<p className="w-[5.5rem]">Username:</p>
-								{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
-								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onPress={saveUsername} value="Change">Save</Button>}
-							</div>
-							<div className="flex border-b-2 border-gray-200 p-2 items-center">
-								<p className="w-[5.5rem]">Email:</p>
-								{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
-								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onPress={saveEmail} value="Change">Save</Button>}
-							</div>
-							<div className="flex border-b-2 border-gray-200 p-2 items-center">
-								<p className="w-[5.5rem]">Zipcode:</p>
-								{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
-								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-neutral-200 disabled:bg-neutral-200 disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onPress={saveZipcode} value="Change">Save</Button>}
-							</div>
-							<div className="flex border-b-2 border-gray-200 p-2 items-center">
-								<p className="w-[5.5rem]">Password:</p>
-								<p className="font-semibold">*****</p>
-								{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive]" onPress={passwordModal.onOpen}>Change Password</Button>}
-							</div>
-							<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditing}>{editing ? "Stop Editing" : "Edit Information"}</Button>
-						</CardBody>
-					</Card>
-					<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
-						<ModalContent>
-						{(onClose) => (
-							<>
-								<ModalHeader className="flex flex-col gap-1">Change Profile Picture</ModalHeader>
-								<ModalBody>
-									<Input type="file" accept=".jpg, .jpeg, .png" onChange={onImageChange}></Input>
-									<img className="aspect-square max-w-[300px] object-cover rounded-full self-center" alt={profileURL ? "Profile Picture" : ""} src={profileURL ? profileURL : undefined}></img>
-								</ModalBody>
-								<ModalFooter>
-									<Button color="danger" variant="light" onPress={onClose}>
-									Close
-									</Button>
-									<Button color="primary" onPress={() => {onClose(); updateProfilePic();}}>
-									Save
-									</Button>
-								</ModalFooter>
-							</>
-						)}
-						</ModalContent>
-					</Modal>
-					<Modal isOpen={passwordModal.isOpen} onOpenChange={passwordModal.onOpenChange}>
-						<ModalContent>
-						{(onClose) => (
-							<>
-								<ModalHeader className="flex flex-col gap-1">Change Password</ModalHeader>
-								<ModalBody>
-									<Input
-										required
-										type="password"
-										label="Enter Old Password"
-										placeholder="••••••••"
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										labelPlacement="outside"
-										className="w-full"
-									/>
-									<Input
-										required
-										type="password"
-										label="Enter New Password"
-										placeholder="••••••••"
-										value={newPassword}
-										onChange={(e) => setNewPassword(e.target.value)}
-										labelPlacement="outside"
-										className="w-full"
-									/>
-									<Input
-										required
-										type="password"
-										label="Confirm Password"
-										placeholder="••••••••"
-										value={confirmPassword}
-										onChange={(e) => setConfirmPassword(e.target.value)}
-										labelPlacement="outside"
-										className="w-full"
-									/>
-									{confirmPassword != "" && confirmPassword != newPassword ? <p className="text-red-400 text-sm">Passwords do not match.</p> : <></>}
-								</ModalBody>
-								<ModalFooter>
-									<Button color="danger" variant="light" onPress={onClose}>
-									Close
-									</Button>
-									<Button color="primary" isDisabled={!password || !newPassword || !confirmPassword || confirmPassword != newPassword} onPress={() => {onClose(); updateUserPassword();}}>
-									Save
-									</Button>
-								</ModalFooter>
-							</>
-						)}
-						</ModalContent>
-					</Modal>
-					<Card className="flex-grow shadow-md border-2 border-neutral-200 rounded-3xl">
-						<CardBody>
-							<Tabs>
-								<Tab key="posts" title="Posts">
-									<Forum userID={String(userProfile.user_id)}></Forum>
+			<div className="min-h-screen w-full bg-[--greige-mist] px-2 py-4">
+				<div className="flex-grow flex max-lg:flex-col m-6 gap-y-10 gap-x-2">
+						<Card shadow="lg" className="shadow-lg p-4 border-2 border-[--greige-mist] rounded-3xl h-fit flex-grow gap-y-1 max-w-[500px]">
+							<CardHeader className="py-2 flex flex-col items-center">
+								<Avatar className="w-40 h-40 hover:cursor-pointer mb-1" isBordered color="primary" src={userProfile.profile_picture} onClick={profileModal.onOpen}/>
+								<h3 className="font-bold text-3xl line-clamp-1 hover:line-clamp-none">{userProfile.username}</h3>
+								<h4 className="line-clamp-1 hover:line-clamp-none">{userProfile.name}</h4>
+							</CardHeader>
+							<CardBody className="pt-2 flex flex-col items-stretch gap-y-3 border-2 border-[--greige-mist] shadow-md bg-[--porcelain] rounded-xl">
+								<p className="mt-1 font-semibold text-center">Personal Info</p>
+								<div className="flex border-b-2 border-[--greige-mist] p-2 items-center">
+									<p className="w-[5.5rem]">Username:</p>
+									{!editing ? <p>{username}</p> : <input type="text" className="w-[50] border-b-2" value={username} onChange={(e) => setUsername(e.target.value)}/>}
+									{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-[--porcelain] disabled:bg-[--porcelain] disabled:cursor-not-allowed" disabled={username === "" || username === userProfile.username} onPress={saveUsername} value="Change">Save</Button>}
+								</div>
+								<div className="flex border-b-2 border-[--greige-mist] p-2 items-center">
+									<p className="w-[5.5rem]">Email:</p>
+									{!editing ? <p>{email}</p> : <input type="email" className="w-[50] border-b-2" value={email} onChange={(e) => setEmail(e.target.value)}/>}
+									{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-[--porcelain] disabled:bg-[--porcelain] disabled:cursor-not-allowed" disabled={email === "" || email === userProfile.email} onPress={saveEmail} value="Change">Save</Button>}
+								</div>
+								<div className="flex border-b-2 border-[--greige-mist] p-2 items-center">
+									<p className="w-[5.5rem]">Zipcode:</p>
+									{!editing ? <p>{zipcode}</p> : <input type="text" inputMode="numeric" className="w-[50] border-b-2" value={zipcode} onChange={(e) => setZipcode(e.target.value)}/>}
+									{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive] disabled:hover:bg-[--porcelain] disabled:bg-[--porcelain] disabled:cursor-not-allowed" disabled={zipcode === "" || parseInt(zipcode) === userProfile.zip_code} onPress={saveZipcode} value="Change">Save</Button>}
+								</div>
+								<div className="flex border-b-2 border-[--greige-mist] p-2 items-center">
+									<p className="w-[5.5rem]">Password:</p>
+									<p className="font-semibold">*****</p>
+									{!editing ? <></> : <Button className="ml-auto px-3 bg-[--clay-beige] hover:bg-[--ash-olive]" onPress={passwordModal.onOpen}>Change Password</Button>}
+								</div>
+								<Button className="self-center shadow-sm mt-3 bg-[--clay-beige] hover:bg-[--ash-olive] px-3 py-0.5" onPress={toggleEditing}>{editing ? "Stop Editing" : "Edit Information"}</Button>
+							</CardBody>
+						</Card>
+						<Modal isOpen={profileModal.isOpen} onOpenChange={profileModal.onOpenChange}>
+							<ModalContent>
+							{(onClose) => (
+								<>
+									<ModalHeader className="flex flex-col gap-1">Change Profile Picture</ModalHeader>
+									<ModalBody>
+										<Input type="file" accept=".jpg, .jpeg, .png" onChange={onImageChange}></Input>
+										<img className="aspect-square max-w-[300px] object-cover rounded-full self-center" alt={profileURL ? "Profile Picture" : ""} src={profileURL ? profileURL : undefined}></img>
+									</ModalBody>
+									<ModalFooter>
+									<Button
+										onPress={onClose}
+										className="bg-[--deep-terracotta] text-[--porcelain] hover:bg-[--muted-terracotta] border border-[--deep-terracotta] px-4 py-2 rounded-md"
+										>
+										Close
+										</Button>
+
+										<Button
+											onPress={() => {
+												onClose();
+												updateProfilePic();
+											}}
+											className="bg-[--dark-green] text-[--porcelain] hover:bg-[--deep-moss] px-4 py-2 rounded-md"
+											>
+											Save
+											</Button>
+
+									</ModalFooter>
+								</>
+							)}
+							</ModalContent>
+						</Modal>
+						<Modal isOpen={passwordModal.isOpen} onOpenChange={passwordModal.onOpenChange}>
+							<ModalContent>
+							{(onClose) => (
+								<>
+									<ModalHeader className="flex flex-col gap-1">Change Password</ModalHeader>
+									<ModalBody>
+										<Input
+											required
+											type="password"
+											label="Enter Old Password"
+											placeholder="••••••••"
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											labelPlacement="outside"
+											className="w-full"
+										/>
+										<Input
+											required
+											type="password"
+											label="Enter New Password"
+											placeholder="••••••••"
+											value={newPassword}
+											onChange={(e) => setNewPassword(e.target.value)}
+											labelPlacement="outside"
+											className="w-full"
+										/>
+										<Input
+											required
+											type="password"
+											label="Confirm Password"
+											placeholder="••••••••"
+											value={confirmPassword}
+											onChange={(e) => setConfirmPassword(e.target.value)}
+											labelPlacement="outside"
+											className="w-full"
+										/>
+										{confirmPassword != "" && confirmPassword != newPassword ? <p className="text-red-400 text-sm">Passwords do not match.</p> : <></>}
+									</ModalBody>
+									<ModalFooter>
+										<Button color="danger" variant="light" onPress={onClose}>
+										Close
+										</Button>
+										<Button color="primary" isDisabled={!password || !newPassword || !confirmPassword || confirmPassword != newPassword} onPress={() => {onClose(); updateUserPassword();}}>
+										Save
+										</Button>
+									</ModalFooter>
+								</>
+							)}
+							</ModalContent>
+						</Modal>
+						<Card className="flex-grow shadow-md border-2 border-[--greige-mist] rounded-3xl">
+							<CardBody>
+								<Tabs>
+									<Tab key="posts" title="Posts">
+										<Forum userID={String(userProfile.user_id)}></Forum>
+									</Tab>
+									<Tab key="comments" title="Comments">
+										<Comments user_id={String(userProfile.user_id)} />
 								</Tab>
-								<Tab key="comments" title="Comments">
-									<Comments user_id={String(userProfile.user_id)} />
-			  				</Tab>
-							</Tabs>
-						</CardBody>
-					</Card>
+								</Tabs>
+							</CardBody>
+						</Card>
+				</div>
 			</div>
 		);
 	}

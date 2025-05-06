@@ -17,7 +17,8 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [accountType, setAccountType] = useState("personalAccount");
-
+  const [isFormValid, setIsFormValid] = useState(false);
+  
   // Create Account function
   const [createUserWithEmailAndPassword, firebaseCredential, firebaseLoading, firebaseError] = useCreateUserWithEmailAndPassword(auth);
   const [updateProfile] = useUpdateProfile(auth);
@@ -33,6 +34,14 @@ export default function Register() {
     confirmPassword: "",
     form: "",
   });
+
+  useEffect(() => {
+    if (name && email && username && zipCode && password && confirmPassword) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [name, email, username, zipCode, password, confirmPassword]);  
 
   // Router to redirect the user.
   const router = useRouter();
@@ -165,14 +174,14 @@ export default function Register() {
 
   // Return html
   return (
-    <main className="min-h-screen bg-[--sand] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
+    <main className="min-h-screen bg-[--greige-mist] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
       <img
         src="/images/slide1.png"
         alt="register banner"
-        className="w-full max-w-sm rounded-xl shadow-lg mb-6 object-cover"
+        className="w-full max-w-xl rounded-xl shadow-lg mb-6 object-cover"
       />
 
-      <div className="w-full max-w-md bg-[--off-white] rounded-2xl shadow-xl p-8">
+      <div className="w-full max-w-4xl bg-[--porcelain] rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-display font-bold text-center mb-2">
           Create Account
         </h1>
@@ -180,7 +189,7 @@ export default function Register() {
           Already registered?{" "}
           <Link
             href="/log-in"
-            className="font-semibold text-[--cocoa-brown] hover:underline"
+            className="font-semibold text-[--bark] hover:underline"
           >
             Log in
           </Link>
@@ -188,14 +197,15 @@ export default function Register() {
 
         <form onSubmit={handleSignUp} className="space-y-6 font-normal">
           <Input
+            required
             label="Name"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
-          {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+          {errors.name && <p className="text-sm text-[--deep-terracotta]">{errors.name}</p>}
 
           <Input
             required
@@ -205,9 +215,9 @@ export default function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
-          {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+          {errors.email && <p className="text-sm text-[--deep-terracotta]">{errors.email}</p>}
 
           <Input
             required
@@ -216,9 +226,9 @@ export default function Register() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
-          {errors.username && <p className="text-sm text-red-500">{errors.username}</p>}
+          {errors.username && <p className="text-sm text-[--deep-terracotta]">{errors.username}</p>}
 
           <Input
             required
@@ -227,9 +237,9 @@ export default function Register() {
             value={zipCode}
             onChange={(e) => setZipCode(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
-          {errors.zipCode && <p className="text-sm text-red-500">{errors.zipCode}</p>}
+          {errors.zipCode && <p className="text-sm text-[--deep-terracotta]">{errors.zipCode}</p>}
 
           <div className="flex flex-col gap-y-2">
             <label className="font-medium">Account Type</label>
@@ -266,10 +276,10 @@ export default function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
           {errors.password.length > 1 && (
-            <p className="text-sm text-red-500">{errors.password}</p>
+            <p className="text-sm text-[--deep-terracotta]">{errors.password}</p>
           )}
 
           <Input
@@ -280,18 +290,26 @@ export default function Register() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             labelPlacement="outside"
-            className="w-full"
+            className="w-full rounded-md border border-[--brown]"
           />
           {errors.confirmPassword && (
-            <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+            <p className="text-sm text-[--deep-terracotta]">{errors.confirmPassword}</p>
           )}
 
-          <button type="submit" className="button w-full py-2 text-lg font-semibold">
-            Sign Up
-          </button>
+            <button
+              type="submit"
+              className="button w-full py-2 text-lg font-semibold"
+              style={{
+                opacity: isFormValid ? 1 : 0.5,
+                cursor: isFormValid ? "pointer" : "not-allowed",
+              }}
+              disabled={!isFormValid}
+            >
+              Sign Up
+            </button>
 
           {errors.form && (
-            <p className="text-sm text-red-500 text-center mt-2">
+            <p className="text-sm text-[--deep-terracotta] text-center mt-2">
               {errors.form}
             </p>
           )}

@@ -369,14 +369,14 @@ const Comments: React.FC<CommentsProps> = ({ contentId = null, subforumId, user_
             <div className="flex items-center gap-x-2">
               <textarea
                 name="comment"
-                className="w-full border rounded-md p-1 text-sm pr-12 focus:outline-none focus:ring-2 focus:ring-[--olive-stone]"
+                className="w-full border border-[--greige-mist] rounded-md p-1 text-sm pr-12 focus:outline-none focus:ring-2 focus:ring-[--olive-stone] placeholder-[--ash-olive]"
                 placeholder="Leave a comment..."
                 value={comment} // Controlled input for comment
                 onChange={(e) => setComment(e.target.value)} // Update comment state on change
               />
               <Button // Submit button for posting comment
                 type="submit"
-                className="text-[--porcelain] px-[2px] min-h-8 w-8 bg-[--bark]"
+                className="text-[--bark] px-[2px] min-h-8 w-8 bg-[--greige-mist]"
                 disabled={!userData.username} // Disable button if user is not logged in
               >
                 <PaperAirplaneIcon width={16} height={16}></PaperAirplaneIcon>

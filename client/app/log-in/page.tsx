@@ -106,13 +106,13 @@ export default function Login() {
 
   // Return html
   return (
-    <main className="min-h-screen bg-[--sand] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
+    <main className="min-h-screen bg-[--greige-mist] flex flex-col items-center justify-start px-4 py-12 text-[--text-color]">
       <img
         src="/images/slide1.png"
         alt="login banner"
         className="w-full max-w-xl rounded-xl shadow-lg mb-6 object-cover"
       />
-      <div className="w-full max-w-4xl bg-[--off-white] rounded-2xl shadow-xl p-8">
+      <div className="w-full max-w-4xl bg-[--porcelain] rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-display font-bold text-center mb-2">
           Log In
         </h1>
@@ -120,7 +120,7 @@ export default function Login() {
           Don’t have an account?{" "}
           <Link
             href="/register"
-            className="font-semibold text-[--cocoa-brown] hover:underline"
+            className="font-semibold text-[--bark] hover:underline"
           >
             Register
           </Link>
@@ -138,10 +138,10 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               labelPlacement="outside"
-              className="w-full rounded-md bg-[--input-bg] border border-[--input-border] focus-within:ring-2 ring-[--cocoa-brown] transition"
+              className="w-full rounded-md bg-[--input-bg] border border-[--brown] focus-within:ring-2 ring-[--cocoa-brown] transition"
             />
             {errors.email && (
-              <p className="text-sm text-red-500 text-right">{errors.email}</p>
+              <p className="text-sm text-[--deep-terracotta] text-right">{errors.email}</p>
             )}
           </div>
 
@@ -156,10 +156,10 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               labelPlacement="outside"
-              className="w-full rounded-md bg-[--input-bg] border border-[--input-border] focus-within:ring-2 ring-[--moss-green] transition"
+              className="w-full rounded-md border border-[--brown] focus-within:ring-2 ring-[--moss-green] transition"
             />
             {errors.password && (
-              <p className="text-sm text-red-500 text-right">
+              <p className="text-sm text-[--deep-terracotta] text-right">
                 {errors.password}
               </p>
             )}
@@ -178,7 +178,7 @@ export default function Login() {
             Log In
           </button>
 
-          <p className="text-sm text-red-500 text-center mt-2">
+          <p className="text-sm text-[--deep-terracotta] text-center mt-2">
             {errors.form}
           </p>
         </form>

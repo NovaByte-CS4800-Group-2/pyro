@@ -185,7 +185,7 @@ export default function Content({
     const regex = new RegExp(`(${keyword})`, "gi");
     return text.split(regex).map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} className="bg-[--deep-moss] text[--porcelain] px-1 rounded">
+        <mark key={i} className="bg-[--olive-stone] text[--porcelain] px-1 rounded">
           {part}
         </mark>
       ) : (
@@ -199,7 +199,7 @@ export default function Content({
   const defaultContainerClasses =
     contentType === "post"
       ? "w-full max-w-2xl bg-[--porcelain] rounded-xl p-2 mb-2 mx-auto"
-      : "border-t border-[--clay-beige] pt-2 mt-2 text-sm text-[--greige-deep] relative";
+      : "border-t border-[--greige-deep] pt-2 mt-2 text-sm text-[--greige-deep] relative";
 
   const containerClasses = className || defaultContainerClasses;
 
@@ -328,7 +328,7 @@ export default function Content({
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2 bg-[--porcelain] border shadow-md rounded-md z-10 p-2">
+              <div className="absolute right-0 mt-2 bg-[--porcelain] border border-[--clay-beige] shadow-md rounded-md z-10 p-2">
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-[--bark] hover:bg-[--greige-mist]"
                   onClick={() => {

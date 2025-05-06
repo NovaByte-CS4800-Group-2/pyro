@@ -1,6 +1,4 @@
 "use client";
-
-import { Input } from "@heroui/input";
 import React from "react";
 
 interface SearchBarProps {
@@ -10,14 +8,26 @@ interface SearchBarProps {
   className?: string;
 }
 
-export default function SearchBar({ value, onChange, placeholder, className }: SearchBarProps) {
+export default function SearchBar({
+    value,
+    onChange,
+    placeholder,
+    className = "",
+  }: {
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  className?: string;
+}) {
   return (
-    <Input
+    <input
       type="text"
-      placeholder={placeholder || "Search..."}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full mb-4 hover:!border-[--deep-terracotta] ${className || ""}`}
-      />
+      placeholder={placeholder || "Search..."}
+      className={`w-full p-2 rounded-xl border border-[--porcelain] bg-[--porcelain] text-[--bark] 
+        placeholder-[--ash-olive] focus:outline-none focus:ring-1 focus:ring-[--bark] 
+        hover:bg-[--clay-beige]${className}`}
+    />
   );
 }
