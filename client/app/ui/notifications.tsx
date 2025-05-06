@@ -90,7 +90,7 @@ export default function Notifications({ userId, username }: NotificationsProps) 
   if (loading) return <div>Loading notifications...</div>;
 
   return (
-    <div className="space-y-2 max-w-sm max-h-[60vh] overflow-y-auto p-2 bg-white rounded shadow border border-gray-200">
+    <div className="space-y-2 max-w-sm max-h-[60vh] overflow-y-auto p-2 bg-[--porcelain] rounded shadow border border-[--clay-beige]">
       <h3 className="text-base font-bold">Notifications</h3>
       {notifications.length === 0 ? (
         <p>No notifications</p>
@@ -98,7 +98,7 @@ export default function Notifications({ userId, username }: NotificationsProps) 
         notifications.map((notif, index) => (
           <div
             key={`${notif.content_id}-${notif.type}-${index}`}
-            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-stone-100' : 'bg-white'}`}
+            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-[--classic-gray]' : 'bg-[--porcelain]'}`}
           >
             <button
               onClick={() => deleteNotif(notif.content_id, notif.type)}
