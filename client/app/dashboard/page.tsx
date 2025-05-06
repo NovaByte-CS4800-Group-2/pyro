@@ -5,15 +5,16 @@ import Subforumbar from "../ui/subforumbar";
 import Forum from "../ui/forum";
 
 export default function Dashboard() {
-  // Return html
   return (
-    <>
-      <div className="bg-[--greige-mist] flex-grow min-h-full pl-2 pr-2">
-        <div className="gap-y-5 flex flex-col items-stretch pt-10 m-auto w-auto self-center max-w-[900px]">
-          <Forum subforumID="1" />
-        </div>
-      </div>
-			<Subforumbar />
-    </>
+    <div className="flex flex-grow min-h-full bg-[--greige-mist] pt-6 pb-20">
+      <main className="flex-grow px-4">
+        <Forum subforumID="1" />
+      </main>
+
+      {/* Right sidebar only */}
+      <aside className="min-w-[200px] mr-4">
+        <Subforumbar />
+      </aside>
+    </div>
   );
 }

@@ -29,7 +29,7 @@ export default function Post(props: PostComponentProps) {
   console.log("Subforum ID passed to comments:", subforumId); // Debug log
 
   return (
-    <div className="w-full max-w-2xl bg-white shadow rounded-xl border border-gray-200 p-4 mb-4 mx-auto">
+    <div className="w-full max-w-2xl bg-[--porcelain] shadow rounded-xl border border-[--greige-deep] p-4 mb-4 mx-auto">
       <Content
         {...props}
         isSharedPost={isSharedPost} 
@@ -39,7 +39,7 @@ export default function Post(props: PostComponentProps) {
       >
         <div className="flex items-center space-x-6">
           <div
-            className="flex items-center gap-1 hover:text-black cursor-pointer"
+            className="flex items-center gap-1 hover:text-[--bark] cursor-pointer"
             onClick={() => {
               setCopied(false);
               setIsShareModalOpen(true);
@@ -64,7 +64,7 @@ export default function Post(props: PostComponentProps) {
                 <ModalHeader>Share Post</ModalHeader>
                 <ModalBody>
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[--greige-deep]">
                       Copy and share the link below:
                     </p>
                     <input
@@ -74,7 +74,7 @@ export default function Post(props: PostComponentProps) {
                       className="w-full px-3 py-2 border rounded-md text-sm"
                     />
                     <Button
-                      className="w-full bg-[--olive-stone] text-white hover:bg-[--deep-moss]"
+                      className="w-full bg-[--olive-stone] text-[--porcelain] hover:bg-[--deep-moss]"
                       onClick={() => {
                         navigator.clipboard.writeText(
                           `${window.location.origin}/dashboard/post/${contentId}`

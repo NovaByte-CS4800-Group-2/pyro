@@ -11,6 +11,7 @@ import { auth } from "@/app/firebase/config";
 import { useEffect } from "react";
 import { useState } from "react";
 import Notifications from "./notifications";
+import DarkModeToggle from "@/app/ui/darkmode";
 
 export default function Header() {
   const pathname = usePathname();
@@ -94,23 +95,28 @@ export default function Header() {
   }
 
   return (
-    <header
-      className="w-full shadow-md rounded-b-2xl px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 text-[--text-color]"
-      style={{ backgroundColor: "var(--clay-beige)" }}
-    >
-
-      <div className="w-full sm:w-1/3 flex justify-start" />
-
-      {/* pyro logo */}
-      <Link href="/" className="flex items-center gap-2 w-full sm:w-1/3 justify-center">
-        <FireIcon className="w-8" style={{ color: "var(--deep-terracotta)" }} />
-        <h1 className="text-3xl font-display font-bold text-[--bark]">Pyro</h1>
-      </Link>
-
-      
-      <div className= "w-full sm:w-1/3 flex justify-center sm:justify-end items-center gap-2 flex-wrap sm:flex-nowrap">
-        {navContent}
-      </div>
-    </header>
-  );
+      <header className="w-full shadow-md rounded-b-2xl px-4 sm:px-6 py-4 relative flex items-center justify-between text-[--text-color]" style={{ backgroundColor: "var(--clay-beige)" }}>
+        
+        {/* Left: Dark mode toggle */}
+        <div className="absolute left-4 sm:left-6">
+          <DarkModeToggle />
+        </div>
+    
+        {/* Center: Pyro logo */}
+        <div className="mx-auto">
+        <Link href="/" className="flex items-center gap-2">
+        <FireIcon className="w-8 text-[--deep-terracotta] hidden md:block" />
+          {/* Invisible placeholder to preserve height on mobile */}
+          <div className="w-8 h-8 md:hidden" aria-hidden="true" />
+          <h1 className="text-3xl font-display font-bold text-[--bark] hidden md:inline">Pyro</h1>
+        </Link>
+        </div>
+    
+        {/* Right: Nav content */}
+        <div className="absolute right-4 sm:right-6 flex items-center gap-2">
+          {navContent}
+        </div>
+    
+      </header>
+    );    
 }

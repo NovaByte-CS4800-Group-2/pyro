@@ -104,36 +104,36 @@ export default function Vote({ contentId, userId, username, isSharedPost = false
   
             // upvotes ,filled if theres a vote, outline otherwise
             <UpFilled
-              className="w-5 h-5 text-emerald-700 cursor-pointer"
+              className="w-5 h-5 text-[--deep-moss] cursor-pointer"
               onClick={() => handleVote(1)}
             />
           ) : (
             <HandThumbUpIcon
-              className="w-5 h-5 text-gray-500 hover:text-emerald-700 cursor-pointer"
+              className="w-5 h-5 text-[--deep-moss] hover:text-[--deep-moss] cursor-pointer"
               onClick={() => handleVote(1)}
             />
           )}
   
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-[--text-color]">
             {totalVotes}
           </span>
   
           {/* down votes */}
           {userVote === 0 ? (
             <DownFilled
-              className="w-5 h-5 text-red-800 cursor-pointer"
+              className="w-5 h-5 text-[--deep-terracotta] cursor-pointer"
               onClick={() => handleVote(0)}
             />
           ) : (
             <HandThumbDownIcon
-              className="w-5 h-5 text-gray-500 hover:text-red-800 cursor-pointer"
+              className="w-5 h-5 text-[--deep-terracotta] hover:text-[--deep-terracotta] cursor-pointer"
               onClick={() => handleVote(0)}
             />
           )}
         </div>
       ) : (
         // show message if not logged in
-        <p className="text-xs text-gray-500 italic">
+        <p className="text-xs text-[--ash-olive] italic">
           Please log in/register to interact with post.
         </p>
       )}

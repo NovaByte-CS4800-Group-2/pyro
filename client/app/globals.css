@@ -9,12 +9,16 @@
   --porcelain: #f8f8f6;
   --olive-stone: #6f7d5c;
   --greige-mist: #e2e0dc;
+  --greige-deep: #bcb7ae;
   --bark: #3e3a36;
-  --ash-olive: #9ba189;
+  --ash-olive: #949393;
   --clay-beige: #cfc8bb;
   --deep-moss: #4f5a3d;
   --muted-terracotta: #d9a173;
   --deep-terracotta: #b56b44;
+  --dark-green: #4e5444;
+  --brown: #151312;
+  --white: #d1c9c0;
 
   --accessible-beige: #d0c5b8;
   --classic-gray: #e3e0db;
@@ -32,8 +36,9 @@
   --text-color: var(--bark);
   --input-bg: white;
   --input-border: var(--ash-olive);
-  --button-bg: var(--olive-stone);
+  --button-bg: var(--bark);
   --button-hover: var(--deep-moss);
+  --button-text: #e9e2da;
 
   /* Fonts */
   --font-display: "Playfair Display", serif;
@@ -42,12 +47,27 @@
 
 /* Dark Mode */
 .dark {
-  --bg-color: #1c1c1a;
-  --text-color: #f0f0ed;
-  --input-bg: #2a2a28;
-  --input-border: #74816d;
-  --button-bg: #4a5840;
-  --button-hover: #b8734d;
+  --porcelain: #1e1b19;
+  --olive-stone: rgb(120, 131, 104);
+  --greige-mist: #292525;
+  --greige-deep: #5c5b57;
+  --bark: #d8d5ce;
+  --ash-olive: #868686;
+  --clay-beige: #3a3732;
+  --deep-moss: #7c8a66;
+  --muted-terracotta: #e8b693;
+  --deep-terracotta: #c8856c;
+  --dark-green: #4e5444;
+  --brown: #151312;
+  --white: #d1c9c0;
+
+  --bg-color: #242222;
+  --text-color: #d8d5ce;
+  --input-bg: #2b2b28;
+  --input-border: #e2e0dc;
+  --button-bg: #151312;
+  --button-hover: #868686;
+  --button-text: #e9e2da;
 }
 
 /* Base Styles */
@@ -69,8 +89,8 @@ body {
 /* Button Styling */
 .button {
   font-family: var(--font-display);
-  background-color: var(--bark);
-  color: var(--porcelain);
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border-radius: 10px;
   padding: 0.5rem 1rem;
   transition: background-color 0.2s ease-in-out;
@@ -78,7 +98,7 @@ body {
 }
 
 .button:hover {
-  background-color: var(--deep-moss);
+  background-color: var(--button-hover);
 }
 
 /* Carousel Styles (Embla) */

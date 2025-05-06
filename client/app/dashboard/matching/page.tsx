@@ -96,7 +96,7 @@ export default function Matching() {
 		<div className="flex-grow flex">
 			<div className="flex flex-col flex-grow items-center m-5">
 				<h2 className="font-semibold text-3xl text-center mb-3">Welcome to the Matching Page!</h2>
-				<p className="max-w-xl text-lg">Here you can apply to host those in need of housing or request housing for you and your loved ones. Keep in mind that you can only have one active application at a time. In order to change the details of your application, you must delete the previous one and reapply.</p>
+				<p className="max-w-xl text-justify text-lg">Here you can apply to host those in need of housing or request housing for you and your loved ones. Keep in mind that you can only have one active application at a time. In order to change the details of your application, you must delete the previous one and reapply.</p>
 				{showMatches ? 
 				<div className="flex-grow mt-10 gap-y-10">
 					<MatchingForm type={form.type === "offering" ? 1 : 0} found_matches={matches} form_id={form.form_id}/>
@@ -107,7 +107,7 @@ export default function Matching() {
 						<Card className="h-full w-full">
 							<CardBody>
 								<div className="flex justify-center items-center h-full">
-									<p className={"text-3xl text-center" + (form.user_id === "" ? "" : " text-stone-400")}>Apply to Host</p>
+									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--greige-deep]")}>Apply to Host</p>
 								</div>
 							</CardBody>
 						</Card>
@@ -116,21 +116,21 @@ export default function Matching() {
 						<Card className="h-full w-full">
 							<CardBody>
 								<div className="flex justify-center items-center h-full">
-									<p className={"text-3xl text-center" + (form.user_id === "" ? "" : " text-stone-400")}>Apply for Housing</p>
+									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--greige-deep]")}>Apply for Housing</p>
 								</div>
 							</CardBody>
 						</Card>
 					</Link>
 				</div>}
 			</div>			
-			<div className="flex flex-col items-center min-w-[215px] bg-stone-100 border-l border-stone-300 shadow-sm ml-auto">
-				<h2 className="text-lg font-semibold px-4 py-3 text-neutral-800 border-b-2 border-stone-200">
+			<div className="flex flex-col items-center min-w-[215px] bg-[--porcelain] border-l border-[--porcelain] shadow-lg ml-auto">
+				<h2 className="text-lg font-semibold px-4 py-3 text-[--bark] border-b-2 border-[--bark]">
 					Application Status
 				</h2>
 				{ form.user_id ?  
-					( <div className="border-1 border-neutral-200 shadow-md py-2 px-3 rounded-lg mt-4 flex-col flex">
+					( <div className="border-1 border-[--greige-mist] shadow-md py-2 px-3 rounded-lg mt-4 flex-col flex">
 						<p className="text-lg font-semibold text-center">{form.type === "offering" ? "Hosting" : "Housing"} Form</p>
-						{matches.length > 0 ? <div className="flex mb-1 items-center gap-x-1 justify-center"><CheckBadgeIcon className="text-green-600" width={20} height={20} /><p>Match Available!</p></div> : <div className="flex mb-1 items-center gap-x-1 justify-center"><InformationCircleIcon className="text-yellow-600" width={20} height={20} /><p> Waiting for a match!</p></div>}
+						{matches.length > 0 ? <div className="flex mb-1 items-center gap-x-1 justify-center"><CheckBadgeIcon className="text-green-600" width={20} height={20} /><p>Match Available!</p></div> : <div className="flex mb-1 items-center gap-x-1 justify-center"><InformationCircleIcon className="text-[--deep-terracotta]" width={20} height={20} /><p> Waiting for a match!</p></div>}
 						<p>Bedrooms: {form.num_rooms}</p>
 						<p>Guests: {form.num_people}</p>
 						<p>Young Children: {form.young_children}</p>
@@ -148,7 +148,7 @@ export default function Matching() {
 						
 					</div> ) :
 					(
-						<p className="mt-4 max-w-[215px] px-3"> After you create a form you will be able to see its status here! Already submitted one but it's not here? Check your notifications to see if you have a match!</p>
+						<p className="mt-4 text-center max-w-[215px] px-3"> After you create a form you will be able to see its status here! Already submitted one but it's not here? Check your notifications to see if you have a match!</p>
 					)
 				}
 			</div>

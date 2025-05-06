@@ -41,7 +41,7 @@ export default function RootLayout({
   // Return html
   if (authenticating) {
     return (
-      <div className="flex items-center justify-center flex-grow">
+      <div className="flex items-center justify-center bg-[--greige-mist] flex-grow">
         <CircularProgress
           className="pr-4"
           color="primary"
@@ -52,10 +52,10 @@ export default function RootLayout({
     );
   } else {
     return (
-      <div className="flex justify-stretch items-stretch flex-row flex-grow mt-2 mb-2">
-        <Navbar></Navbar>
+      <div className="flex flex-col lg:flex-row min-h-screen bg-[--greige-mist] mt-2 mb-2">
+        <Navbar />
         {children}
       </div>
-    );
+    );    
   }
 }
