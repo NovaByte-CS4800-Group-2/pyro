@@ -291,7 +291,7 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 					<p className="text-sm mb-4">Fields marked with a red asterisk <span className="text-red-500">*</span> are required.</p>
 					{/* General Fields */}
 					<Input name="zipcode" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Zipcode" type="text" description={type ? "The zipcode of your hosting address." : "The zipcode of your current location."} placeholder="12345" value={zipcode} onChange={validateZipcode} isRequired isClearable minLength={5} maxLength={5}></Input>
-					{type == 0 && <Slider id="max_distance" className="max-w-72" value={maxDistance[0]} onChangeEnd={(e) => {Array.isArray(e) ? setMaxDistance(e) : setMaxDistance([e])}} label="Maximum Distance" maxValue={200} minValue={0} step={1}></Slider>}
+					{type == 0 && <Slider id="max_distance" className="max-w-72" onChangeEnd={(e) => {Array.isArray(e) ? setMaxDistance(e) : setMaxDistance([e])}} label="Maximum Distance" maxValue={200} minValue={0} step={1}></Slider>}
 					{type == 0 && <p className="text-xs -ml-10 text-neutral-400">The maximum distance you are willing to travel.</p>}
 					<NumberInput name="num_rooms" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Bedrooms" description={"The " + (type ? "" : "minimum") + " number of bedrooms " + (type ? "available for your guest(s)." : "required.")} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
 					<NumberInput id="num-people" name="num_people" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Guests" description={"The total number of people " + descriptionEnding} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
