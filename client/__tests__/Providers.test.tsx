@@ -1,5 +1,5 @@
 import {render, screen, waitFor } from '@testing-library/react';
-import { Providers } from '@/app/Providers';
+import { Providers } from '@/app/providers';
 import '@testing-library/jest-dom';
 
 

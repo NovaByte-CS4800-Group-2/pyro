@@ -74,6 +74,14 @@ export default function Chatbot() {
     document.removeEventListener("mousemove", handleMouseMove); // Remove mousemove event listener
     document.removeEventListener("mouseup", handleMouseUp); // Remove mouseup event listener
   };
+  
+  if (process.env.NODE_ENV === "test") {
+    // @ts-ignore
+    (window as any).__TEST_HACK_CHATBOT_REFS__ = {
+      chatboxRef,
+      handleMouseDown,
+    };
+  }
 
   {/* Render the chatbox component */}
   return (
@@ -154,4 +162,6 @@ export default function Chatbot() {
       )}
     </>
   );
+
+
 }
