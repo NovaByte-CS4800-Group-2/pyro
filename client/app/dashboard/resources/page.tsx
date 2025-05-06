@@ -41,7 +41,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://readyforwildfire.org/prepare-for-wildfire/emergency-supply-kit/" && (
-						<div className="toast text-black text-sm mt-2 text-red-950">
+						<div className="toast text-sm mt-2 text-red-950">
 							<p>Link copied to clipboard!</p>
 						</div>
 						)}
@@ -71,7 +71,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/wildfire.html?srsltid=AfmBOopRTJ8Nh58i4OClG0bJSb908NNxzmBSkWNO0695k2hdOEJruFdf" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast  text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -102,7 +102,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.weather.gov/safety/wildfire-ready" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -133,7 +133,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.sce.com/wildfire/wildfire-mitigation-efforts?ecid=ppc~ggl~psps~mkt~res~40125~%epid!&gclsrc=aw.ds&gad_source=1&gad_campaignid=22398918419&gbraid=0AAAAABWg2-JvrXhxpqfcehLjRnpHwH-Pe&gclid=Cj0KCQjww-HABhCGARIsALLO6XwioIxcCpUaQOSB1bmU7EChdiJfn8acczvA9SnT0cKm1iiHvFbDjE0aAnTSEALw_wcB" && (
-						<div className="toast text-black text-sm mt-2 text-red-950">
+						<div className="toast  text-sm mt-2 text-red-950">
 							<p>Link copied to clipboard!</p>
 						</div>
 						)}
@@ -163,7 +163,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.nifc.gov/fire-information" && (
-						<div className="toast text-black text-sm mt-2 text-red-950">
+						<div className="toast  text-sm mt-2 text-red-950">
 							<p>Link copied to clipboard!</p>
 						</div>
 						)}
@@ -196,7 +196,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.dnr.wa.gov/publications/rp_fire_how_to_prepare_wildfire.pdf" && (
-						<div className="toast text-black text-sm mt-2 text-red-950">
+						<div className="toast text-sm mt-2 text-red-950">
 							<p>Link copied to clipboard!</p>
 						</div>
 						)}
@@ -231,7 +231,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.parks.ca.gov/?page_id=30661" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -262,7 +262,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.ruidoso-nm.gov/wildfire-safety-tips" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -293,7 +293,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.ready.gov/wildfires" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -326,7 +326,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://lafd.org/ready-set-go#:~:text=Create%20a%20Wildfire%20Action%20Plan,important%20evacuation%20and%20contact%20information." && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -357,7 +357,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.climatehubs.usda.gov/sites/default/files/A%20Guide%20to%20Staying%20Safe%20During%20Wildfires_1.pdf" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -388,7 +388,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://idahofirewise.org/evacuation/if-you-get-trapped/" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -422,7 +422,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://readyforwildfire.org/post-wildfire/after-a-wildfire/" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -453,7 +453,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://readyforwildfire.org/post-wildfire/returning-home/" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -483,7 +483,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://wildfirerisk.org/reduce-risk/wildfire-response/" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -513,7 +513,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://calepa.ca.gov/disaster/fire/" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -544,7 +544,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.cafirefoundation.org/what-we-do/for-communities/disaster-relief" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
@@ -575,7 +575,7 @@ export default function Resources() {
 						</button>
 						{/* Custom Toast for the link copy */
 						activeToastUrl === "https://www.cdph.ca.gov/Programs/EPO/CDPH%20Document%20Library/Wildfire%20Cleanup%20Considerations%20for%20California%27s%20Public%20Health%20Officials%20%28August%202019%29.pdf" && (
-							<div className="toast text-black text-sm mt-2 text-red-950">
+							<div className="toast text-sm mt-2 text-red-950">
 								<p>Link copied to clipboard!</p>
 							</div>
 						)}
