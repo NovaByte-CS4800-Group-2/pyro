@@ -181,8 +181,7 @@ class Matching
           if(type === "offering")
             max_distace = form["max_distace"];
 
-  
-          if (distance > 100) continue;  // Skip forms too far away
+          if (distance > max_distace) continue;  // Skip forms too far away
   
         } catch (err) {
           console.log(`Failed to get distance for zipcodes ${match_form["zipcode"]} and ${form["zipcode"]}:`, err);
