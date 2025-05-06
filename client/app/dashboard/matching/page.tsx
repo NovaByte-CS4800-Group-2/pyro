@@ -107,7 +107,7 @@ export default function Matching() {
 						<Card className="h-full w-full">
 							<CardBody>
 								<div className="flex justify-center items-center h-full">
-									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--bark]")}>Apply to Host</p>
+									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--greige-deep]")}>Apply to Host</p>
 								</div>
 							</CardBody>
 						</Card>
@@ -116,7 +116,7 @@ export default function Matching() {
 						<Card className="h-full w-full">
 							<CardBody>
 								<div className="flex justify-center items-center h-full">
-									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--porcelain]")}>Apply for Housing</p>
+									<p className={"text-3xl font-semibold text-center" + (form.user_id === "" ? "" : " text-[--greige-deep]")}>Apply for Housing</p>
 								</div>
 							</CardBody>
 						</Card>

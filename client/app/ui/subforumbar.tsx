@@ -41,30 +41,25 @@ export default function Subforumbar({ className = "", mobile = false }: Subforum
     }
   }, [pathname]);
 
-  /*if (mobile) {
-    return (
-      <div className="flex flex-col bg-[--porcelain] border border-[--porcelain] shadow-sm rounded-md mb-4">
-        <h2 className="text-lg font-bold font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
-          Subforums
-        </h2>
-        <select
-          value={selectedSubforumId}
-          onChange={(e) => {
-            const id = Number(e.target.value);
-            setSelectedSubforumId(id);
-            window.location.href = `/dashboard/subforum/${id}`;
-          }}
-          className="px-4 py-3 text-[--bark] bg-[--greige-mist] border-none focus:outline-none font-normal"
-        >
-          {subforums.map((sf) => (
-            <option key={sf.subforum_id} value={sf.subforum_id}>
-              {sf.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  }  */
+    if (mobile) {
+  return (
+    <div className="flex flex-col bg-[--porcelain] border border-[--porcelain] shadow-sm rounded-md mb-4">
+      <h2 className="text-lg font-bold font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
+        Subforums
+      </h2>
+      <select
+  value={selectedSubforumId}
+  onChange={(e) => {
+    const id = Number(e.target.value);
+    setSelectedSubforumId(id);
+    window.location.href = `/dashboard/subforum/${id}`;
+  }}
+  className="block w-full px-4 py-3 text-[--bark] bg-[--greige-mist] border-none appearance-none focus:outline-none font-normal rounded-b-md shadow-inner"
+/>
+    </div>
+  );
+}
+
 
   // return the subforum bar component
   return (

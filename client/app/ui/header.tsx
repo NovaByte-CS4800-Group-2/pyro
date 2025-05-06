@@ -105,10 +105,10 @@ export default function Header() {
         {/* Center: Pyro logo */}
         <div className="mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <FireIcon className="w-8 text-[--deep-terracotta] hidden sm:block" />
+        <FireIcon className="w-8 text-[--deep-terracotta] hidden md:block" />
           {/* Invisible placeholder to preserve height on mobile */}
-          <div className="w-8 h-8 sm:hidden" aria-hidden="true" />
-          <h1 className="text-3xl font-display font-bold text-[--bark] hidden sm:inline">Pyro</h1>
+          <div className="w-8 h-8 md:hidden" aria-hidden="true" />
+          <h1 className="text-3xl font-display font-bold text-[--bark] hidden md:inline">Pyro</h1>
         </Link>
         </div>
     
