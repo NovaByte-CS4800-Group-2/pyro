@@ -11,20 +11,20 @@ export default function Dashboard() {
 
       {/* Center: Forum Content */}
       <main className="flex-grow w-full max-w-[900px] mx-auto">
-        {/* Mobile: Subforum dropdown */}
+       
         <div className="block lg:hidden mb-6">
           <Subforumbar mobile />
         </div>
+
 
         {/* Forum content */}
         <Forum subforumID="1" />
       </main>
 
-      {/* Right Sidebar: Subforums (desktop only) - STICKY */}
-      <aside className="hidden lg:block w-[200px] mr-4 sticky top-[100px] h-fit">
+      {/* Right Sidebar: Subforums (desktop only) */}
+      <aside className="hidden lg:block w-[200px] mr-4">
         <Subforumbar />
       </aside>
     </div>
   );
 }
-
