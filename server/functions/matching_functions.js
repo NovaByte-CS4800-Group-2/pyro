@@ -177,9 +177,9 @@ class Matching
           distance = data.distance;
           console.log(`Distance between ${match_form["zipcode"]} and ${form["zipcode"]}:`, distance);
 
-          let max_distace = match_form["max_distace"];
+          let max_distace = match_form["max_distance"];
           if(type === "offering")
-            max_distace = form["max_distace"];
+            max_distace = form["max_distance"];
 
           if (distance > max_distace) continue;  // Skip forms too far away
   

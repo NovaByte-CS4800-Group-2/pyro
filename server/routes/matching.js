@@ -46,7 +46,7 @@ router.post('/create/matching/form', async(req, res) => {
 router.get('/get/match/:id/:type', async(req, res) => {
   const {id, type} = req.params;
 
-  if(!id || !type) return res.status(400).json({ error: "missing paramaters"});
+  if(!id || !type) return res.status(400).json({ error: "missing parameters"});
 
   const matches = await Matching.match(id, type);
 
@@ -76,7 +76,7 @@ router.get('/get/form/:id', async(req, res) => {
 })
 
 /**
- * @route GET /get/form/:id
+ * @route GET /get/user/form/:id
  * @description Return a single matching form by ID
  * @param {number} req.params.id - user ID associated with the form
  * @returns {Object} 200 - Success message
