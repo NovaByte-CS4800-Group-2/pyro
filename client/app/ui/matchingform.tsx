@@ -277,20 +277,20 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 		);
 	} else {
 		return (
-			<div className="rounded-lg border-1 border-neutral-300 py-5 px-10 m-10 flex flex-col items-center shadow-md">
+			<div className="rounded-lg border-1 bg-[--porcelain] border-[--porcelain] py-5 px-10 m-10 flex flex-col items-center shadow-md">
 				<Link href="/dashboard/matching" className="flex gap-x-1 items-center self-start mb-2"><ArrowUturnLeftIcon width={18} height={18}></ArrowUturnLeftIcon> Back</Link>
 				{/* Main Form Component */}
 				<Form autoComplete="off" aria-labelledby="hosting-form-title" onSubmit={submitForm} className="flex flex-col items-center">
 					{/* Informational Components */}
 					<h2 id="hosting-form-title" className="text-4xl mb-4">{type ? "Hosting" : "Housing"} Form</h2>
 					<p className="max-w-lg text-center">{type ? "Thank you for providing support for those in need!" : "Looking for temporary housing provided by the Pyro community?"} Please fill out the fields below and we will contact you when a match has been found.</p>
-					<p className="text-sm mb-4">Fields marked with a red asterisk <span className="text-red-500">*</span> are required.</p>
+					<p className="text-sm mb-4">Fields marked with an orange asterisk <span className="text-danger">*</span> are required.</p>
 					{/* General Fields */}
 					<Input name="zipcode" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Zipcode" type="text" description={type ? "The zipcode of your hosting address." : "The zipcode of your current location."} placeholder="12345" value={zipcode} onChange={validateZipcode} isRequired isClearable minLength={5} maxLength={5}></Input>
 					<NumberInput name="num_rooms" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Bedrooms" description={"The " + (type ? "" : "minimum") + " number of bedrooms " + (type ? "available for your guest(s)." : "required.")} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
 					<NumberInput id="num-people" name="num_people" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Number of Guests" description={"The total number of people " + descriptionEnding} placeholder="Enter a number" isRequired minValue={1} maxValue={99}></NumberInput>
 					{/* List of Characteristics */}
-					<p className="text-red-500 text-sm text-center max-w-lg">{error}</p>
+					<p className="text-[--bark] text-sm text-center max-w-lg">{error}</p>
 					<p className="max-w-lg font-semibold"> For the following section please provide the number of each {type ? "that you are willing to host" : "in your party"}:</p>
 					<NumberInput name="young_children" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Young Children" description={"The number of young children (0-7) " + descriptionEnding} placeholder="Enter a number" minValue={0} maxValue={99}></NumberInput>
 					<NumberInput name="adolescent_children" classNames={{innerWrapper: "mt-2"}} className="max-w-72" label="Adolescent Children" description={"The number of adolescent children (8-13) " + descriptionEnding} placeholder="Enter a number" minValue={0} maxValue={99}></NumberInput>
@@ -303,9 +303,9 @@ const MatchingForm: React.FC<MatchingFormProps> = ({ type, found_matches, form_i
 					
 					{/* Term Checkbox */}
 					<h3 className="font-semibold">Terms and Conditions</h3>
-					<p className="max-w-lg mb-2">I agree to let Nova Byte share my email with a user {type ? "in need of housing" : "providing housing"} whose attributes match those that I have listed. I agree to not hold Nova Byte liable for any actions taken by said user with my email address or at the hosting address. I understand that I am allowed to pull this application at any time, in which case my email will no longer be shared with other users until the time that I file another application.</p>
-					<Checkbox id="terms" name="terms" value="1" className="max-w-lg" isRequired><span className="text-red-500">*</span> I acknowledge that I have read and understand the terms and conditions above.</Checkbox>
-					<Button type="submit" className="bg-[--ash-olive] text-[--bark] font-semibold">Submit</Button>
+					<p className="max-w-lg text-justify mb-2">I agree to let Nova Byte share my email with a user {type ? "in need of housing" : "providing housing"} whose attributes match those that I have listed. I agree to not hold Nova Byte liable for any actions taken by said user with my email address or at the hosting address. I understand that I am allowed to pull this application at any time, in which case my email will no longer be shared with other users until the time that I file another application.</p>
+					<Checkbox id="terms" name="terms" value="1" className="max-w-lg" isRequired><span className="text-danger">*</span> I acknowledge that I have read and understand the terms and conditions above.</Checkbox>
+					<Button type="submit" className="bg-[--brown] text-[--white] font-semibold">Submit</Button>
 				</Form>
 				<Modal size="sm" hideCloseButton={true} isDismissable={false} isKeyboardDismissDisabled={true} isOpen={isOpen} onOpenChange={onOpenChange}>
 					<ModalContent>

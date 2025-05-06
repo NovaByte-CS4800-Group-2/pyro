@@ -403,7 +403,7 @@ export default function CreatePost() {
     <div className="flex flex-col items-center justify-center min-h-screen">
       {/* Error Message */}
       {errorMessage && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-60">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-[--porcelain] px-4 py-2 rounded shadow-lg z-60">
           {errorMessage}
         </div>
       )}
@@ -412,7 +412,7 @@ export default function CreatePost() {
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-md">
           <div className="absolute inset-0 bg-black opacity-50 z-40" />
-          <div className="bg-white p-6 rounded-lg w-1/3 z-50 shadow-xl">
+          <div className="bg-[--porcelain] p-6 rounded-lg w-1/3 z-50 shadow-xl">
             <h2 className="text-xl font-display font-bold mb-4">New Post</h2>
 
             {/* Subforum selection */}
@@ -420,7 +420,7 @@ export default function CreatePost() {
               <div className="mb-4">
                 <label
                   htmlFor="subforum"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-[--greige-deep]"
                 >
                   -- Select Subforum --
                 </label>
@@ -429,7 +429,7 @@ export default function CreatePost() {
                   name="subforum"
                   value={city || ""}
                   onChange={(e) => setCity(e.target.value)} // Update city instead of subforumId
-                  className="mt-1 block w-full pl-3 pr-10 py-2 font-semibold text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 font-semibold text-base border-[--clay-beige] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
                   <option value="" disabled> 
                     -- Select a Subforum --
@@ -464,13 +464,13 @@ export default function CreatePost() {
              {/* Media Preview Section */}
              {mediaPreviewURLs.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Attached Media</h4>
+                <h4 className="text-sm font-medium text-[--clay-beige] mb-2">Attached Media</h4>
                 <div className="flex flex-wrap gap-2">
                   {mediaPreviewURLs.map((url, index) => (
                     <div key={index} className="relative">
                       {url.startsWith('blob:') ? (
                         // Display image preview
-                        <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-300">
+                        <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-[--clay-beige]">
                           <img 
                             src={url} 
                             alt={`Media ${index + 1}`} 
@@ -478,22 +478,22 @@ export default function CreatePost() {
                           />
                           <button
                             onClick={() => handleRemoveMedia(index)}
-                            className="absolute top-0 right-0 bg-white rounded-full p-0.5"
+                            className="absolute top-0 right-0 bg-[--porcelain] rounded-full p-0.5"
                           >
-                            <XMarkIcon className="h-4 w-4 text-gray-500" />
+                            <XMarkIcon className="h-4 w-4 text-[--greige-mist]" />
                           </button>
                         </div>
                       ) : (
                         // Display file type icon for non-images
-                        <div className="relative h-20 w-20 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-50">
-                          <div className="text-xs text-gray-500 text-center overflow-hidden">
+                        <div className="relative h-20 w-20 flex items-center justify-center rounded-lg border border-[--clay-beige] bg-[--white]">
+                          <div className="text-xs text-[--greige-mist] text-center overflow-hidden">
                             {url.split('/')[1]?.toUpperCase() || 'FILE'}
                           </div>
                           <button
                             onClick={() => handleRemoveMedia(index)}
-                            className="absolute top-0 right-0 bg-white rounded-full p-0.5"
+                            className="absolute top-0 right-0 bg-[--porcelain] rounded-full p-0.5"
                           >
-                            <XMarkIcon className="h-4 w-4 text-gray-500" />
+                            <XMarkIcon className="h-4 w-4 text-[--greige-mist]" />
                           </button>
                         </div>
                       )}
@@ -515,7 +515,7 @@ export default function CreatePost() {
             <button
               type="button"
               onClick={handleAddMediaClick}
-              className="flex items-center justify-center text-sm text-gray-600 hover:text-[--muted-terracotta] mb-4"
+              className="flex items-center justify-center text-sm text-[--greige-deep] hover:text-[--muted-terracotta] mb-4"
             >
               <PhotoIcon className="h-5 w-5 mr-1" />
               Add Media
@@ -536,7 +536,7 @@ export default function CreatePost() {
                   }
                 }}
                 disabled={!postContent.body.trim()}
-                className="bg-[--deep-moss] text-white px-4 py-2"
+                className="bg-[--deep-moss] text-[--porcelain] px-4 py-2"
               >
                 Post
               </Button>

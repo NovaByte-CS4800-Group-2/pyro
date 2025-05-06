@@ -45,6 +45,10 @@ module.exports = {
             foreground: "#ffffff",
             DEFAULT: "#B56B44"
           },
+          danger: {
+            foreground: "#ffffff",
+            DEFAULT: "#BA5E4D", // deep-terracotta
+          },
           /* type BaseColors = {
             background: ColorScale, // the page background color
             foreground: ColorScale, // the page text color
@@ -77,6 +81,10 @@ module.exports = {
           secondary: {
             foreground: "#ffffff",
             DEFAULT: "#c57d5c", // lighter terracotta
+          },
+          danger: {
+            foreground: "#ffffff",
+            DEFAULT: "#D2786A", // deep-terracotta
           },
           background: {
             50: "#2b2b28",

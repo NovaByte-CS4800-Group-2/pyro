@@ -2,7 +2,7 @@
 
 export default function Resources() {
 	return (
-		<div className="flex flex-col text-center gap-y-5 mx-6 w-full h-fullpt-1">
+		<div className="flex flex-col text-center bg-[--greige-mist] gap-y-5 mx-6 w-full h-fullpt-1">
 			<h2 className="text-left text-2xl font-bold font-display mt-8">Wildfire Preparedness</h2>
 			<div className="flex flex-wrap gap-x-10 gap-y-10"> 
 				{/* Resource Card */}
