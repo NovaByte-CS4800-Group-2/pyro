@@ -5,15 +5,26 @@ import Subforumbar from "../ui/subforumbar";
 import Forum from "../ui/forum";
 
 export default function Dashboard() {
-  // Return html
   return (
-    <>
-      <div className="bg-[--greige-mist] flex-grow min-h-full pl-2 pr-2">
-        <div className="gap-y-5 flex flex-col items-stretch pt-10 m-auto w-auto self-center max-w-[900px]">
-          <Forum subforumID="1" />
+    <div className="flex flex-col lg:flex-row flex-grow min-h-full bg-[--greige-mist] px-2 pt-6 pb-20">
+      {/* Left Sidebar: Navbar is handled globally in layout */}
+
+      {/* Center: Forum Content */}
+      <main className="flex-grow w-full max-w-[900px] mx-auto">
+       
+        <div className="block lg:hidden mb-6">
+          <Subforumbar mobile />
         </div>
-      </div>
-			<Subforumbar />
-    </>
+
+
+        {/* Forum content */}
+        <Forum subforumID="1" />
+      </main>
+
+      {/* Right Sidebar: Subforums (desktop only) */}
+      <aside className="hidden lg:block w-[200px] mr-4">
+        <Subforumbar />
+      </aside>
+    </div>
   );
 }

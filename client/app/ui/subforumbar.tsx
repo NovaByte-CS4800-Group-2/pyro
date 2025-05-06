@@ -11,9 +11,10 @@ type Subforum = { // Define the Subforum type
 
 interface SubforumbarProps { // Define the props for the Subforumbar component
   className?: string;
+  mobile?: boolean;
 }
 
-export default function Subforumbar({ className }: SubforumbarProps) { // Define the Subforumbar component
+export default function Subforumbar({ className = "", mobile = false }: SubforumbarProps) { // Define the Subforumbar component
   const [subforums, setSubforums] = useState<Subforum[]>([]); // State to manage the list of subforums
   const [selectedSubforumId, setSelectedSubforumId] = useState<number>(1); // Default to subforum_id 1
   const pathname = usePathname(); 
@@ -40,10 +41,35 @@ export default function Subforumbar({ className }: SubforumbarProps) { // Define
     }
   }, [pathname]);
 
+  if (mobile) {
+    return (
+      <div className="flex flex-col bg-[--porcelain] border border-[--porcelain] shadow-sm rounded-md mb-4">
+        <h2 className="text-lg font-bold font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
+          Subforums
+        </h2>
+        <select
+          value={selectedSubforumId}
+          onChange={(e) => {
+            const id = Number(e.target.value);
+            setSelectedSubforumId(id);
+            window.location.href = `/dashboard/subforum/${id}`;
+          }}
+          className="px-4 py-3 text-[--bark] bg-[--greige-mist] border-none focus:outline-none font-normal"
+        >
+          {subforums.map((sf) => (
+            <option key={sf.subforum_id} value={sf.subforum_id}>
+              {sf.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }  
+
   // return the subforum bar component
   return (
-    <div className={`flex flex-col min-w-[200px] bg-[--porcelain] border-l border-[--porcelain] shadow-lg`} >
-      <h2 className="text-lg bg-[--brown] font-bold font-display px-4 py-3 text-[--white] border-b border-[--porcelain]">
+    <div className={`flex flex-col min-w-[200px] bg-[--porcelain] border-l border-[--porcelain] shadow-sm`}>
+      <h2 className="text-lg font-bold bg-[--porcelain] font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
         Subforums
       </h2>
       {subforums.map((sf) => {

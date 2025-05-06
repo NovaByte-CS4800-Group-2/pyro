@@ -25,7 +25,7 @@ const navLinks = user
 
   return (
     <div className={`flex flex-col min-w-[200px] bg-[--porcelain] border-l border-[--porcelain] shadow-sm`} >
-      <h2 className="text-lg font-bold bg-[--brown] font-display px-4 py-3 text-[--white] border-b border-[--porcelain]">
+      <h2 className="text-lg font-bold bg-[--porcelain] font-display px-4 py-3 text-[--bark] border-b border-[--porcelain]">
         Navigation
       </h2>
       {navLinks.map((link) => {

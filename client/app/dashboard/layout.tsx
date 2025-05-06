@@ -52,10 +52,10 @@ export default function RootLayout({
     );
   } else {
     return (
-      <div className="flex justify-stretch items-stretch flex-row bg-[--greige-mist] flex-grow mt-2 mb-2">
-        <Navbar></Navbar>
+      <div className="flex flex-col lg:flex-row min-h-screen bg-[--greige-mist] mt-2 mb-2">
+        <Navbar />
         {children}
       </div>
-    );
+    );    
   }
 }
