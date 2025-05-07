@@ -6,6 +6,8 @@ import {
   useSendEmailVerification,
   useUpdateProfile,
 } from "react-firebase-hooks/auth";
+import { text } from "stream/consumers";
+import exp from "constants";
 
 // Mock required dependencies
 jest.mock("next/navigation", () => ({
@@ -300,12 +302,14 @@ describe("Register Component", () => {
 
     // Get required input fields and fill the form
     const inputFields = container.querySelectorAll("input");
+    const nameInput = inputFields[0];
     const emailInput = inputFields[1];
     const usernameInput = inputFields[2];
     const zipCodeInput = inputFields[3];
     const passwordInput = inputFields[6];
     const confirmPasswordInput = inputFields[7];
 
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(usernameInput, { target: { value: "testuser" } });
     fireEvent.change(zipCodeInput, { target: { value: "12345" } });
@@ -317,11 +321,7 @@ describe("Register Component", () => {
     // Submit the form
     fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
-    // Wait for async operations
-    await waitFor(() => {
-      expect(
-        screen.getByText(/An unexpected error occurred/i)
-      ).toBeInTheDocument();
-    });
+    const error = await screen.findByText(/An unexpected error occurred/i);
+    expect(error).toBeInTheDocument();
   });
 });

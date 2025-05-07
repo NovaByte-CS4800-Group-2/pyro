@@ -9,11 +9,11 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({
-    value,
-    onChange,
-    placeholder,
-    className = "",
-  }: {
+  value,
+  onChange,
+  placeholder,
+  className = "",
+}: {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
@@ -27,7 +27,7 @@ export default function SearchBar({
       placeholder={placeholder || "Search..."}
       className={`w-full p-2 rounded-xl border border-[--porcelain] bg-[--porcelain] text-[--bark] 
         placeholder-[--ash-olive] focus:outline-none focus:ring-1 focus:ring-[--bark] 
-        hover:bg-[--clay-beige]${className}`}
+        hover:bg-[--clay-beige] ${className}`}
     />
   );
 }
