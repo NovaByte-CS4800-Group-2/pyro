@@ -98,7 +98,7 @@ export default function Notifications({ userId, username }: NotificationsProps) 
         notifications.map((notif, index) => (
           <div
             key={`${notif.content_id}-${notif.type}-${index}`}
-            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-[--porcelain]' : 'bg-[--porcelain]'}`}
+            className={`relative border p-4 rounded shadow-sm ${notif.read ? 'bg-[--greige-mist]' : 'bg-[--porcelain]'}`}
           >
             <button
               onClick={() => deleteNotif(notif.content_id, notif.type)}
@@ -153,7 +153,7 @@ export default function Notifications({ userId, username }: NotificationsProps) 
                       “
                       {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
                         part === `@${username}` ? (
-                          <span key={i} className="text-[--deep-moss] font-semibold">{part}</span>
+                          <span key={i} className="text-[--deep-terracotta] font-bold">{part}</span>
                         ) : (
                           <span key={i}>{part}</span>
                         )
@@ -185,7 +185,7 @@ export default function Notifications({ userId, username }: NotificationsProps) 
                 <div className="p-2 rounded border text-[--bark]">
                   {notif.content.body.split(/(@[\w.-]+)/g).map((part, i) =>
                     part === `@${username}` ? (
-                      <span key={i} className="text-[--deep-moss] font-semibold">{part}</span>
+                      <span key={i} className="text-[--deep-terracotta] font-semibold">{part}</span>
                     ) : (
                       <span key={i}>{part}</span>
                     )
