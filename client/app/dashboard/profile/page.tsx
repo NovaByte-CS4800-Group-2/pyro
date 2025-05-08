@@ -264,8 +264,18 @@ export default function Profile() {
 				password
 			)
 			if (credential) {
-					await reauthenticateWithCredential(user, credential)
-					await updatePassword(newPassword);
+					try {
+						await reauthenticateWithCredential(user, credential)
+						await updatePassword(newPassword);
+					} catch (e) {
+						addToast({
+							color: "danger",
+							variant: "bordered",
+							title: "Password Change",
+							description: `The given password was incorrect. Please try again.`,
+							timeout: 3000,
+						});					
+					}
 			}
 		}
 	}
