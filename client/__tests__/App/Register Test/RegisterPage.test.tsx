@@ -6,8 +6,6 @@ import {
   useSendEmailVerification,
   useUpdateProfile,
 } from "react-firebase-hooks/auth";
-import { text } from "stream/consumers";
-import exp from "constants";
 
 // Mock required dependencies
 jest.mock("next/navigation", () => ({
