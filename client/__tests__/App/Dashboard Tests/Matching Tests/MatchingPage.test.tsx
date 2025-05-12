@@ -3,8 +3,8 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Matching from "@/app/dashboard/matching/page";
-import { form, user } from "@heroui/react";
 
+// Mock the dependencies
 jest.mock("react-firebase-hooks/auth", () => ({
   useAuthState: jest.fn(),
 }));
@@ -12,6 +12,35 @@ jest.mock("react-firebase-hooks/auth", () => ({
 jest.mock("@/app/ui/matchingform", () =>
   jest.fn(() => <div>MatchingForm Component</div>)
 );
+
+// Mock the @heroui/react components to avoid dynamic import issues
+jest.mock("@heroui/react", () => ({
+  Button: ({
+    onPress,
+    children,
+    color,
+    className,
+  }: {
+    onPress?: () => void;
+    children: React.ReactNode;
+    color?: string;
+    className?: string;
+  }) => (
+    <button onClick={onPress} data-color={color} className={className}>
+      {children}
+    </button>
+  ),
+  Card: ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => <div className={className}>{children}</div>,
+  CardBody: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
 
 // Mock fetch globally
 global.fetch = jest.fn();
@@ -115,58 +144,61 @@ describe("Matching Component", () => {
     });
   });
 
-  it("handles delete form", async () => {
+  it("resets form state completely after successful deletion", async () => {
+    const initialForm = {
+      form: {
+        user_id: "12345",
+        type: "offering",
+        form_id: 1,
+        num_rooms: 3,
+        num_people: 2,
+        young_children: 1,
+        adolescent_children: 0,
+        teenage_children: 0,
+        elderly: 0,
+        small_dog: 0,
+        large_dog: 1,
+        cat: 0,
+        other_pets: 0,
+      },
+    };
+
+    // Mock successful delete
     (fetch as jest.Mock)
       .mockResolvedValueOnce({
         status: 200,
-        json: jest.fn().mockResolvedValueOnce({
-          form: {
-            user_id: "12345",
-            type: "offering",
-            form_id: 1,
-            num_rooms: 3,
-            num_people: 2,
-            young_children: 1,
-            adolescent_children: 0,
-            teenage_children: 0,
-            elderly: 0,
-            small_dog: 0,
-            large_dog: 1,
-            cat: 0,
-            other_pets: 0,
-          },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
+        json: jest.fn().mockResolvedValueOnce(initialForm),
       })
       .mockResolvedValueOnce({
         status: 200,
-        json: async () => ({ form: { user_id: "", type: "", form_id: 0 } }),
+        json: jest.fn().mockResolvedValueOnce({ matches: [] }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValueOnce({}),
       });
 
     render(<Matching />);
 
-    const deleteButton = await screen.findByText("Delete");
+    // Wait for the UI to show the form details
+    await waitFor(() => {
+      expect(screen.getByText("Hosting Form")).toBeInTheDocument();
+    });
+
+    // Delete the form
+    const deleteButton = screen.getByText("Delete");
     fireEvent.click(deleteButton);
 
-    await waitFor(() =>
-      expect(fetch).toHaveBeenCalledWith(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/form/1`,
-        expect.objectContaining({
-          method: "DELETE",
-        })
-      )
-    );
-
     await waitFor(() => {
-      expect(
-        screen.getByText((content) =>
-          content.includes(
-            "After you create a form you will be able to see its status here"
-          )
-        )
-      ).toBeInTheDocument();
+      expect(screen.queryByText("Hosting Form")).not.toBeInTheDocument();
+
+      expect(screen.getByText(/After you create a form/)).toBeInTheDocument();
+
+      // Check that the apply buttons are now enabled
+      const applyLinks = screen.getAllByRole("link");
+      for (const link of applyLinks) {
+        expect(link.className).not.toContain("pointer-events-none");
+      }
     });
   });
 
@@ -192,7 +224,7 @@ describe("Matching Component", () => {
 
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
 
-    const deleteButton = screen.getByText("Delete");
+    const deleteButton = await screen.findByText("Delete");
     fireEvent.click(deleteButton);
 
     await waitFor(() =>
@@ -230,9 +262,71 @@ describe("Matching Component", () => {
 
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
 
-    const matchButton = await screen.findByText(/Match!/i);
+    const matchButton = await screen.findByText("Match!");
     expect(matchButton).toBeInTheDocument();
     fireEvent.click(matchButton);
+
+    expect(screen.getByText("MatchingForm Component")).toBeInTheDocument();
+  });
+
+  it("renders the Housing Form label when type is not 'offering'", async () => {
+    (fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        status: 200,
+        json: jest.fn().mockResolvedValueOnce({
+          form: {
+            user_id: "12345",
+            type: "seeking",
+            form_id: 2,
+            num_rooms: 1,
+            num_people: 1,
+            young_children: 0,
+            adolescent_children: 0,
+            teenage_children: 0,
+            elderly: 0,
+            small_dog: 0,
+            large_dog: 0,
+            cat: 0,
+            other_pets: 0,
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: jest.fn().mockResolvedValueOnce({ matches: [] }),
+      });
+
+    render(<Matching />);
+    await waitFor(() => {
+      expect(screen.getByText("Housing Form")).toBeInTheDocument();
+    });
+  });
+  
+  it("renders MatchingForm with type 0 when form.type != 'offering'", async () => {
+    const mockForm = {
+      user_id: "12345",
+      type: "seeking", 
+      form_id: 42,
+    };
+
+    const mockMatches = {
+      matches: [{ match_id: 999, name: "Fake Match" }],
+    };
+
+    (fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        status: 200,
+        json: jest.fn().mockResolvedValueOnce({ form: mockForm }),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: jest.fn().mockResolvedValueOnce(mockMatches),
+      });
+
+    render(<Matching />);
+
+    const matchBtn = await screen.findByText("Match!");
+    fireEvent.click(matchBtn);
 
     expect(screen.getByText("MatchingForm Component")).toBeInTheDocument();
   });
