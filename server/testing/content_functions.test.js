@@ -47,7 +47,8 @@ test("Get content", async () => {
 })
 
 // Need to further test this case 
-// test("Get content IDs", async () => {
-//     const result = await Content.getIds([1,2,3,4])
-//     console.log(result)
-// })
+test("Get content IDs", async () => {
+    const result = await Content.getIds([{ comment_id: 5 }, {comment_id: 4}])
+    const expected = [5,4] 
+    expect(result).toEqual(expected)
+})

@@ -10,15 +10,13 @@ beforeAll(async () => {
         apiKey: process.env.OPENAI_KEY})
 })
 
-// Necessary to override automatic timeout setup by jest
+// Override automatic timeout setup by jest
 jest.setTimeout(10000)
 
 // Ensure OpenAI can produce a response
 test ("Get a response from OpenAI", async () => {
-    // Timeout is defined because it is an async function 
-
     let result = await getResponse("Tell me the most important fire safety tip.")
-    // Check whether thre is a response
+    // Check whether there is a response
     if (!result){
         result = false
     } else{

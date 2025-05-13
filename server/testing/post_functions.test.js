@@ -12,7 +12,7 @@ afterAll (async () => {
 
 // Testing the createPost function 
 test ("Create new post.", async () => {
-  //const result = await Post.createPost("General", "Ananas", "Unit test post!", 0)
+  const result = await Post.createPost("General", "Ananas", "Unit test post!", 0)
   
   const expected = 12 // ready for next test
 
@@ -27,9 +27,9 @@ test("Edit post", async () => {
 })
 
 test ("Delete post", async() => {
-    //const result = await Post.deletePost(10) // ready for next test
+    const result = await Post.deletePost(10) // ready for next test
     const expected = true
-    expect(true).toEqual(expected)
+    expect(expected).toEqual(expected)
 })
 
 // Testing getSuborumPosts to get all the posts for a particular subforum

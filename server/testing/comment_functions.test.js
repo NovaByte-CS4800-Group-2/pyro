@@ -8,7 +8,7 @@ afterAll(async() => {
 
 test("Create a new comment", async () => {
     const result = await Comment.createComment("JestTestSF", "jesser", "unit testing comment!", 18)
-    const expected = // 69 for monday test
+    const expected = 69
     expect(result).toEqual(expected)
 })
 
