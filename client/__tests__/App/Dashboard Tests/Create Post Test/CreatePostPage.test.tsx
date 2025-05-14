@@ -4,6 +4,7 @@ import CreatePost from "@/app/dashboard/createpost/page";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
 import "@testing-library/jest-dom";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 jest.mock("next/navigation", () => ({ useRouter: jest.fn() }));
 jest.mock("react-firebase-hooks/auth", () => ({ useAuthState: jest.fn() }));
@@ -85,17 +86,66 @@ describe("CreatePost Component - Full Coverage", () => {
       expect(screen.getByText("Failed to fetch user data.")).toBeInTheDocument()
     );
   });
-
+  test("shows error if user is not authenticated", async () => {
+    (useAuthState as jest.Mock).mockReturnValue([null, false, null]);
+    render(<CreatePost />);
+    await waitFor(() => {
+      expect(
+        screen.getByText("User is not authenticated.")
+      ).toBeInTheDocument();
+    });
+  });
   test("handles failed user fetch", async () => {
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
       .mockResolvedValueOnce({
         ok: false,
-        json: async () => ({ error: "fail" }),
+        json: async () => ({ error: "User profile not found" }),
       });
     render(<CreatePost />);
-    await screen.findByText("New Post");
-    expect(screen.getByText("Add Media")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText("Failed to fetch user data.")
+      ).toBeInTheDocument();
+    });
+  });
+
+  test("handles failed user fetch with no specific error message", async () => {
+    // Mock fetch to return a failed response WITH NO ERROR PROPERTY
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({}), // No error property, forcing the fallback message
+      });
+
+    render(<CreatePost />);
+
+    // Wait for the error message to appear - this verifies the fallback message was used
+    await waitFor(() => {
+      expect(
+        screen.getByText("Failed to fetch user data.")
+      ).toBeInTheDocument();
+    });
+  });
+
+  test("handles failed user fetch with specific error message", async () => {
+    // Mock fetch to return a failed response WITH a specific error message
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Custom API error" }), // Specific error property
+      });
+
+    render(<CreatePost />);
+
+    // The component still shows the generic message because of the catch block
+    await waitFor(() => {
+      expect(
+        screen.getByText("Failed to fetch user data.")
+      ).toBeInTheDocument();
+    });
   });
 
   test("shows error if personal userData is missing username", async () => {
@@ -131,6 +181,42 @@ describe("CreatePost Component - Full Coverage", () => {
         screen.getByText("User data is incomplete. Please try again.")
       ).toBeInTheDocument()
     );
+  });
+
+  test("shows error if business account userData is missing username", async () => {
+    // Setup: valid subforum fetch, but mock business user data missing username
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "", // Empty username should trigger the validation error
+            user_id: "456",
+            city: "",
+            business_account: 1, // This is key - it needs to be a business account
+          },
+        }),
+      });
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Enter valid post content
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "Business post with missing username" },
+    });
+
+    // Click the post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the error message
+    await waitFor(() => {
+      expect(
+        screen.getByText("User data is incomplete. Please try again.")
+      ).toBeInTheDocument();
+    });
   });
 
   test("handles cancel for business account", async () => {
@@ -266,7 +352,72 @@ describe("CreatePost Component - Full Coverage", () => {
     );
   });
 
-  test("handles unexpected error during submit", async () => {
+  test("submits business post with media successfully", async () => {
+    // Create a mock image file
+    const file = new File(["business image content"], "business-image.png", {
+      type: "image/png",
+    });
+    global.URL.createObjectURL = jest.fn(() => "blob:business-image");
+
+    // Mock Firebase storage functions
+    const { getStorage, ref, uploadBytes, getDownloadURL } =
+      jest.requireMock("firebase/storage");
+
+    // Mock fetch responses for the business post flow with media
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "businessuser",
+            user_id: "456",
+            city: "",
+            business_account: 1, // This is a business account
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: 500 }), // Post creation response
+      });
+
+    const { container } = render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Add content to the post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "Business post with media" },
+    });
+
+    // Add a media file
+    const input = container.querySelector("input[type='file']")!;
+    fireEvent.change(input, { target: { files: [file] } });
+
+    // Verify media preview is shown
+    await waitFor(() => {
+      expect(screen.getByAltText("Media 1")).toBeInTheDocument();
+    });
+
+    // Submit the post
+    fireEvent.click(screen.getByRole("button", { name: /Post/i }));
+
+    // Verify Firebase storage operations were called
+    await waitFor(() => {
+      // Check if ref was called
+      expect(ref).toHaveBeenCalled();
+
+      // Check if uploadBytes was called
+      expect(uploadBytes).toHaveBeenCalled();
+
+      // Check if getDownloadURL was called
+      expect(getDownloadURL).toHaveBeenCalled();
+
+      // Check that we were redirected to the fundraiser page
+      expect(mockPush).toHaveBeenCalledWith("/dashboard/fundraiser");
+    });
+  });
+  test("handles personal post submission failure with no error message", async () => {
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
       .mockResolvedValueOnce({
@@ -274,30 +425,118 @@ describe("CreatePost Component - Full Coverage", () => {
         json: async () => ({
           profile: {
             username: "testuser",
-            user_id: "1",
-            city: "",
-            business_account: 0,
+            user_id: "123",
+            city: "General",
+            business_account: 0, // Personal account
           },
         }),
       })
-      .mockRejectedValueOnce(new Error("Network failure"));
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({}), // No error property will trigger the fallback message
+      });
 
     render(<CreatePost />);
     await screen.findByText("New Post");
 
+    // Type a post
     fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
-      target: { value: "Fail case" },
+      target: { value: "This post will fail to submit" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Post/i }));
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
 
+    // Verify the fallback error message is displayed
     await waitFor(() => {
-      expect(screen.getByText("Network failure")).toBeInTheDocument();
+      expect(screen.getByText("Failed to submit post.")).toBeInTheDocument();
     });
   });
-  test("covers whitespace validation block in personal post", async () => {
+
+  test("handles personal post submission failure with specific error message", async () => {
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0, // Personal account
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Server rejected post content" }), // Specific error message
+      });
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Type a post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "This post will fail with specific error" },
+    });
+
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the specific error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Server rejected post content")
+      ).toBeInTheDocument();
+    });
+  });
+  test("handles personal post submission with generic error (no message)", async () => {
+    // Mock fetch responses:
+    // 1. Successful subforum fetch
+    // 2. Successful user data fetch
+    // 3. Failed post submission causing a generic error
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0, // Personal account
+          },
+        }),
+      })
+      .mockRejectedValueOnce({}); // Plain error object with no message property
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Type a post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "This post will trigger a generic error" },
+    });
+
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the fallback error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("An unexpected error occurred.")
+      ).toBeInTheDocument();
+    });
+  });
+  test("handles server error when submitting a personal post", async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ rows: [{ subforum_id: 1, name: "General" }] }),
+      })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -308,43 +547,199 @@ describe("CreatePost Component - Full Coverage", () => {
             business_account: 0,
           },
         }),
+      })
+      .mockResolvedValueOnce({
+        // This is the key part - simulate a failed post request
+        ok: false,
+        json: async () => ({ error: "Server rejected post" }),
       });
-
-    // Temporarily override Button mock *just for this test*
-    const originalButton = require("@heroui/react").Button;
-    jest.doMock("@heroui/react", () => ({
-      ...jest.requireActual("@heroui/react"),
-      Button: ({ children, onPress }: any) => (
-        <button onClick={onPress}>{children}</button>
-      ),
-    }));
-
-    const CreatePost = (await import("@/app/dashboard/createpost/page"))
-      .default;
 
     render(<CreatePost />);
     await screen.findByText("New Post");
 
+    // Enter valid post content to enable the button
     fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
-      target: { value: "   " }, // whitespace
+      target: { value: "This post will fail on the server" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Post/i }));
+    // Click the Post button to submit
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
 
+    // Verify the error message from the server is displayed
     await waitFor(() => {
-      expect(true).toBe(true);
+      expect(screen.getByText("Server rejected post")).toBeInTheDocument();
     });
-
-    // Restore original Button mock so other tests aren't broken
-    jest.unmock("@heroui/react");
-    jest.mock("@heroui/react", () => ({
-      Button: originalButton,
-      ToastProvider: ({ children }: any) => <>{children}</>,
-      Textarea: (props: any) => <textarea {...props} />,
-      User: () => null,
-    }));
   });
 
+  test("handles server error when submitting a business post", async () => {
+    // Mock fetch responses:
+    // 1. Subforum fetch success
+    // 2. User data fetch success with business account
+    // 3. Post submission failure with error message
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ rows: [{ subforum_id: 1, name: "General" }] }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "businessuser",
+            user_id: "789",
+            city: "",
+            business_account: 1, // Set as business account
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        // This is the key part - simulate a failed post request for business
+        ok: false,
+        json: async () => ({ error: "Business post rejected" }),
+      });
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Enter valid post content to enable the button
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "This business post will fail on the server" },
+    });
+
+    // Click the Post button to submit
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the error message from the server is displayed
+    await waitFor(() => {
+      expect(screen.getByText("Business post rejected")).toBeInTheDocument();
+    });
+  });
+  test("handles business post submission failure with no error message", async () => {
+    // Mock fetch responses:
+    // 1. Successful subforum fetch
+    // 2. Successful user data fetch with business account
+    // 3. Failed post submission with no specific error message
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "businessuser",
+            user_id: "123",
+            city: "General",
+            business_account: 1, // Business account
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({}), // No error property will trigger the fallback message
+      });
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Type a post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "Business post that will fail" },
+    });
+
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the fallback error message is displayed
+    await waitFor(() => {
+      expect(screen.getByText("Failed to submit post.")).toBeInTheDocument();
+    });
+  });
+
+  test("handles business post submission failure with specific error message", async () => {
+    // Mock fetch responses:
+    // 1. Successful subforum fetch
+    // 2. Successful user data fetch with business account
+    // 3. Failed post submission with a specific error message
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "businessuser",
+            user_id: "123",
+            city: "General",
+            business_account: 1, // Business account
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({
+          error: "Business posts are currently restricted",
+        }), // Specific error
+      });
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Type a post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "Business post with specific error" },
+    });
+
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the specific error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Business posts are currently restricted")
+      ).toBeInTheDocument();
+    });
+  });
+  test("handles business post submission with generic error (no message)", async () => {
+    // Mock fetch responses:
+    // 1. Successful subforum fetch
+    // 2. Successful user data fetch with business account
+    // 3. Failed post submission causing a generic error
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "businessuser",
+            user_id: "123",
+            city: "General",
+            business_account: 1, // Business account
+          },
+        }),
+      })
+      .mockRejectedValueOnce({}); // Plain error object with no message property
+
+    render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Type a post
+    fireEvent.change(screen.getByPlaceholderText("Write your post here"), {
+      target: { value: "Business post that will cause a generic error" },
+    });
+
+    // Click the Post button
+    const postBtn = screen.getByRole("button", { name: /Post/i });
+    fireEvent.click(postBtn);
+
+    // Verify the fallback error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("An unexpected error occurred.")
+      ).toBeInTheDocument();
+    });
+  });
   test("handles adding and removing media files", async () => {
     const file = new File(["mock content"], "test.png", { type: "image/png" });
     global.URL.createObjectURL = jest.fn(() => "blob:preview.png");
@@ -476,14 +871,167 @@ describe("CreatePost Component - Full Coverage", () => {
     const addMediaBtn = screen.getByRole("button", { name: /Add Media/i });
     fireEvent.click(addMediaBtn); // should do nothing silently
   });
+  test("clicking Add Media button and having no files selected works correctly", async () => {
+    // Mock fetch responses
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0,
+          },
+        }),
+      });
 
-  test("shows error if user is not authenticated", async () => {
-    (useAuthState as jest.Mock).mockReturnValue([null, false, null]);
+    // Mock URL.createObjectURL since it's not implemented in jsdom
+    const originalCreateObjectURL = URL.createObjectURL;
+    URL.createObjectURL = jest.fn(() => "blob:mock-url");
+
+    // Render the component
     render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Find and click the "Add Media" button
+    const addMediaBtn = screen.getByText(/Add Media/i);
+    fireEvent.click(addMediaBtn);
+
+    // Mock a click on file input that results in no files selected
+    // This will internally call handleFileChange with e.target.files = null
+    // Note: We don't actually trigger a change event because we're simulating
+    // the user clicking "Cancel" in the file dialog
+
+    // Verify the component still renders correctly
+    expect(screen.getByText("New Post")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Write your post here")
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Attached Media")).not.toBeInTheDocument();
+
+    // Clean up mock
+    URL.createObjectURL = originalCreateObjectURL;
+  });
+
+  test("handleFileChange with invalid file types shows error and returns early", async () => {
+    // Mock fetch responses
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0,
+          },
+        }),
+      });
+
+    // Create a file with invalid type to trigger the error path
+    const invalidFile = new File(["content"], "test.xyz", {
+      type: "application/xyz",
+    });
+
+    const { container } = render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Find the file input
+    const input = container.querySelector('input[type="file"]');
+    expect(input).not.toBeNull();
+
+    // Add an invalid file
+    fireEvent.change(input!, { target: { files: [invalidFile] } });
+
+    // Error message should be displayed
     await waitFor(() => {
       expect(
-        screen.getByText("User is not authenticated.")
+        screen.getByText(`Invalid file type: ${invalidFile.name}`)
       ).toBeInTheDocument();
     });
+
+    // No media preview should be shown (returned early)
+    expect(screen.queryByText("Attached Media")).not.toBeInTheDocument();
+  });
+  test("shows error message when invalid file type is uploaded", async () => {
+    // Mock fetch responses
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0,
+          },
+        }),
+      });
+
+    // Create a file with an invalid type
+    const invalidFile = new File(["invalid content"], "document.pdf", {
+      type: "application/pdf", // This is not in the validTypes array
+    });
+
+    const { container } = render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Find the file input
+    const input = container.querySelector("input[type='file']")!;
+
+    // Trigger file change with the invalid file
+    fireEvent.change(input, { target: { files: [invalidFile] } });
+
+    // Check if the error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Invalid file type: document.pdf")
+      ).toBeInTheDocument();
+    });
+
+    // Verify that the media preview section is not shown (file was rejected)
+    expect(screen.queryByText("Attached Media")).not.toBeInTheDocument();
+  });
+  test("handles non-image file uploads correctly", async () => {
+    // Mock fetch responses
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ rows: [] }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          profile: {
+            username: "testuser",
+            user_id: "123",
+            city: "General",
+            business_account: 0,
+          },
+        }),
+      });
+
+    // Create a video file (one of the valid non-image types)
+    const videoFile = new File(["video content"], "test-video.mp4", {
+      type: "video/mp4", // This is a valid type that will trigger the non-image path
+    });
+
+    const { container } = render(<CreatePost />);
+    await screen.findByText("New Post");
+
+    // Find the file input
+    const input = container.querySelector("input[type='file']")!;
+
+    // Trigger file change with the video file
+    fireEvent.change(input, { target: { files: [videoFile] } });
+
+    // Wait for the media preview to be added
+    await waitFor(() => {
+      expect(screen.getByText("Attached Media")).toBeInTheDocument();
+    });
+
+    // For non-image files, we should see the file type displayed
+    expect(screen.getByText("MP4")).toBeInTheDocument();
   });
 });

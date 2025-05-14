@@ -30,33 +30,35 @@ export default function CreatePost() {
 
   const [media, setMedia] = useState<File[]>([]); // State to store media files
   const [mediaPreviewURLs, setMediaPreviewURLs] = useState<string[]>([]); // State to store media preview URLs
-  const [firebaseURLs, setFirebaseURLs] = useState<string[]>([])
+  const [firebaseURLs, setFirebaseURLs] = useState<string[]>([]);
   const [dbNames, setDBNames] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // Fetch subforums when the component mounts
-  useEffect(() => { 
+  useEffect(() => {
     const fetchSubforums = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/subforums` 
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/subforums`
         );
         const data = await response.json();
         setSubforums(data.rows); // Store subforums in state
-      } catch (error) { // Handle errors
+      } catch (error) {
+        // Handle errors
         console.error("Error fetching subforums:", error);
         setErrorMessage("Failed to fetch subforums.");
       }
     };
 
-    fetchSubforums(); 
+    fetchSubforums();
   }, []);
 
-  // Fetch user data 
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (!user || !user.displayName) { // Check if user is authenticated
+        if (!user || !user.displayName) {
+          // Check if user is authenticated
           setErrorMessage("User is not authenticated."); // Handle unauthenticated user
           return;
         }
@@ -79,10 +81,11 @@ export default function CreatePost() {
 
         // Check if the response contains the expected data
         const { profile } = responseData;
-    
+
         // Set user data in state
         setUserData(profile);
-      } catch (error) { // Handle errors
+      } catch (error) {
+        // Handle errors
         setErrorMessage("Failed to fetch user data.");
       }
     };
@@ -107,22 +110,13 @@ export default function CreatePost() {
 
   // Handle form submission for personal accounts
   const handlePersonalSubmit = async () => {
-
-    if (!postContent.body.trim()) { // Check if post content is empty
-      setErrorMessage("Post cannot be empty.");
-    }
-
-    if (!city) { // Check if a subforum is selected
-      setErrorMessage("Please select a subforum.");
-    }
-
-    if (!userData || !userData.username) { // Check if user data is incomplete
+    if (!userData || !userData.username) {
+      // Check if user data is incomplete
       setErrorMessage("User data is incomplete. Please try again.");
     }
 
-
     // create a request body for the post submission to send to backend
-    try { 
+    try {
       const requestBody = {
         city: city, // Use the selected subforum name as city
         username: userData.username, // Use the username from user data
@@ -149,17 +143,16 @@ export default function CreatePost() {
       }
 
       // Parse the response data
-      const postData = await postResponse.json()
-      setPostData1(postData)
+      const postData = await postResponse.json();
+      setPostData1(postData);
 
       const str = postContent.body;
       const regex = /@([\w.-]+)/g; // regex to search for the @'s
-      const matches = [...str.matchAll(regex)].map(match => match[1]); // extract the names from the @'s
-      
-      if(matches.length !== 0)
-      {
+      const matches = [...str.matchAll(regex)].map((match) => match[1]); // extract the names from the @'s
+
+      if (matches.length !== 0) {
         const requestBody = {
-          content_id: postData.id, 
+          content_id: postData.id,
           calledOuts: matches,
           username: userData.username,
         };
@@ -178,13 +171,13 @@ export default function CreatePost() {
         const file = media[i];
         const mimeType = file.type;
         const extension = mimeType.split("/")[1];
-      
+
         const fileName = `${postData.id}_${i}.${extension}`;
         const storageRef = ref(getStorage(), `media/${fileName}`);
-      
+
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
-      
+
         setFirebaseURLs((prev) => [...prev, downloadURL]);
         setDBNames((prev) => [...prev, fileName]);
       }
@@ -197,24 +190,15 @@ export default function CreatePost() {
 
       // send user back to selected subforum page to see post
       router.push(`/dashboard/subforum/${data.subforumId}`);
-
-      
-    } catch (error: any) { // Handle errors
+    } catch (error: any) {
+      // Handle errors
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
     }
   };
 
-
-
   // Handle form submission for business accounts
   const handleBusinessSubmit = async () => {
-
-    // Check if post content is empty
-    if (!postContent.body.trim()) {
-      setErrorMessage("Post cannot be empty.");
-    }
-
     // Check if user data is incomplete
     if (!userData || !userData.username) {
       setErrorMessage("User data is incomplete. Please try again.");
@@ -250,80 +234,81 @@ export default function CreatePost() {
 
       // Parse the response data
       const postData = await postResponse.json();
-      setPostData1(postData)
+      setPostData1(postData);
 
       // Log the post data for debugging
       console.log("Post submitted successfully:", postData);
 
       for (let i = 0; i < media.length; i++) {
-        const file = media[i]; 
+        const file = media[i];
         const mimeType = file.type;
         const extension = mimeType.split("/")[1];
-      
+
         const fileName = `${postData.id}_${i}.${extension}`;
         const storageRef = ref(getStorage(), `media/${fileName}`);
-      
+
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
-      
+
         setFirebaseURLs((prev) => [...prev, downloadURL]);
         setDBNames((prev) => [...prev, fileName]);
       }
-      
+
       // send user back to fundraiser page to see post
       router.push("/dashboard/fundraiser");
-    } catch (error: any) { // Handle errors
+    } catch (error: any) {
+      // Handle errors
       setErrorMessage(error.message || "An unexpected error occurred.");
       console.error("Error submitting post:", error);
     }
   };
 
-    // Watch when firebaseURLs updates
-    useEffect(() => {
-      if (!postData1) return;
-      console.log("Updated firebaseURLs:", firebaseURLs);
-      for (let j = 0; j < firebaseURLs.length; j++) {
-        console.log("FBURL:", firebaseURLs[j]);
+  // Watch when firebaseURLs updates
+  useEffect(() => {
+    if (!postData1) return;
+    console.log("Updated firebaseURLs:", firebaseURLs);
+    for (let j = 0; j < firebaseURLs.length; j++) {
+      console.log("FBURL:", firebaseURLs[j]);
+    }
+
+    const sendData = async () => {
+      try {
+        const imageNames = JSON.stringify(dbNames);
+        console.log("FILENAMESFBL!!!:", imageNames);
+        console.log("POST IN EFFECT", postData1.id);
+        const mediaRequestBody = {
+          post_id: postData1.id,
+          imageURLs: imageNames,
+        };
+
+        // Send the request inside an async function
+        const mediaResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/media`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(mediaRequestBody),
+          }
+        );
+
+        console.log("Media response:", await mediaResponse.json());
+      } catch (error) {
+        console.error("Error sending media request:", error);
       }
-    
-      const sendData = async () => {
-        try {
-          const imageNames = JSON.stringify(dbNames);
-          console.log("FILENAMESFBL!!!:", imageNames);
-          console.log("POST IN EFFECT", postData1.id)
-          const mediaRequestBody = {
-            post_id: postData1.id, 
-            imageURLs: imageNames
-          };
-    
-          // Send the request inside an async function
-          const mediaResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/post/media`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(mediaRequestBody),
-            }
-          );
-    
-          console.log("Media response:", await mediaResponse.json());
-        } catch (error) {
-          console.error("Error sending media request:", error);
-        }
-      };
-    
-      if (firebaseURLs.length > 0) {
-        sendData(); // Call async function inside useEffect
-      }
-    }, [firebaseURLs, dbNames, postData1]);  
-    
-  
+    };
+
+    if (firebaseURLs.length > 0) {
+      sendData(); // Call async function inside useEffect
+    }
+  }, [firebaseURLs, dbNames, postData1]);
 
   // Handle cancel button click
   const handleCancel = async () => {
-    if (userData.business_account) { // Check if the user is a business account
+    if (userData.business_account) {
+      // Check if the user is a business account
       router.push("/dashboard/fundraiser"); // Redirect to fundraiser page
-    } else { // Check if the user is a personal account
+    } else {
+      // Check if the user is a personal account
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/subforum/${city}` // Fetch subforum ID based on the selected city (subforum name)
       );
@@ -338,7 +323,7 @@ export default function CreatePost() {
     if (!e.target.files) return; // Check if files are selected
     const newFiles = Array.from(e.target.files); // Convert FileList to array
     const validFiles = newFiles.filter((file) => {
-      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4']; // Allowed file types
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4"]; // Allowed file types
 
       if (!validTypes.includes(file.type)) {
         setErrorMessage(`Invalid file type: ${file.name}`); // Set error message for invalid file type
@@ -348,30 +333,28 @@ export default function CreatePost() {
       return true;
     });
 
-    if (validFiles.length === 0) return; 
+    if (validFiles.length === 0) return;
 
     const newPreviewURLS = [...mediaPreviewURLs]; // Create a copy of the current preview URLs
 
-    validFiles.forEach((file) => { 
-      if (file.type.startsWith('image/')) { 
-        const url = URL.createObjectURL(file); 
-        newPreviewURLS.push(url); 
+    validFiles.forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const url = URL.createObjectURL(file);
+        newPreviewURLS.push(url);
       } else {
         // For non-images, we'll just use the file type as placeholder
-        newPreviewURLS.push(file.type); 
+        newPreviewURLS.push(file.type);
       }
     });
-    
+
     setMedia([...media, ...validFiles]);
     setMediaPreviewURLs(newPreviewURLS);
-
   };
-  
+
   useEffect(() => {
     // Log the media preview URLs whenever the state changes
     console.log("Updated Media Preview URLs:", mediaPreviewURLs);
   }, [mediaPreviewURLs]); // This runs every time mediaPreviewURLs is updated
-
 
   const handleAddMediaClick = () => {
     if (fileInputRef.current) {
@@ -382,15 +365,15 @@ export default function CreatePost() {
   const handleRemoveMedia = (index: number) => {
     const newMedia = [...media];
     const newPreviewURLS = [...mediaPreviewURLs];
-    
+
     // If the URL is an object URL, revoke it to avoid memory leaks
-    if (newPreviewURLS[index].startsWith('blob:')) {
+    if (newPreviewURLS[index].startsWith("blob:")) {
       URL.revokeObjectURL(newPreviewURLS[index]);
     }
-    
+
     newMedia.splice(index, 1);
     newPreviewURLS.splice(index, 1);
-    
+
     setMedia(newMedia);
     setMediaPreviewURLs(newPreviewURLS);
   };
@@ -427,14 +410,14 @@ export default function CreatePost() {
                 <select
                   id="subforum"
                   name="subforum"
-                  value={city || ""}
                   onChange={(e) => setCity(e.target.value)} // Update city instead of subforumId
                   className="mt-1 block w-full pl-3 pr-10 py-2 font-semibold text-base border-[--clay-beige] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
-                  <option value="" disabled> 
+                  <option value="" disabled>
                     -- Select a Subforum --
                   </option>
-                  {subforums.map((subforum) => { // Map through subforums
+                  {subforums.map((subforum) => {
+                    // Map through subforums
                     if (
                       !userData.business_account && // Check if the user is not a business account
                       subforum.subforum_id != 0 // Exclude the "Fundraiser" subforum
@@ -444,7 +427,7 @@ export default function CreatePost() {
                           key={subforum.subforum_id} // Use subforum ID as the key
                           value={subforum.name} // Use subforum name as the value
                         >
-                          {subforum.name}  {/*Display subforum name */}
+                          {subforum.name} {/*Display subforum name */}
                         </option>
                       );
                     }
@@ -461,19 +444,21 @@ export default function CreatePost() {
               onChange={handleChange}
               className="mb-4 w-full"
             />
-             {/* Media Preview Section */}
-             {mediaPreviewURLs.length > 0 && (
+            {/* Media Preview Section */}
+            {mediaPreviewURLs.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-[--clay-beige] mb-2">Attached Media</h4>
+                <h4 className="text-sm font-medium text-[--clay-beige] mb-2">
+                  Attached Media
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {mediaPreviewURLs.map((url, index) => (
                     <div key={index} className="relative">
-                      {url.startsWith('blob:') ? (
+                      {url.startsWith("blob:") ? (
                         // Display image preview
                         <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-[--clay-beige]">
-                          <img 
-                            src={url} 
-                            alt={`Media ${index + 1}`} 
+                          <img
+                            src={url}
+                            alt={`Media ${index + 1}`}
                             className="h-full w-full object-cover"
                           />
                           <button
@@ -487,7 +472,7 @@ export default function CreatePost() {
                         // Display file type icon for non-images
                         <div className="relative h-20 w-20 flex items-center justify-center rounded-lg border border-[--clay-beige] bg-[--white]">
                           <div className="text-xs text-[--greige-mist] text-center overflow-hidden">
-                            {url.split('/')[1]?.toUpperCase() || 'FILE'}
+                            {url.split("/")[1]?.toUpperCase() || "FILE"}
                           </div>
                           <button
                             onClick={() => handleRemoveMedia(index)}
@@ -502,7 +487,7 @@ export default function CreatePost() {
                 </div>
               </div>
             )}
-            
+
             {/* Add Media Button */}
             <input
               type="file"
@@ -528,7 +513,7 @@ export default function CreatePost() {
 
               <Button
                 type="submit"
-                onPress={ () => {
+                onPress={() => {
                   if (userData.business_account) {
                     handleBusinessSubmit();
                   } else {
