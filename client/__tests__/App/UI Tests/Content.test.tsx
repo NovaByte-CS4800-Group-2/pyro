@@ -84,6 +84,39 @@ describe("Content", () => {
     });
   });
 
+  it("handles profile picture fetch failure silently", async () => {
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const { getDownloadURL } = require("firebase/storage");
+    getDownloadURL.mockRejectedValueOnce(new Error("no profile pic"));
+
+    render(<Content {...baseProps} />);
+
+    // Wait for useEffect to run
+    await waitFor(() => {
+      expect(screen.getByText("Hadya")).toBeInTheDocument();
+    });
+
+    // Confirm that *our* fetch error is not logged — but allow React errors
+    const loggedMessages = errorSpy.mock.calls.map((call) => call[0]);
+    const dateError = loggedMessages.find((msg) =>
+      String(msg).includes("Error fetching profile")
+    );
+
+    expect(dateError).toBeUndefined();
+
+    errorSpy.mockRestore();
+  });
+
+  it("highlights matched text using highlightMatch", async () => {
+    render(
+      <Content {...baseProps} body="This is a match test" search="match" />
+    );
+
+    const highlighted = await screen.findByText("match");
+    expect(highlighted.tagName).toBe("MARK");
+  });
+
   it("shows the edit/delete menu and handles edit modal", async () => {
     render(<Content {...baseProps} />);
 
@@ -119,6 +152,171 @@ describe("Content", () => {
     });
   });
 
+  it("shows error if deleteContent fails", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    (global.fetch as jest.Mock).mockImplementation(() => {
+      throw new Error("delete failed");
+    });
+
+    render(<Content {...baseProps} />);
+
+    fireEvent.click(screen.getByTestId("menu-icon"));
+    fireEvent.click(screen.getByText("Delete")); // open modal
+
+    const deleteConfirmButton = await screen.findByText("Delete", {
+      selector: "button",
+    });
+    fireEvent.click(deleteConfirmButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Failed to delete post.")).toBeInTheDocument();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error deleting post:",
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
+  });
+
+  it("shows error if editContent fails", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ result: [] }) }) // media fetch
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "edit failed" }),
+      }); // edit post fails
+
+    render(<Content {...baseProps} />);
+
+    fireEvent.click(screen.getByTestId("menu-icon")); // open menu
+    fireEvent.click(screen.getByText("Edit")); // open edit modal
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "broken edit" },
+    });
+
+    fireEvent.click(screen.getByText("Save"));
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error editing post:",
+        expect.any(Error)
+      );
+      expect(screen.getByText("Failed to edit post.")).toBeInTheDocument();
+    });
+
+    consoleSpy.mockRestore();
+  });
+
+  it("logs error if handleDelete fails", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    // Mock fetch to succeed during initial render
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ result: [] }),
+    });
+
+    render(<Content {...baseProps} />);
+
+    // Open menu + modal
+    fireEvent.click(screen.getByTestId("menu-icon"));
+    fireEvent.click(screen.getByText("Delete"));
+
+    // Now temporarily spy on the internal `deleteContent` via the global fetch
+    // and make the first call throw (simulate deleteContent breaking)
+    (global.fetch as jest.Mock).mockImplementationOnce(() => {
+      throw new Error("handleDelete blew up");
+    });
+
+    const deleteConfirmBtn = await screen.findByText("Delete", {
+      selector: "button",
+    });
+    fireEvent.click(deleteConfirmBtn);
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error deleting post:",
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
+  });
+
+  it("logs error if handleEdit throws", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    // Initial fetches succeed
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ result: [] }) }) // media fetch
+      .mockImplementationOnce(() => {
+        throw new Error("network died"); // breaks inside editContent
+      });
+
+    render(<Content {...baseProps} />);
+
+    // Open edit modal
+    fireEvent.click(screen.getByTestId("menu-icon"));
+    fireEvent.click(screen.getByText("Edit"));
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "trigger error" },
+    });
+
+    fireEvent.click(screen.getByText("Save")); // triggers handleEdit → editContent
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error editing post:",
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
+  });
+
+  it("handles exception in formatDate gracefully", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const originalToLocaleString = Date.prototype.toLocaleString;
+    Date.prototype.toLocaleString = () => {
+      throw new Error("💥 date blew up");
+    };
+
+    render(
+      <Content
+        {...baseProps}
+        postDate="2024-01-01" // valid date
+      />
+    );
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Date formatting error:",
+        expect.any(Error)
+      );
+    });
+
+    // Restore for other tests
+    Date.prototype.toLocaleString = originalToLocaleString;
+    consoleSpy.mockRestore();
+  });
+
   it("renders as comment with default fallback styles", () => {
     render(<Content {...baseProps} contentType="comment" isVerified={false} />);
     expect(screen.getByText("Hello world!")).toBeInTheDocument();
@@ -134,14 +332,38 @@ describe("Content", () => {
     });
   });
 
-  it("renders image and video URLs", async () => {
+  it("silently handles media fetch errors (getDownloadURL fails)", async () => {
+    const { getDownloadURL } = require("firebase/storage");
+
+    getDownloadURL.mockImplementation(() =>
+      Promise.reject(new Error("media load fail"))
+    );
+
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        result: [
-          "media.fake.file.1.2.3.img.png?token=abc",
-          "media.fake.file.4.5.6.clip.mp4?token=xyz",
-        ],
+        result: ["media.bad.1.png"], // simulate 1 media item
+      }),
+    });
+
+    render(<Content {...baseProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Hadya")).toBeInTheDocument();
+    });
+  });
+
+  it("renders image and video URLs", async () => {
+    const { getDownloadURL } = require("firebase/storage");
+    getDownloadURL.mockReset();
+    getDownloadURL
+      .mockResolvedValueOnce("https://example.com/a.b.c.d.png?token=image") // index 5 = "png?..."
+      .mockResolvedValueOnce("https://example.com/a.b.c.d.mp4?token=video"); // index 5 = "mp4?..."
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        result: ["image.png", "video.mp4"], // irrelevant; just triggers the map
       }),
     });
 

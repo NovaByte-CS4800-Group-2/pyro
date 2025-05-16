@@ -21,4 +21,18 @@ describe("DarkModeToggle", () => {
     const sunIcon = button.querySelector("svg");
     expect(sunIcon).toHaveClass("text-[--muted-terracotta]");
   });
+
+  it("renders Moon icon when theme is not dark", async () => {
+    (useTheme as jest.Mock).mockReturnValue({
+      theme: "light",
+      setTheme: jest.fn(),
+    });
+
+    render(<DarkModeToggle />);
+
+    const button = await screen.getByRole("button");
+
+    const moonIcon = button.querySelector("svg");
+    expect(moonIcon).toHaveClass("text-[--bark]");
+  });
 });
