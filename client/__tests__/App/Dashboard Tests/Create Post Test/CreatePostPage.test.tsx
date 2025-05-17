@@ -4,7 +4,6 @@ import CreatePost from "@/app/dashboard/createpost/page";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
 import "@testing-library/jest-dom";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 jest.mock("next/navigation", () => ({ useRouter: jest.fn() }));
 jest.mock("react-firebase-hooks/auth", () => ({ useAuthState: jest.fn() }));
@@ -1034,4 +1033,5 @@ describe("CreatePost Component - Full Coverage", () => {
     // For non-image files, we should see the file type displayed
     expect(screen.getByText("MP4")).toBeInTheDocument();
   });
+  
 });
