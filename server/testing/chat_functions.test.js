@@ -16,7 +16,7 @@ jest.setTimeout(10000)
 // Ensure OpenAI can produce a response
 test ("Get a response from OpenAI", async () => {
     let result = await getResponse("Tell me the most important fire safety tip.")
-    // Check whether there is a response
+    // Responses may not always be the same so check whether it is non empty instead 
     if (!result){
         result = false
     } else{
@@ -24,7 +24,7 @@ test ("Get a response from OpenAI", async () => {
     }
     const expected = true
 
-    // Responses may not always be the same. Check whether it is non empty instead.
+    // Assert that the result from getResponse matches the expected value 
     expect(result).toEqual(expected)
 })
 
@@ -35,6 +35,6 @@ test ("Only get fire related responses", async() => {
     // Predefined output for answering unrelated questions
     const expected = "I'm NovaBot, your Pyro Web Application assistant!"
 
-    // Compare defined output
+    // Assert that the result from getResponse matches the expected value
     expect(result).toContain(expected)
 })

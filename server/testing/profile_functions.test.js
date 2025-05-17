@@ -10,29 +10,31 @@ afterAll (async () => {
 })
 
 
-// Testing the editUsername function 
+// Test whether the editUsername function works 
 test ("Edit user's username", async () => {
-  const result = await Profile.editUsername("Hadya", "fgvfZQxY1SghMxpFvXgjauiUdUo1") // keep changing for tests otherwise false
-  
+  const result = await Profile.editUsername("Hadya", "fgvfZQxY1SghMxpFvXgjauiUdUo1") 
+  // If the username has been successfully edited, return true 
   const expected = true
 
+  // Assert that the result from editUsername matches the expected result
   expect(result).toEqual(expected)
 })
 
-// Testing the getUsername function
+// Test whether the getUsername function works
 test ("Gets user's username", async () => {
   const result = await Profile.getUsername("3JK5D0c9NhOmJPkviCJqD7vn2Am1")
-  
+  // Return the username of the user given their user_id
   const expected = "Nat"
 
+  // Assert that the result from getUsername matches the expected result
   expect(result).toEqual(expected)
 })
 
 
-// Testing the getProfile function 
+// Test whether the getProfile function works for a personal account
 test ("Gets a personal user's profile 1", async () => {
     const result = await Profile.getProfile("Nat")
-    
+    // Retrieve the information of a personal user's profile
     const expected = {
         "user_id": "3JK5D0c9NhOmJPkviCJqD7vn2Am1",
         "username": "Nat",
@@ -40,13 +42,15 @@ test ("Gets a personal user's profile 1", async () => {
         "zip_code": 12345,
         "business_account": 0
     }
+
+    // Assert that the result from getProfile matches the expected result
     expect(result).toEqual(expected)
 })
 
-// Testing the getProfile function 
+// Test whether the getProfile function works for a business account
 test ("Gets a business user's profile 2", async () => {
   const result = await Profile.getProfile("Business Woman")
-  
+  // Retrieve the information of a business user's profile
   const expected = {
       "user_id": "na74oYKtAgS81vAICvRpbOmalnX2",
       "username": "Business Woman",
@@ -55,16 +59,19 @@ test ("Gets a business user's profile 2", async () => {
       "business_account": 1
     
   }
+
+  // Assert that the result from getProfile matches the expected result
   expect(result).toEqual(expected)
 })
 
 
-// Testing the editZipcode 
+// Test whether the editZipcode function works
 test ("Edits the user's zipcode", async () => {
   const result  = await Profile.editZipcode(12345, "3JK5D0c9NhOmJPkviCJqD7vn2Am1")
-
+  // If the zipcode has been successfully edited, return true
   const expected = true
 
+  // Assert that the result from editZipcode matches the expected result
   expect(result).toEqual(expected)
 })
 

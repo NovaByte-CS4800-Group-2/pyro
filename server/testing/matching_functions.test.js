@@ -2,6 +2,9 @@ import Matching from "../functions/matching_functions.js"
 import pool from '../functions/pool.js'
 import { jest, expect } from '@jest/globals';
 
+/** This jest file is used to test all the functions defined in matching_functions.js which allows us to
+get information about the host-evacuee matching system. */
+
 jest.setTimeout(10000); // Allow more time for async API calls
 
 // Make sure the pool closes after using await and grabbing from the database
@@ -10,9 +13,20 @@ afterAll (async () => {
   })
 
 
-//Test to see whether a new form will be created with a previously used user_id
+// Test whether the createForm function works
 test ("Create a new matching form for a user that does not already have a form", async () => {
-    const result = await Matching.createForm(4, "jess@gmail.com", 12345, 5, "offering", 2, 2, 1, 0, 0, 0, 0, 0, 0, 0) // keep changing for tests otherwise false
+  const result = await Matching.createForm(4, "banana@gmail.com", 12345, 5, "offering", 2, 2, 1, 0, 0, 0, 0, 0, 0, 0) 
+  // If the form has been successfully created, return true
+  const expected = true
+
+  // Assert that the result from createForm matches the expected result
+  expect(result).toEqual(expected) 
+})
+
+// Check whether two forms can be created for a single user
+test ("Create a new matching form for a user that already has a form", async () => {
+    const result = await Matching.createForm(4, "jess@gmail.com", 12345, 5, "offering", 2, 2, 1, 0, 0, 0, 0, 0, 0, 0) 
+    // Since a form already exists for this user
     const expected = false
 
     // Assert that the result from createForm matches the expected result
@@ -23,16 +37,18 @@ test ("Create a new matching form for a user that does not already have a form",
 // Test whether the formExists function works when given a specific formID
 test ("Check to see whether a form exists", async () => {
     const result = await Matching.formExists(4)
+    // If the form exists, return 1 (else, 0)
     const expected = 1 
     
     // Assert that the the result from the formExists matches the expected value 
     expect(result).toEqual(expected)
 })
 
-// Retrieves all forms of the opposite type for potential matches.
+// Test whether the getForms function works 
 test ("Get matching options for request forms", async() => {
     // Use the getForms function to get all the forms that are opposite to requesting (offering)
     const result = await Matching.getForms("requesting")
+    // Retrieves all forms of the opposite type for potential matches
      const expected = [
       {
         form_id: 1,
@@ -142,10 +158,11 @@ test ("Get matching options for request forms", async() => {
     expect(result).toEqual(expected)
 })
 
-// Retrieves all forms of the opposite type for potential matches.
+// Test whether the getForms function works for offering forms
 test ("Get matching options for offering forms", async() => {
     // Use the getForms function to get all the forms that are opposite to offering (requesting)
     const result = await Matching.getForms("offering")
+    // Retrieves all forms of the opposite type for potential matches.
     const expected =  [
       {
         form_id: 10,
@@ -169,9 +186,11 @@ test ("Get matching options for offering forms", async() => {
     expect(result).toEqual(expected)
 })
 
+// Test whether the getForm function works
 test ("Get a form given its formID", async() => {
     // Call the getForm function and provide the formID to get the form details
     const result = await Matching.getForm(3)
+    // If the form exists, get its content 
     const expected = {
       form_id: 3,
       email: 'jmpinto@cpp.edu',
@@ -192,9 +211,11 @@ test ("Get a form given its formID", async() => {
     expect(result).toEqual(expected)
 })
 
+// Test whether the getUserForm function works 
 test ("Get a form given its userID", async() => {
     // Call the getUserForm function using the user's ID to get the forms they've submitted
     const result = await Matching.getUserForm(4)
+    // If a user has created a form, get its content
     const expected =  {
       user_id: '4',
       form_id: 9,
@@ -211,10 +232,11 @@ test ("Get a form given its userID", async() => {
       other_pets: 0
     }
 
-    // Assert that the resultfrom getUserForm is the same as the expected result 
+    // Assert that the result from getUserForm is the same as the expected result 
     expect(result).toEqual(expected)
 })
 
+// Test whether the match function works 
 test("Find a match based on preexisting request and offering forms", async() => {
     const result = await Matching.match(10, "requesting")
 
@@ -227,6 +249,7 @@ test("Find a match based on preexisting request and offering forms", async() => 
     expect(result).toEqual(expected)
 })
 
+// Test whether the deleteForms function works 
 test("Delete a form given the formID", async() => {
     // Call the deleteForms method with the formID
     const result = await Matching.deleteForms([12])
