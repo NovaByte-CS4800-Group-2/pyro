@@ -5,11 +5,13 @@
   <br />
   A community-driven platform for wildfire relief, information sharing, and support.
   <br />
-  <strong>NOTE:</strong> Pyro is not currently online. The application can be viewed in guest mode but functionality requiring an account is not currently accessible. We appreciate your understanding.
   <br />
   <a href="https://pyro-home.vercel.app/"><strong>🌐 Visit Pyro</strong></a>
   &nbsp;·&nbsp;
   <a href="https://github.com/NovaByte-CS4800-Group-2/pyro">GitHub Repository</a>
+  <br />
+  <br />
+  <strong>NOTE:</strong> Pyro is not currently online. The application can be viewed in guest mode but functionality requiring an account is not currently accessible. We appreciate your understanding.
 </p>
 
 ---
@@ -71,11 +73,11 @@ Pyro aims to bridge these gaps by providing an accessible online space for:
 
 | Homepage | Community Forum |
 |:---:|:---:|
-| ![Pyro Homepage](docs/screenshots/homepage.png) | ![Pyro Forum](docs/screenshots/forum.png) |
+| ![Pyro Homepage](docs/screenshots/home.png) | ![Pyro Forum](docs/screenshots/forum.png) |
 
-| User Profile | Additional Features |
+| Chatbot | Resources |
 |:---:|:---:|
-| ![Pyro Profile](docs/screenshots/profile.png) | ![Pyro Features](docs/screenshots/features.png) |
+| ![Pyro Chatbot](docs/screenshots/chatbot.png) | ![Pyro Resources](docs/screenshots/resources.png) |
 
 ## Getting Started
 
@@ -175,15 +177,14 @@ Developed by **NovaByte — CS4800 Group 2** as part of a collaborative software
 Our team worked together to design, develop, and deploy a community-focused platform addressing the challenges associated with wildfire recovery.
 
 ## Live Demo
-<strong>NOTE:</strong> Pyro is not currently online. The application can be viewed in guest mode but functionality requiring an account is not currently accessible. We appreciate your understanding.
-
 <p align="center">
   <a href="https://pyro-home.vercel.app/">
     <img src="https://img.shields.io/badge/🔥_Explore_Pyro-Visit_Live_Application-orange?style=for-the-badge" />
   </a>
 </p>
 
-**[pyro-home.vercel.app](https://pyro-home.vercel.app/)**
+<p align="center">**[pyro-home.vercel.app](https://pyro-home.vercel.app/)**</p>
+<p><strong>NOTE:</strong> Pyro is not currently online. The application can be viewed in guest mode but functionality requiring an account is not currently accessible. We appreciate your understanding.</p>
 
 ## Disclaimer
 
