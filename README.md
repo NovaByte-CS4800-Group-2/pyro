@@ -183,7 +183,7 @@ Our team worked together to design, develop, and deploy a community-focused plat
   </a>
 </p>
 
-<p align="center">**[pyro-home.vercel.app](https://pyro-home.vercel.app/)**</p>
+**[pyro-home.vercel.app](https://pyro-home.vercel.app/)**
 <p><strong>NOTE:</strong> Pyro is not currently online. The application can be viewed in guest mode but functionality requiring an account is not currently accessible. We appreciate your understanding.</p>
 
 ## Disclaimer
